@@ -2,6 +2,38 @@
 
 Weighbridge management and vehicle weight tracking system for Vyavantra.
 
+### Weighing Slip Entry Screen
+
+One slip holds many trailers. Each trailer is measured independently, and the next trailer can be loaded while an earlier one is still unloading.
+
+```
+Add Trailer -> Get Loaded Weight -> (unloading) -> Get Unloaded Weight -> Binding KG -> Trailer Net
+... repeat per trailer ... -> Total Cane Weight -> Other Deduction -> Final Net Cane Weight
+-> Complete Weighment -> Cane Register -> Print Slip
+```
+
+Calculations run in the controller on every save:
+
+- Cane Weight = Loaded - Unloaded
+- Trailer Net = Cane Weight - Binding
+- Total Cane Weight = sum of Trailer Net
+- Deduction KG = Total Cane Weight x Deduction % / 100 (reason is mandatory when % > 0)
+- Final Net Cane Weight = Total Cane Weight - Deduction KG
+
+Whitelisted document methods (call with `frm.call({method, doc: frm.doc, args})`):
+`add_trailer`, `get_loaded_weight(trailer_no)`, `get_unloaded_weight(trailer_no)`,
+`reset_trailer_weights(trailer_no)`, `complete_weighment`.
+
+### Weighbridge setup
+
+Set **Weighbridge Settings > Weighbridge API URL**. The scale endpoint must answer a `GET` with JSON:
+
+```json
+{"weight": 10000, "stable": true}
+```
+
+A non-stable, non-positive or unreachable reading is rejected and nothing is saved. An optional API token is sent as a Bearer token.
+
 ### Installation
 
 You can install this app using the [bench](https://github.com/frappe/bench) CLI:
