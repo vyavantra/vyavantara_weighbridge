@@ -1,0 +1,112 @@
+{
+ "actions": [],
+ "creation": "2026-10-31 15:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "sb_company_accounts",
+  "company",
+  "payable_account",
+  "cb_15",
+  "cash_account",
+  "bank_account",
+  "sb_weight_indicator",
+  "indicator_url",
+  "cb_16",
+  "indicator_serial_port",
+  "indicator_baud_rate"
+ ],
+ "fields": [
+  {
+   "fieldname": "sb_company_accounts",
+   "fieldtype": "Section Break",
+   "label": "Company & Accounts"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "payable_account",
+   "fieldtype": "Link",
+   "label": "Payable Account",
+   "options": "Account",
+   "description": "Debited when a payment is posted. Use an expense / liability account that is not Payable-type (no party needed)"
+  },
+  {
+   "fieldname": "cb_15",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "cash_account",
+   "fieldtype": "Link",
+   "label": "Cash Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "bank_account",
+   "fieldtype": "Link",
+   "label": "Bank Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "sb_weight_indicator",
+   "fieldtype": "Section Break",
+   "label": "Weight Indicator"
+  },
+  {
+   "fieldname": "indicator_url",
+   "fieldtype": "Data",
+   "label": "Indicator HTTP URL",
+   "description": "URL returning the current weight as text/JSON (e.g. a serial-to-HTTP gateway)"
+  },
+  {
+   "fieldname": "cb_16",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "indicator_serial_port",
+   "fieldtype": "Data",
+   "label": "Indicator Serial Port",
+   "description": "e.g. COM3 or /dev/ttyUSB0 (needs pyserial on the server)"
+  },
+  {
+   "fieldname": "indicator_baud_rate",
+   "fieldtype": "Int",
+   "label": "Indicator Baud Rate",
+   "default": "9600"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-10-31 15:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vyavantra Weighbridge",
+ "name": "Weighbridge Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "create": 1,
+   "write": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Weighbridge Manager",
+   "read": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "issingle": 1
+}

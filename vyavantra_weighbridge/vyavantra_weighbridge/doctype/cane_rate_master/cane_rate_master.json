@@ -1,0 +1,170 @@
+{
+ "actions": [],
+ "creation": "2026-10-31 15:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "season",
+  "effective_from",
+  "effective_to",
+  "cb_5",
+  "disabled",
+  "sb_rates_per_ton",
+  "farmer_cane_rate",
+  "farm_delivery_rate",
+  "gate_cane_rate",
+  "harvesting_machine_rate",
+  "cb_6",
+  "transport_rate",
+  "todani_rate",
+  "farakt_rate",
+  "naming_series"
+ ],
+ "fields": [
+  {
+   "fieldname": "season",
+   "fieldtype": "Data",
+   "label": "Season",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "description": "e.g. 2026-27"
+  },
+  {
+   "fieldname": "effective_from",
+   "fieldtype": "Date",
+   "label": "Effective From",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "effective_to",
+   "fieldtype": "Date",
+   "label": "Effective To"
+  },
+  {
+   "fieldname": "cb_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "disabled",
+   "fieldtype": "Check",
+   "label": "Disabled"
+  },
+  {
+   "fieldname": "sb_rates_per_ton",
+   "fieldtype": "Section Break",
+   "label": "Rates (per Ton)"
+  },
+  {
+   "fieldname": "farmer_cane_rate",
+   "fieldtype": "Currency",
+   "label": "Farmer Cane Rate",
+   "reqd": 1
+  },
+  {
+   "fieldname": "farm_delivery_rate",
+   "fieldtype": "Currency",
+   "label": "Farm Delivery Rate"
+  },
+  {
+   "fieldname": "gate_cane_rate",
+   "fieldtype": "Currency",
+   "label": "Gate Cane Rate"
+  },
+  {
+   "fieldname": "harvesting_machine_rate",
+   "fieldtype": "Currency",
+   "label": "Harvesting Machine Rate"
+  },
+  {
+   "fieldname": "cb_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "transport_rate",
+   "fieldtype": "Currency",
+   "label": "Transport Rate",
+   "description": "Used when the village has no own transport rate"
+  },
+  {
+   "fieldname": "todani_rate",
+   "fieldtype": "Currency",
+   "label": "Todani Rate"
+  },
+  {
+   "fieldname": "farakt_rate",
+   "fieldtype": "Currency",
+   "label": "Farakt Rate"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "CRM-.#####",
+   "hidden": 1,
+   "default": "CRM-.#####"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-10-31 15:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vyavantra Weighbridge",
+ "name": "Cane Rate Master",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "create": 1,
+   "write": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Weighbridge Manager",
+   "read": 1,
+   "create": 1,
+   "write": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Weighbridge User",
+   "read": 1,
+   "create": 1,
+   "write": 1,
+   "print": 1,
+   "report": 1
+  },
+  {
+   "role": "Accounts Manager",
+   "read": 1,
+   "report": 1,
+   "export": 1,
+   "print": 1
+  },
+  {
+   "role": "Accounts User",
+   "read": 1,
+   "report": 1,
+   "print": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "autoname": "naming_series:CRM-.#####",
+ "naming_rule": "By \"Naming Series\" field",
+ "search_fields": "season"
+}

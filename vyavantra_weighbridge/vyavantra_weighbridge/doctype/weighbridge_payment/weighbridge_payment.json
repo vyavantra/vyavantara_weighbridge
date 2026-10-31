@@ -1,0 +1,295 @@
+{
+ "actions": [],
+ "creation": "2026-10-31 15:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "payment_date",
+  "bill_doctype",
+  "bill",
+  "cb_36",
+  "party_name",
+  "bill_net_payable",
+  "outstanding_before",
+  "sb_payment_details",
+  "amount",
+  "mode",
+  "remarks",
+  "cb_37",
+  "bank",
+  "cheque_no",
+  "cheque_date",
+  "reference_no",
+  "sb_approval",
+  "approval_status",
+  "approved_by",
+  "cb_38",
+  "reconciled",
+  "clearance_date",
+  "sb_accounting",
+  "journal_entry",
+  "naming_series",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "payment_date",
+   "fieldtype": "Date",
+   "label": "Payment Date",
+   "reqd": 1,
+   "default": "Today",
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "bill_doctype",
+   "fieldtype": "Select",
+   "label": "Bill Type",
+   "options": "Farmer Bill\nTractor Contractor Bill\nTodani Contractor Bill\nAgent Bill",
+   "reqd": 1,
+   "in_standard_filter": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "bill",
+   "fieldtype": "Dynamic Link",
+   "label": "Bill",
+   "options": "bill_doctype",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "cb_36",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "party_name",
+   "fieldtype": "Data",
+   "label": "Party Name",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "bill_net_payable",
+   "fieldtype": "Currency",
+   "label": "Bill Net Payable",
+   "read_only": 1
+  },
+  {
+   "fieldname": "outstanding_before",
+   "fieldtype": "Currency",
+   "label": "Outstanding Before Payment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_payment_details",
+   "fieldtype": "Section Break",
+   "label": "Payment Details"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "mode",
+   "fieldtype": "Select",
+   "label": "Payment Mode",
+   "options": "Cash\nCheque\nBank Transfer",
+   "default": "Cash",
+   "reqd": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "cb_37",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "bank",
+   "fieldtype": "Link",
+   "label": "Bank",
+   "options": "Weighbridge Bank",
+   "depends_on": "eval:doc.mode!='Cash'",
+   "mandatory_depends_on": "eval:doc.mode=='Cheque'"
+  },
+  {
+   "fieldname": "cheque_no",
+   "fieldtype": "Data",
+   "label": "Cheque No.",
+   "depends_on": "eval:doc.mode=='Cheque'",
+   "mandatory_depends_on": "eval:doc.mode=='Cheque'"
+  },
+  {
+   "fieldname": "cheque_date",
+   "fieldtype": "Date",
+   "label": "Cheque Date",
+   "depends_on": "eval:doc.mode=='Cheque'",
+   "mandatory_depends_on": "eval:doc.mode=='Cheque'"
+  },
+  {
+   "fieldname": "reference_no",
+   "fieldtype": "Data",
+   "label": "Bank Reference / UTR",
+   "depends_on": "eval:doc.mode=='Bank Transfer'"
+  },
+  {
+   "fieldname": "sb_approval",
+   "fieldtype": "Section Break",
+   "label": "Approval"
+  },
+  {
+   "fieldname": "approval_status",
+   "fieldtype": "Select",
+   "label": "Approval Status",
+   "options": "Pending\nApproved\nRejected",
+   "default": "Pending",
+   "no_copy": 1,
+   "in_standard_filter": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "approved_by",
+   "fieldtype": "Link",
+   "label": "Approved By",
+   "options": "User",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "cb_38",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "reconciled",
+   "fieldtype": "Check",
+   "label": "Bank Reconciled",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "clearance_date",
+   "fieldtype": "Date",
+   "label": "Clearance Date",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "sb_accounting",
+   "fieldtype": "Section Break",
+   "label": "Accounting"
+  },
+  {
+   "fieldname": "journal_entry",
+   "fieldtype": "Link",
+   "label": "Journal Entry",
+   "options": "Journal Entry",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "WP-.YYYY.-.#####",
+   "hidden": 1,
+   "default": "WP-.YYYY.-.#####"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "options": "Weighbridge Payment",
+   "no_copy": 1,
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-10-31 15:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vyavantra Weighbridge",
+ "name": "Weighbridge Payment",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "create": 1,
+   "write": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "report": 1,
+   "share": 1,
+   "submit": 1,
+   "cancel": 1,
+   "amend": 1
+  },
+  {
+   "role": "Accounts Manager",
+   "read": 1,
+   "create": 1,
+   "write": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "report": 1,
+   "share": 1,
+   "submit": 1,
+   "cancel": 1,
+   "amend": 1
+  },
+  {
+   "role": "Weighbridge Manager",
+   "read": 1,
+   "create": 1,
+   "write": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "report": 1,
+   "share": 1,
+   "submit": 1,
+   "cancel": 1,
+   "amend": 1
+  },
+  {
+   "role": "Accounts User",
+   "read": 1,
+   "create": 1,
+   "write": 1,
+   "submit": 1,
+   "print": 1,
+   "report": 1,
+   "export": 1
+  },
+  {
+   "role": "Weighbridge User",
+   "read": 1,
+   "print": 1,
+   "report": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "autoname": "naming_series:WP-.YYYY.-.#####",
+ "naming_rule": "By \"Naming Series\" field",
+ "title_field": "party_name",
+ "show_title_field_in_link": 1,
+ "search_fields": "party_name,bill,cheque_no",
+ "is_submittable": 1
+}
