@@ -1,0 +1,116 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:DIE-.YYYY.-.#####",
+ "creation": "2026-10-29 22:00:15.312535",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_mjvs",
+  "issue_date",
+  "disel_receiver_name",
+  "disel_qty",
+  "amended_from",
+  "note",
+  "column_break_wtim",
+  "petrol_pump_name",
+  "tractor_number",
+  "naming_series"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_mjvs",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Diesel Issue Entry",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "disel_receiver_name",
+   "fieldtype": "Link",
+   "label": "Disel Receiver Name",
+   "options": "Diesel Receiver"
+  },
+  {
+   "fieldname": "tractor_number",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Tractor Number",
+   "options": "Tractor Number"
+  },
+  {
+   "default": "Today",
+   "fieldname": "issue_date",
+   "fieldtype": "Date",
+   "in_standard_filter": 1,
+   "label": "Issue Date"
+  },
+  {
+   "fieldname": "disel_qty",
+   "fieldtype": "Float",
+   "label": "Disel Qty"
+  },
+  {
+   "fieldname": "note",
+   "fieldtype": "Small Text",
+   "label": "Note"
+  },
+  {
+   "fieldname": "column_break_wtim",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "petrol_pump_name",
+   "fieldtype": "Link",
+   "label": "Petrol Pump Name",
+   "options": "Petrol Pump"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Naming Series",
+   "options": "DIE-.YYYY.-.#####"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-10-29 23:38:31.765419",
+ "modified_by": "Administrator",
+ "module": "Vyavantra Weighbridge",
+ "name": "Diesel Issue Entry",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "search_fields": "disel_receiver_name,petrol_pump_name",
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "disel_receiver_name"
+}

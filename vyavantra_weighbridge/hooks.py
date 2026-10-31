@@ -74,10 +74,9 @@ app_license = "mit"
 # ----------
 
 # add methods and filters to jinja environment
-# jinja = {
-# 	"methods": "vyavantra_weighbridge.utils.jinja_methods",
-# 	"filters": "vyavantra_weighbridge.utils.jinja_filters"
-# }
+jinja = {
+	"methods": ["vyavantra_weighbridge.utils.marathi_number_words"],
+}
 
 # Installation
 # ------------
