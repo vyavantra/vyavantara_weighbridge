@@ -13,12 +13,12 @@ class TodaniContractorBill(SlipBill):
 	slip_party_field = "cutting_contractor"
 	flag_field = "todani_bill"
 	slip_rate_field = "todani_rate"
-	party_doctype = "Weighbridge Contractor"
+	party_doctype = "Contractor Master"
 	balance_deductions = (("advance_deduction", "advance_balance"), ("deposit_deduction", "deposit_balance"))
-	allowed_types = ("Cutting", "Todani")
+	allowed_types = ("Cutting Contractor", "Todani")
 
 	def validate_party(self):
-		ctype = frappe.db.get_value("Weighbridge Contractor", self.contractor, "contractor_type")
+		ctype = frappe.db.get_value("Contractor Master", self.contractor, "contractor_type")
 		if ctype not in self.allowed_types:
 			frappe.throw(_("{0} is a {1} contractor; this bill is for {2} contractors").format(
 				self.contractor, ctype, " / ".join(self.allowed_types)))

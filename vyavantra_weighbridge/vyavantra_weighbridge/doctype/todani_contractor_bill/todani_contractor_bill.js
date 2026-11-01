@@ -3,7 +3,7 @@
 
 frappe.ui.form.on("Todani Contractor Bill", {
 	setup(frm) {
-		frm.set_query("contractor", () => ({ filters: { contractor_type: ["in", ["Cutting", "Todani"]], disabled: 0 } }));
+		frm.set_query("contractor", () => ({ filters: { contractor_type: ["in", ["Cutting Contractor", "Todani"]], disabled: 0 } }));
 	},
 	refresh(frm) {
 		if (frm.doc.docstatus === 0) {
@@ -19,7 +19,7 @@ frappe.ui.form.on("Todani Contractor Bill", {
 	},
 	contractor(frm) {
 		if (!frm.doc.contractor) return;
-		frappe.db.get_value("Weighbridge Contractor", frm.doc.contractor, ["advance_balance", "deposit_balance"]).then((r) => {
+		frappe.db.get_value("Contractor Master", frm.doc.contractor, ["advance_balance", "deposit_balance"]).then((r) => {
 			const b = r.message || {};
 			frm.dashboard.set_headline(__("Advance balance: {0} | Deposit balance: {1}", [format_currency(b.advance_balance), format_currency(b.deposit_balance)]));
 		});

@@ -21,7 +21,7 @@ class WeighbridgeAdvance(Document):
 		return self.contractor if self.party_type == "Contractor" else self.agent
 
 	def balance_target(self):
-		doctype = "Weighbridge Contractor" if self.party_type == "Contractor" else "Cane Agent"
+		doctype = "Contractor Master" if self.party_type == "Contractor" else "Cane Agent"
 		field = "advance_balance" if self.entry_type == "Advance" else "deposit_balance"
 		return doctype, field
 

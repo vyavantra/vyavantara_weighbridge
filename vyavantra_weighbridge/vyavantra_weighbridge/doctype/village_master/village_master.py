@@ -2,7 +2,10 @@
 # For license information, please see license.txt
 
 from frappe.model.document import Document
+from frappe.model.naming import make_autoname
 
 
 class VillageMaster(Document):
-	pass
+	def autoname(self):
+		self.name = make_autoname("Village-.###")
+		self.village_no = self.name

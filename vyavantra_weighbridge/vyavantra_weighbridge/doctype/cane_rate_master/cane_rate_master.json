@@ -17,18 +17,18 @@
   "cb_6",
   "transport_rate",
   "todani_rate",
-  "farakt_rate",
+  "farak_rate",
   "naming_series"
  ],
  "fields": [
   {
    "fieldname": "season",
-   "fieldtype": "Data",
-   "label": "Season",
+   "fieldtype": "Link",
+   "label": "Season (Fiscal Year)",
    "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "description": "e.g. 2026-27"
+   "options": "Fiscal Year"
   },
   {
    "fieldname": "effective_from",
@@ -93,9 +93,9 @@
    "label": "Todani Rate"
   },
   {
-   "fieldname": "farakt_rate",
+   "fieldname": "farak_rate",
    "fieldtype": "Currency",
-   "label": "Farakt Rate"
+   "label": "Farak Rate"
   },
   {
    "fieldname": "naming_series",
@@ -108,7 +108,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-31 15:00:00.000000",
+ "modified": "2026-10-31 18:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Cane Rate Master",

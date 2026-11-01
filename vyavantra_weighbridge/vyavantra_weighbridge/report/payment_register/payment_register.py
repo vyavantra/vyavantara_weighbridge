@@ -15,7 +15,7 @@ def execute(filters=None):
 		{"label": _("Bill"), "fieldname": "bill", "fieldtype": "Dynamic Link", "options": "bill_doctype", "width": 150},
 		{"label": _("Party"), "fieldname": "party_name", "fieldtype": "Data", "width": 160},
 		{"label": _("Mode"), "fieldname": "mode", "fieldtype": "Data", "width": 100},
-		{"label": _("Bank"), "fieldname": "bank", "fieldtype": "Link", "options": "Weighbridge Bank", "width": 130},
+		{"label": _("Bank"), "fieldname": "bank", "fieldtype": "Link", "options": "Bank", "width": 130},
 		{"label": _("Cheque No."), "fieldname": "cheque_no", "fieldtype": "Data", "width": 100},
 		{"label": _("Cheque Date"), "fieldname": "cheque_date", "fieldtype": "Date", "width": 95},
 		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 110},

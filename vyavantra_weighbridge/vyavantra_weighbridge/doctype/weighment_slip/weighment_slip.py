@@ -45,9 +45,10 @@ class WeighmentSlip(Document):
 		if self.vehicle and not self.transport_contractor:
 			self.transport_contractor = frappe.db.get_value("Weighbridge Vehicle", self.vehicle, "contractor")
 		if self.farmer and not self.village:
-			self.village = frappe.db.get_value("Cane Farmer", self.farmer, "village")
+			self.village = frappe.db.get_value("Cane Supplier", self.farmer, "village")
 		if self.village and not self.distance:
-			self.distance = frappe.db.get_value("Village Master", self.village, "distance")
+			dm = frappe.db.get_value("Village Master", self.village, "distance_master")
+			self.distance = frappe.db.get_value("Distance Master", dm, "distance_km") if dm else 0
 
 	def set_shift(self):
 		t = get_time(self.slip_time)
@@ -75,15 +76,15 @@ class WeighmentSlip(Document):
 		self.cane_rate = flt(m.get(RATE_BY_DELIVERY.get(self.delivery_type, "farmer_cane_rate")))
 		self.transport_rate = village_rate or flt(m.transport_rate)
 		self.todani_rate = flt(m.todani_rate)
-		self.farakt_rate = flt(m.farakt_rate)
+		self.farakt_rate = flt(m.farak_rate)
 		self.harvesting_rate = flt(m.harvesting_machine_rate)
 
 	def validate_contractors(self):
 		for field, allowed in (("transport_contractor", ("Tractor", "Transport")),
-							   ("cutting_contractor", ("Cutting", "Todani"))):
+							   ("cutting_contractor", ("Cutting Contractor", "Todani"))):
 			c = self.get(field)
 			if c:
-				ctype = frappe.db.get_value("Weighbridge Contractor", c, "contractor_type")
+				ctype = frappe.db.get_value("Contractor Master", c, "contractor_type")
 				if ctype not in allowed:
 					frappe.throw(
 						_("{0} must be a {1} contractor").format(self.meta.get_label(field), _(" / ").join(allowed))

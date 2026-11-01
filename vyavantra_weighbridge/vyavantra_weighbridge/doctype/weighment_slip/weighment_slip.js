@@ -9,7 +9,7 @@ frappe.ui.form.on("Weighment Slip", {
 			filters: { contractor_type: ["in", ["Tractor", "Transport"]], disabled: 0 },
 		}));
 		frm.set_query("cutting_contractor", () => ({
-			filters: { contractor_type: ["in", ["Cutting", "Todani"]], disabled: 0 },
+			filters: { contractor_type: ["in", ["Cutting Contractor", "Todani"]], disabled: 0 },
 		}));
 		frm.set_query("vehicle", () => ({ filters: { disabled: 0 } }));
 		frm.set_query("farmer", () => ({ filters: { disabled: 0 } }));

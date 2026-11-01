@@ -1,6 +1,7 @@
 {
  "actions": [],
- "creation": "2026-10-31 15:00:00.000000",
+ "autoname": "naming_series:ADV-.YYYY.-.#####",
+ "creation": "2026-10-31 15:00:00",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -17,56 +18,56 @@
  ],
  "fields": [
   {
+   "default": "Today",
    "fieldname": "entry_date",
    "fieldtype": "Date",
+   "in_list_view": 1,
    "label": "Entry Date",
-   "reqd": 1,
-   "default": "Today",
-   "in_list_view": 1
+   "reqd": 1
   },
   {
    "fieldname": "entry_type",
    "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Entry Type",
    "options": "Advance\nDeposit",
-   "reqd": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1
+   "reqd": 1
   },
   {
    "fieldname": "party_type",
    "fieldtype": "Select",
+   "in_list_view": 1,
    "label": "Party Type",
    "options": "Contractor\nAgent",
-   "reqd": 1,
-   "in_list_view": 1
+   "reqd": 1
   },
   {
    "fieldname": "cb_39",
    "fieldtype": "Column Break"
   },
   {
+   "depends_on": "eval:doc.party_type=='Contractor'",
    "fieldname": "contractor",
    "fieldtype": "Link",
    "label": "Contractor",
-   "options": "Weighbridge Contractor",
-   "depends_on": "eval:doc.party_type=='Contractor'",
-   "mandatory_depends_on": "eval:doc.party_type=='Contractor'"
+   "mandatory_depends_on": "eval:doc.party_type=='Contractor'",
+   "options": "Contractor Master"
   },
   {
+   "depends_on": "eval:doc.party_type=='Agent'",
    "fieldname": "agent",
    "fieldtype": "Link",
    "label": "Agent",
-   "options": "Cane Agent",
-   "depends_on": "eval:doc.party_type=='Agent'",
-   "mandatory_depends_on": "eval:doc.party_type=='Agent'"
+   "mandatory_depends_on": "eval:doc.party_type=='Agent'",
+   "options": "Cane Agent"
   },
   {
    "fieldname": "amount",
    "fieldtype": "Currency",
+   "in_list_view": 1,
    "label": "Amount",
-   "reqd": 1,
-   "in_list_view": 1
+   "reqd": 1
   },
   {
    "fieldname": "remarks",
@@ -74,100 +75,100 @@
    "label": "Remarks"
   },
   {
+   "default": "ADV-.YYYY.-.#####",
    "fieldname": "naming_series",
    "fieldtype": "Select",
-   "label": "Naming Series",
-   "options": "ADV-.YYYY.-.#####",
    "hidden": 1,
-   "default": "ADV-.YYYY.-.#####"
+   "label": "Naming Series",
+   "options": "ADV-.YYYY.-.#####"
   },
   {
    "fieldname": "amended_from",
    "fieldtype": "Link",
    "label": "Amended From",
-   "options": "Weighbridge Advance",
    "no_copy": 1,
+   "options": "Weighbridge Advance",
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
   }
  ],
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2026-10-31 15:00:00.000000",
+ "modified": "2026-10-31 16:50:44.719185",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Weighbridge Advance",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
    "role": "System Manager",
-   "read": 1,
-   "create": 1,
-   "write": 1,
-   "delete": 1,
-   "export": 1,
-   "print": 1,
-   "email": 1,
-   "report": 1,
    "share": 1,
    "submit": 1,
-   "cancel": 1,
-   "amend": 1
+   "write": 1
   },
   {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
    "role": "Accounts Manager",
-   "read": 1,
-   "create": 1,
-   "write": 1,
-   "delete": 1,
-   "export": 1,
-   "print": 1,
-   "email": 1,
-   "report": 1,
    "share": 1,
    "submit": 1,
-   "cancel": 1,
-   "amend": 1
+   "write": 1
   },
   {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
    "role": "Weighbridge Manager",
-   "read": 1,
-   "create": 1,
-   "write": 1,
-   "delete": 1,
-   "export": 1,
-   "print": 1,
-   "email": 1,
-   "report": 1,
    "share": 1,
    "submit": 1,
-   "cancel": 1,
-   "amend": 1
+   "write": 1
   },
   {
-   "role": "Accounts User",
-   "read": 1,
    "create": 1,
-   "write": 1,
-   "submit": 1,
+   "export": 1,
    "print": 1,
+   "read": 1,
    "report": 1,
-   "export": 1
+   "role": "Accounts User",
+   "submit": 1,
+   "write": 1
   },
   {
-   "role": "Weighbridge User",
-   "read": 1,
    "print": 1,
-   "report": 1
+   "read": 1,
+   "report": 1,
+   "role": "Weighbridge User"
   }
  ],
+ "row_format": "Dynamic",
+ "search_fields": "contractor,agent",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1,
- "autoname": "naming_series:ADV-.YYYY.-.#####",
- "naming_rule": "By \"Naming Series\" field",
- "search_fields": "contractor,agent",
- "is_submittable": 1
+ "track_changes": 1
 }

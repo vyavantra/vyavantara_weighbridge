@@ -34,8 +34,10 @@ def ensure_roles():
 def after_migrate_setup():
 	ensure_roles()
 	create_shifts()
+	ensure_bank_fields()
+	seed_varieties()
 	create_dashboard()
-	extend_workspace()
+	rebuild_workspace()
 	frappe.db.commit()
 
 
@@ -130,12 +132,17 @@ SECTIONS = (
 	)),
 	("Weighbridge Masters", (
 		("Village Master", "DocType", "Village Master", "List"),
-		("Cane Farmer", "DocType", "Cane Farmer", "List"),
+		("Taluka Master", "DocType", "Taluka Master", "List"),
+		("District Master", "DocType", "District Master", "List"),
+		("Distance Master", "DocType", "Distance Master", "List"),
+		("Route Master", "DocType", "Route Master", "List"),
+		("Cane Supplier", "DocType", "Cane Supplier", "List"),
+		("Cane Variety", "DocType", "Cane Variety", "List"),
 		("Cane Rate Master", "DocType", "Cane Rate Master", "List"),
-		("Contractor Master", "DocType", "Weighbridge Contractor", "List"),
+		("Contractor Master", "DocType", "Contractor Master", "List"),
 		("Vehicle Master", "DocType", "Weighbridge Vehicle", "List"),
 		("Agent Master", "DocType", "Cane Agent", "List"),
-		("Bank Master", "DocType", "Weighbridge Bank", "List"),
+		("Bank", "DocType", "Bank", "List"),
 		("Shift Master", "DocType", "Weighbridge Shift", "List"),
 		("Weighbridge Settings", "DocType", "Weighbridge Settings", "List"),
 	)),
@@ -189,3 +196,39 @@ def extend_workspace():
 	ws.content = json.dumps(content + blocks)
 	ws.flags.ignore_links = True
 	ws.save(ignore_permissions=True)
+
+
+OLD_SHORTCUT_LABELS = {"Cane Farmer", "Bank Master"}
+VARIETIES = ("86032", "265", "10001", "15012", "671", "9805", "8005", "419", "0265")
+
+
+def ensure_bank_fields():
+	"""IFSC code and address on the core Bank doctype (the weighbridge uses Bank, not its own bank master)."""
+	from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
+
+	create_custom_fields({"Bank": [
+		{"fieldname": "ifsc_code", "fieldtype": "Data", "label": "IFSC Code", "insert_after": "bank_name",
+		 "in_list_view": 1},
+		{"fieldname": "bank_address", "fieldtype": "Small Text", "label": "Address", "insert_after": "ifsc_code"},
+	]}, ignore_validate=True)
+
+
+def seed_varieties():
+	if not frappe.db.exists("DocType", "Cane Variety"):
+		return
+	for v in VARIETIES:
+		if not frappe.db.exists("Cane Variety", v):
+			frappe.get_doc({"doctype": "Cane Variety", "variety_name": v}).insert(ignore_permissions=True)
+
+
+def rebuild_workspace():
+	"""Re-create the blocks and shortcuts this module added; the original workspace content is left alone."""
+	if not frappe.db.exists("Workspace", WORKSPACE):
+		return
+	ws = frappe.get_doc("Workspace", WORKSPACE)
+	ours = {label for _t, items in SECTIONS for label, *_ in items} | OLD_SHORTCUT_LABELS
+	ws.content = json.dumps([b for b in json.loads(ws.content or "[]") if not str(b.get("id", "")).startswith("wbreq_")])
+	ws.shortcuts = [s for s in ws.shortcuts if s.label not in ours]
+	ws.flags.ignore_links = True
+	ws.save(ignore_permissions=True)
+	extend_workspace()

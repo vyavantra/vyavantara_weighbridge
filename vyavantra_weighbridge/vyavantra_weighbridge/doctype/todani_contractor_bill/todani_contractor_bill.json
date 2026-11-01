@@ -1,6 +1,7 @@
 {
  "actions": [],
- "creation": "2026-10-31 15:00:00.000000",
+ "autoname": "naming_series:TDB-.YYYY.-.#####",
+ "creation": "2026-10-31 15:00:00",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -38,13 +39,13 @@
  ],
  "fields": [
   {
+   "default": "Today",
    "fieldname": "bill_date",
    "fieldtype": "Date",
-   "label": "Bill Date",
-   "reqd": 1,
-   "default": "Today",
    "in_list_view": 1,
-   "in_standard_filter": 1
+   "in_standard_filter": 1,
+   "label": "Bill Date",
+   "reqd": 1
   },
   {
    "fieldname": "from_date",
@@ -65,24 +66,24 @@
   {
    "fieldname": "contractor",
    "fieldtype": "Link",
+   "in_standard_filter": 1,
    "label": "Contractor No.",
-   "options": "Weighbridge Contractor",
-   "reqd": 1,
-   "in_standard_filter": 1
+   "options": "Contractor Master",
+   "reqd": 1
   },
   {
+   "fetch_from": "contractor.contractor_name",
    "fieldname": "contractor_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Contractor Name",
-   "fetch_from": "contractor.contractor_name",
-   "read_only": 1,
-   "in_list_view": 1
+   "read_only": 1
   },
   {
+   "fetch_from": "contractor.contractor_type",
    "fieldname": "contractor_type",
    "fieldtype": "Data",
    "label": "Contractor Type",
-   "fetch_from": "contractor.contractor_type",
    "read_only": 1
   },
   {
@@ -170,12 +171,12 @@
    "fieldtype": "Column Break"
   },
   {
+   "bold": 1,
    "fieldname": "net_payable",
    "fieldtype": "Currency",
+   "in_list_view": 1,
    "label": "Net Payable Amount",
-   "read_only": 1,
-   "bold": 1,
-   "in_list_view": 1
+   "read_only": 1
   },
   {
    "fieldname": "sb_payment_summary",
@@ -186,129 +187,129 @@
    "fieldname": "paid_amount",
    "fieldtype": "Currency",
    "label": "Paid Amount",
-   "read_only": 1,
-   "no_copy": 1
+   "no_copy": 1,
+   "read_only": 1
   },
   {
    "fieldname": "outstanding_amount",
    "fieldtype": "Currency",
+   "in_list_view": 1,
    "label": "Outstanding Amount",
-   "read_only": 1,
    "no_copy": 1,
-   "in_list_view": 1
+   "read_only": 1
   },
   {
    "fieldname": "cb_24",
    "fieldtype": "Column Break"
   },
   {
+   "default": "Unpaid",
    "fieldname": "payment_status",
    "fieldtype": "Select",
-   "label": "Payment Status",
-   "options": "Unpaid\nPartly Paid\nPaid",
-   "default": "Unpaid",
-   "read_only": 1,
-   "no_copy": 1,
    "in_list_view": 1,
-   "in_standard_filter": 1
+   "in_standard_filter": 1,
+   "label": "Payment Status",
+   "no_copy": 1,
+   "options": "Unpaid\nPartly Paid\nPaid",
+   "read_only": 1
   },
   {
+   "default": "TDB-.YYYY.-.#####",
    "fieldname": "naming_series",
    "fieldtype": "Select",
-   "label": "Naming Series",
-   "options": "TDB-.YYYY.-.#####",
    "hidden": 1,
-   "default": "TDB-.YYYY.-.#####"
+   "label": "Naming Series",
+   "options": "TDB-.YYYY.-.#####"
   },
   {
    "fieldname": "amended_from",
    "fieldtype": "Link",
    "label": "Amended From",
-   "options": "Todani Contractor Bill",
    "no_copy": 1,
+   "options": "Todani Contractor Bill",
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
   }
  ],
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2026-10-31 15:00:00.000000",
+ "modified": "2026-10-31 16:50:45.330569",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Todani Contractor Bill",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
    "role": "System Manager",
-   "read": 1,
-   "create": 1,
-   "write": 1,
-   "delete": 1,
-   "export": 1,
-   "print": 1,
-   "email": 1,
-   "report": 1,
    "share": 1,
    "submit": 1,
-   "cancel": 1,
-   "amend": 1
+   "write": 1
   },
   {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
    "role": "Accounts Manager",
-   "read": 1,
-   "create": 1,
-   "write": 1,
-   "delete": 1,
-   "export": 1,
-   "print": 1,
-   "email": 1,
-   "report": 1,
    "share": 1,
    "submit": 1,
-   "cancel": 1,
-   "amend": 1
+   "write": 1
   },
   {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
    "role": "Weighbridge Manager",
-   "read": 1,
-   "create": 1,
-   "write": 1,
-   "delete": 1,
-   "export": 1,
-   "print": 1,
-   "email": 1,
-   "report": 1,
    "share": 1,
    "submit": 1,
-   "cancel": 1,
-   "amend": 1
+   "write": 1
   },
   {
-   "role": "Accounts User",
-   "read": 1,
    "create": 1,
-   "write": 1,
-   "submit": 1,
+   "export": 1,
    "print": 1,
+   "read": 1,
    "report": 1,
-   "export": 1
+   "role": "Accounts User",
+   "submit": 1,
+   "write": 1
   },
   {
-   "role": "Weighbridge User",
-   "read": 1,
    "print": 1,
-   "report": 1
+   "read": 1,
+   "report": 1,
+   "role": "Weighbridge User"
   }
  ],
+ "row_format": "Dynamic",
+ "search_fields": "contractor,contractor_name",
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1,
- "autoname": "naming_series:TDB-.YYYY.-.#####",
- "naming_rule": "By \"Naming Series\" field",
  "title_field": "contractor_name",
- "show_title_field_in_link": 1,
- "search_fields": "contractor,contractor_name",
- "is_submittable": 1
+ "track_changes": 1
 }

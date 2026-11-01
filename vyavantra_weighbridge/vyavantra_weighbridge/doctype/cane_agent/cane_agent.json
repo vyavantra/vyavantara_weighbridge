@@ -9,6 +9,8 @@
   "cb_11",
   "phone",
   "commission_rate",
+  "sb_agent_address",
+  "address",
   "sb_advance",
   "advance_balance",
   "cb_12",
@@ -19,9 +21,11 @@
    "fieldname": "agent_no",
    "fieldtype": "Data",
    "label": "Agent No.",
-   "reqd": 1,
-   "unique": 1,
-   "in_list_view": 1
+   "reqd": 0,
+   "in_list_view": 1,
+   "read_only": 1,
+   "no_copy": 1,
+   "description": "Generated automatically"
   },
   {
    "fieldname": "agent_name",
@@ -46,6 +50,16 @@
    "in_list_view": 1
   },
   {
+   "fieldname": "sb_agent_address",
+   "fieldtype": "Section Break",
+   "label": "Address"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Small Text",
+   "label": "Address"
+  },
+  {
    "fieldname": "sb_advance",
    "fieldtype": "Section Break",
    "label": "Advance"
@@ -68,7 +82,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-31 15:00:00.000000",
+ "modified": "2026-10-31 18:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Cane Agent",
@@ -124,8 +138,8 @@
  "sort_order": "DESC",
  "states": [],
  "track_changes": 1,
- "autoname": "field:agent_no",
- "naming_rule": "By fieldname",
+ "autoname": "Agent-.###",
+ "naming_rule": "Expression (old style)",
  "title_field": "agent_name",
  "show_title_field_in_link": 1,
  "search_fields": "agent_name,phone"

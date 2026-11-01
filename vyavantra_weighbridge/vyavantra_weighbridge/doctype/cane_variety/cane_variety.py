@@ -4,5 +4,5 @@
 from frappe.model.document import Document
 
 
-class CaneFarmer(Document):
+class CaneVariety(Document):
 	pass
