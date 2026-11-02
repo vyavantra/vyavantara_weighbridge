@@ -11,7 +11,7 @@ GROUPS = {
 	"Shift": ("shift", "Shift", "Link/Weighbridge Shift"),
 	"Village": ("village", "Village", "Link/Village Master"),
 	"Cane Supplier": ("farmer", "Cane Supplier", "Link/Cane Supplier"),
-	"Vehicle": ("vehicle", "Vehicle", "Link/Weighbridge Vehicle"),
+	"Vehicle": ("vehicle_no", "Vehicle", "Data"),
 	"Delivery Type": ("delivery_type", "Delivery Type", "Data"),
 	"Cane Rate": ("cane_rate", "Cane Rate (per Ton)", "Currency"),
 	"Deduction Reason": ("deduction_reason", "Deduction Reason", "Data"),
@@ -50,7 +50,7 @@ def detail(condition, values):
 		{"label": _("Date"), "fieldname": "slip_date", "fieldtype": "Date", "width": 95},
 		{"label": _("Shift"), "fieldname": "shift", "fieldtype": "Link", "options": "Weighbridge Shift", "width": 90},
 		{"label": _("Serial"), "fieldname": "serial_no", "fieldtype": "Int", "width": 60},
-		{"label": _("Vehicle"), "fieldname": "vehicle", "fieldtype": "Link", "options": "Weighbridge Vehicle", "width": 110},
+		{"label": _("Vehicle"), "fieldname": "vehicle_no", "fieldtype": "Data", "width": 110},
 		{"label": _("Cane Supplier"), "fieldname": "farmer_name", "fieldtype": "Data", "width": 150},
 		{"label": _("Village"), "fieldname": "village", "fieldtype": "Link", "options": "Village Master", "width": 100},
 		{"label": _("Delivery"), "fieldname": "delivery_type", "fieldtype": "Data", "width": 110},
@@ -66,7 +66,7 @@ def detail(condition, values):
 		{"label": _("Status"), "fieldname": "status", "fieldtype": "Data", "width": 90},
 	]
 	data = frappe.db.sql(
-		f"""select name, slip_date, shift, serial_no, vehicle, farmer_name, village, delivery_type,
+		f"""select name, slip_date, shift, serial_no, vehicle_no, farmer_name, village, delivery_type,
 		gross_weight, tare_weight, cane_weight, mat_weight, other_deduction, net_cane_weight, cane_rate,
 		round(net_cane_weight / 1000 * cane_rate, 2) as amount, deduction_reason,
 		case docstatus when 0 then 'Draft' when 1 then 'Submitted' else 'Cancelled' end as status

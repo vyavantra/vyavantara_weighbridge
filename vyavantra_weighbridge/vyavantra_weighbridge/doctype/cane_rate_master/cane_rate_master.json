@@ -9,15 +9,8 @@
   "effective_to",
   "cb_5",
   "disabled",
-  "sb_rates_per_ton",
-  "farmer_cane_rate",
-  "farm_delivery_rate",
-  "gate_cane_rate",
-  "harvesting_machine_rate",
-  "cb_6",
-  "transport_rate",
-  "todani_rate",
-  "farak_rate",
+  "sb_rates",
+  "rates",
   "naming_series"
  ],
  "fields": [
@@ -52,50 +45,17 @@
    "label": "Disabled"
   },
   {
-   "fieldname": "sb_rates_per_ton",
+   "fieldname": "sb_rates",
    "fieldtype": "Section Break",
-   "label": "Rates (per Ton)"
+   "label": "Rates by Delivery Type"
   },
   {
-   "fieldname": "farmer_cane_rate",
-   "fieldtype": "Currency",
-   "label": "Farmer Cane Rate",
-   "reqd": 1
-  },
-  {
-   "fieldname": "farm_delivery_rate",
-   "fieldtype": "Currency",
-   "label": "Farm Delivery Rate"
-  },
-  {
-   "fieldname": "gate_cane_rate",
-   "fieldtype": "Currency",
-   "label": "Gate Cane Rate"
-  },
-  {
-   "fieldname": "harvesting_machine_rate",
-   "fieldtype": "Currency",
-   "label": "Harvesting Machine Rate"
-  },
-  {
-   "fieldname": "cb_6",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "transport_rate",
-   "fieldtype": "Currency",
-   "label": "Transport Rate",
-   "description": "Used when the village has no own transport rate"
-  },
-  {
-   "fieldname": "todani_rate",
-   "fieldtype": "Currency",
-   "label": "Todani Rate"
-  },
-  {
-   "fieldname": "farak_rate",
-   "fieldtype": "Currency",
-   "label": "Farak Rate"
+   "fieldname": "rates",
+   "fieldtype": "Table",
+   "label": "Rates (per Ton)",
+   "options": "Cane Rate Delivery Type",
+   "reqd": 1,
+   "description": "One row per Delivery Type. A slip dated between Effective From and Effective To takes the Cane, Todani and Farak rate of the row matching its Delivery Type."
   },
   {
    "fieldname": "naming_series",
@@ -108,7 +68,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-31 18:00:00.000000",
+ "modified": "2026-11-02 00:20:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Cane Rate Master",

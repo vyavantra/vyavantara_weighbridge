@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "autoname": "Village-.###",
  "creation": "2026-10-31 15:00:00.000000",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -9,31 +10,26 @@
   "cb_1",
   "taluka",
   "district",
-  "sb_distance_rate",
-  "distance_master",
-  "cb_2",
-  "transport_rate",
   "sb_routes",
   "routes"
  ],
  "fields": [
   {
+   "description": "Generated automatically",
    "fieldname": "village_no",
    "fieldtype": "Data",
-   "label": "Village No.",
-   "reqd": 0,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "read_only": 1,
+   "label": "Village No.",
    "no_copy": 1,
-   "description": "Generated automatically"
+   "read_only": 1
   },
   {
    "fieldname": "village_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Village Name",
-   "reqd": 1,
-   "in_list_view": 1
+   "reqd": 1
   },
   {
    "fieldname": "cb_1",
@@ -42,49 +38,26 @@
   {
    "fieldname": "taluka",
    "fieldtype": "Link",
-   "label": "Taluka",
-   "options": "Taluka Master",
    "in_list_view": 1,
-   "in_standard_filter": 1
+   "in_standard_filter": 1,
+   "label": "Taluka",
+   "options": "Taluka Master"
   },
   {
+   "fetch_from": "taluka.district",
    "fieldname": "district",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "District",
    "options": "District Master",
-   "fetch_from": "taluka.district",
-   "read_only": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1
+   "read_only": 1
   },
   {
-   "fieldname": "sb_distance_rate",
-   "fieldtype": "Section Break",
-   "label": "Distance & Rate"
-  },
-  {
-   "fieldname": "distance_master",
-   "fieldtype": "Link",
-   "label": "Distance (Km)",
-   "options": "Distance Master",
-   "in_list_view": 1
-  },
-  {
-   "fieldname": "cb_2",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "transport_rate",
-   "fieldtype": "Currency",
-   "label": "Transport Rate (per Ton)",
-   "fetch_from": "distance_master.transport_rate",
-   "read_only": 1,
-   "in_list_view": 1
-  },
-  {
+   "description": "Add every route that serves this village, with its distance and transport rate",
    "fieldname": "sb_routes",
    "fieldtype": "Section Break",
-   "label": "Routes"
+   "label": "Routes, Distance & Rate"
   },
   {
    "fieldname": "routes",
@@ -95,65 +68,64 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-31 18:00:00.000000",
+ "modified": "2026-11-01 23:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Village Master",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
    "role": "System Manager",
-   "read": 1,
-   "create": 1,
-   "write": 1,
-   "delete": 1,
-   "export": 1,
-   "print": 1,
-   "email": 1,
-   "report": 1,
-   "share": 1
+   "share": 1,
+   "write": 1
   },
   {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
    "role": "Weighbridge Manager",
-   "read": 1,
-   "create": 1,
-   "write": 1,
-   "delete": 1,
-   "export": 1,
-   "print": 1,
-   "email": 1,
-   "report": 1,
-   "share": 1
+   "share": 1,
+   "write": 1
   },
   {
+   "create": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
    "role": "Weighbridge User",
-   "read": 1,
-   "create": 1,
-   "write": 1,
-   "print": 1,
-   "report": 1
+   "write": 1
   },
   {
-   "role": "Accounts Manager",
-   "read": 1,
-   "report": 1,
    "export": 1,
-   "print": 1
-  },
-  {
-   "role": "Accounts User",
+   "print": 1,
    "read": 1,
    "report": 1,
-   "print": 1
+   "role": "Accounts Manager"
+  },
+  {
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User"
   }
  ],
+ "search_fields": "village_name,taluka,district",
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1,
- "autoname": "Village-.###",
- "naming_rule": "Expression (old style)",
  "title_field": "village_name",
- "show_title_field_in_link": 1,
- "search_fields": "village_name,taluka,district"
+ "track_changes": 1
 }

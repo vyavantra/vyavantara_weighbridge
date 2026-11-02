@@ -36,9 +36,31 @@ def after_migrate_setup():
 	create_shifts()
 	ensure_bank_fields()
 	seed_varieties()
+	seed_delivery_types()
+	set_default_print_formats()
 	create_dashboard()
 	rebuild_workspace()
 	frappe.db.commit()
+
+
+# A standard DocType cannot carry `default_print_format` in its JSON (DocType.validate throws), so it is
+# applied as a Property Setter, which is what Customize Form creates.
+DEFAULT_PRINT_FORMATS = (("Weighment Slip", "Weighment Slip Print"),)
+
+
+def set_default_print_formats():
+	for doctype, print_format in DEFAULT_PRINT_FORMATS:
+		if not (frappe.db.exists("DocType", doctype) and frappe.db.exists("Print Format", print_format)):
+			continue
+		frappe.make_property_setter(
+			{
+				"doctype": doctype,
+				"doctype_or_field": "DocType",
+				"property": "default_print_format",
+				"value": print_format,
+				"property_type": "Data",
+			}
+		)
 
 
 def create_shifts():
@@ -138,9 +160,10 @@ SECTIONS = (
 		("Route Master", "DocType", "Route Master", "List"),
 		("Cane Supplier", "DocType", "Cane Supplier", "List"),
 		("Cane Variety", "DocType", "Cane Variety", "List"),
+		("Delivery Type", "DocType", "Delivery Type", "List"),
 		("Cane Rate Master", "DocType", "Cane Rate Master", "List"),
 		("Contractor Master", "DocType", "Contractor Master", "List"),
-		("Vehicle Master", "DocType", "Weighbridge Vehicle", "List"),
+		("Tractor Number", "DocType", "Tractor Number", "List"),
 		("Agent Master", "DocType", "Cane Agent", "List"),
 		("Bank", "DocType", "Bank", "List"),
 		("Shift Master", "DocType", "Weighbridge Shift", "List"),
@@ -198,7 +221,8 @@ def extend_workspace():
 	ws.save(ignore_permissions=True)
 
 
-OLD_SHORTCUT_LABELS = {"Cane Farmer", "Bank Master"}
+OLD_SHORTCUT_LABELS = {"Cane Farmer", "Bank Master", "Vehicle Master"}
+DELIVERY_TYPES = ("Farm Delivery", "Gate Cane", "Harvesting Machine")
 VARIETIES = ("86032", "265", "10001", "15012", "671", "9805", "8005", "419", "0265")
 
 
@@ -219,6 +243,14 @@ def seed_varieties():
 	for v in VARIETIES:
 		if not frappe.db.exists("Cane Variety", v):
 			frappe.get_doc({"doctype": "Cane Variety", "variety_name": v}).insert(ignore_permissions=True)
+
+
+def seed_delivery_types():
+	if not frappe.db.exists("DocType", "Delivery Type"):
+		return
+	for d in DELIVERY_TYPES:
+		if not frappe.db.exists("Delivery Type", d):
+			frappe.get_doc({"doctype": "Delivery Type", "delivery_type_name": d}).insert(ignore_permissions=True)
 
 
 def rebuild_workspace():

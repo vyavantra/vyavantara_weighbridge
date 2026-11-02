@@ -113,14 +113,14 @@ class SlipBill(Document):
 				"slip_date": ["between", [self.from_date, self.to_date]],
 				self.flag_field: ["is", "not set"],
 			},
-			fields=["name", "slip_date", "vehicle", "village", "net_cane_weight", "cane_rate",
+			fields=["name", "slip_date", "vehicle_no", "village", "net_cane_weight", "cane_rate",
 					"transport_rate", "todani_rate", "farakt_rate"],
 			order_by="slip_date, serial_no, name",
 		)
 		self.set("slips", [])
 		for s in slips:
 			self.append("slips", {
-				"slip": s.name, "slip_date": s.slip_date, "vehicle": s.vehicle, "village": s.village,
+				"slip": s.name, "slip_date": s.slip_date, "vehicle": s.vehicle_no, "village": s.village,
 				"net_weight": s.net_cane_weight, "rate": self.slip_rate(s),
 				"farakt_rate": s.farakt_rate if self.meta.has_field("farakt_amount") else 0,
 			})

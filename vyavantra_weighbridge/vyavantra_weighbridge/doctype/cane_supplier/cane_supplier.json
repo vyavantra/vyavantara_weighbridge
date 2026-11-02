@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "autoname": "Cane-Supplier-.###",
  "creation": "2026-10-31 15:00:00.000000",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -90,6 +91,7 @@
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Cane Supplier",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
@@ -138,13 +140,11 @@
    "print": 1
   }
  ],
+ "search_fields": "farmer_name,phone,village",
+ "show_title_field_in_link": 0,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1,
- "autoname": "Cane-Supplier-.###",
- "naming_rule": "Expression (old style)",
  "title_field": "farmer_name",
- "show_title_field_in_link": 1,
- "search_fields": "farmer_name,phone,village"
+ "track_changes": 1
 }

@@ -3,7 +3,7 @@
 
 frappe.ui.form.on("Tractor Contractor Bill", {
 	setup(frm) {
-		frm.set_query("contractor", () => ({ filters: { contractor_type: ["in", ["Tractor", "Transport"]], disabled: 0 } }));
+		frm.set_query("contractor", () => ({ filters: { contractor_type: "Tractor", disabled: 0 } }));
 	},
 	refresh(frm) {
 		if (frm.doc.docstatus === 0) {

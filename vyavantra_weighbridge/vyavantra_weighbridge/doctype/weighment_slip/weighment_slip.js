@@ -1,24 +1,34 @@
 // Copyright (c) 2026, Vyavantra Tech Solution PVT. LTD and contributors
 // For license information, please see license.txt
 
-const WS_METHOD = "vyavantra_weighbridge.vyavantra_weighbridge.doctype.weighment_slip.weighment_slip.get_indicator_weight";
+const WS_PATH = "vyavantra_weighbridge.vyavantra_weighbridge.doctype.weighment_slip.weighment_slip.";
+const WS_METHOD = WS_PATH + "get_indicator_weight";
 
 frappe.ui.form.on("Weighment Slip", {
 	setup(frm) {
-		frm.set_query("transport_contractor", () => ({
-			filters: { contractor_type: ["in", ["Tractor", "Transport"]], disabled: 0 },
-		}));
-		frm.set_query("cutting_contractor", () => ({
-			filters: { contractor_type: ["in", ["Cutting Contractor", "Todani"]], disabled: 0 },
-		}));
-		frm.set_query("vehicle", () => ({ filters: { disabled: 0 } }));
+		// each contractor field lists only the contractors of its own type
+		frm.set_query("transport_contractor", () => ({ filters: { contractor_type: "Tractor", disabled: 0 } }));
+		frm.set_query("cutting_contractor", () => ({ filters: { contractor_type: "Cutting Contractor", disabled: 0 } }));
 		frm.set_query("farmer", () => ({ filters: { disabled: 0 } }));
 		frm.set_query("agent", () => ({ filters: { disabled: 0 } }));
+		frm.set_query("delivery_type", () => ({ filters: { disabled: 0 } }));
+		// only the routes that are defined in the member's village
+		frm.set_query("route", () => ({
+			query: "vyavantra_weighbridge.vyavantra_weighbridge.doctype.weighment_slip.weighment_slip.route_query",
+			filters: { village: frm.doc.village || "" },
+		}));
 	},
 	refresh(frm) {
+		frm.page.wrapper.addClass("wbs-slip"); // scopes weighment_slip.css to this form only
+		style_fetch_button(frm);
+		format_computed_weights(frm);
 		if (frm.doc.docstatus === 0) {
 			frm.add_custom_button(__("Capture Gross Weight"), () => capture(frm, "gross_weight"), __("Indicator"));
 			frm.add_custom_button(__("Capture Tare Weight"), () => capture(frm, "tare_weight"), __("Indicator"));
+			if (frm.is_new()) {
+				show_cane_rates(frm);
+				set_shift(frm);
+			}
 		}
 		if (frm.doc.docstatus === 1) {
 			frm.add_custom_button(__("Print Slip"), () => frm.print_doc());
@@ -26,15 +36,118 @@ frappe.ui.form.on("Weighment Slip", {
 	},
 	vehicle(frm) {
 		if (!frm.doc.vehicle) return;
-		frappe.db.get_value("Weighbridge Vehicle", frm.doc.vehicle, "contractor").then((r) => {
-			if (r.message && r.message.contractor) frm.set_value("transport_contractor", r.message.contractor);
+		// the Tractor contractor that owns this tractor number, if it has exactly one
+		frappe.call({ method: WS_PATH + "get_tractor_contractor", args: { tractor: frm.doc.vehicle } }).then((r) => {
+			if (r.message) frm.set_value("transport_contractor", r.message);
 		});
 	},
+	farmer(frm) {
+		// the village comes from the member; the old route/distance/rate belong to the previous village
+		clear_route(frm);
+		if (!frm.doc.farmer) {
+			frm.set_value("village", "");
+			return;
+		}
+		frappe.db.get_value("Cane Supplier", frm.doc.farmer, "village").then((r) => {
+			const village = (r.message && r.message.village) || "";
+			frm.set_value("village", village);
+			pick_single_route(frm, village);
+		});
+	},
+	route(frm) {
+		if (!frm.doc.route) return clear_route(frm);
+		frappe.call({
+			method: WS_PATH + "get_village_routes",
+			args: { village: frm.doc.village },
+			callback: (r) => {
+				const row = (r.message || []).find((x) => x.route === frm.doc.route);
+				if (!row) {
+					frappe.msgprint(__("Route {0} is not defined for village {1}", [frm.doc.route, frm.doc.village]));
+					return clear_route(frm);
+				}
+				frm.set_value("distance", row.distance_km);
+				frm.set_value("transport_rate", row.transport_rate);
+			},
+		});
+	},
+	delivery_type: show_cane_rates,
+	slip_date: show_cane_rates,
+	slip_time: set_shift,
+	on_hide(frm) {
+		frm.page.wrapper.removeClass("wbs-slip");
+	},
+	fetch_weight(frm) {
+		// the first reading is the loaded vehicle (gross), the next one the empty vehicle (tare)
+		if (!flt(frm.doc.gross_weight)) return capture(frm, "gross_weight");
+		if (!flt(frm.doc.tare_weight)) return capture(frm, "tare_weight");
+		frappe.show_alert({ message: __("Gross and Tare weights are already taken. Use Indicator > Capture to read again."), indicator: "orange" });
+	},
+	cane_weight: format_computed_weights,
+	net_cane_weight: format_computed_weights,
 	gross_weight: calc,
 	tare_weight: calc,
 	mat_weight: calc,
 	other_deduction: calc,
 });
+
+// the shift is decided by the slip time, never typed by hand
+function set_shift(frm) {
+	if (frm.doc.docstatus !== 0) return;
+	if (!frm.doc.slip_time) return frm.set_value("shift", "");
+	frappe.call({
+		method: WS_PATH + "get_shift",
+		args: { slip_time: frm.doc.slip_time },
+		callback: (r) => frm.set_value("shift", r.message || ""),
+	});
+}
+
+function clear_route(frm) {
+	if (frm.doc.route) frm.set_value("route", "");
+	frm.set_value("distance", 0);
+	frm.set_value("transport_rate", 0);
+}
+
+// a village with exactly one route needs no choice
+function pick_single_route(frm, village) {
+	if (!village) return;
+	frappe.call({
+		method: WS_PATH + "get_village_routes",
+		args: { village },
+		callback: (r) => {
+			const routes = r.message || [];
+			if (routes.length === 1) frm.set_value("route", routes[0].route);
+		},
+	});
+}
+
+// Cane Rate Master rates of the chosen delivery type, for the slip date; shown before the slip is saved
+function show_cane_rates(frm) {
+	if (frm.doc.docstatus !== 0) return;
+	if (!frm.doc.delivery_type) {
+		["cane_rate", "todani_rate", "farakt_rate"].forEach((field) => frm.set_value(field, 0));
+		return;
+	}
+	frappe.call({
+		method: WS_PATH + "get_cane_rates",
+		args: { slip_date: frm.doc.slip_date, delivery_type: frm.doc.delivery_type },
+		callback: (r) => {
+			const rates = r.message || {};
+			const found = rates.cane_rate !== undefined;
+			frm.set_value("cane_rate", found ? rates.cane_rate : 0);
+			frm.set_value("todani_rate", found ? rates.todani_rate : 0);
+			frm.set_value("farakt_rate", found ? rates.farakt_rate : 0);
+			if (!found) {
+				frappe.show_alert({
+					message: __("No Cane Rate Master has a rate for {0} on {1}", [
+						frm.doc.delivery_type,
+						frappe.datetime.str_to_user(frm.doc.slip_date) || __("today"),
+					]),
+					indicator: "orange",
+				});
+			}
+		},
+	});
+}
 
 function calc(frm) {
 	const gross = flt(frm.doc.gross_weight), tare = flt(frm.doc.tare_weight);
@@ -52,4 +165,28 @@ function capture(frm, field) {
 			if (r.message !== undefined) frm.set_value(field, r.message);
 		},
 	});
+}
+
+// weights tab: one column, every field the same width, Fetch Weight at the bottom right
+const WEIGHT_FIELDS = ["gross_weight", "tare_weight", "cane_weight", "mat_weight", "other_deduction", "net_cane_weight", "deduction_reason", "fetch_weight"];
+
+// computed weights are read-only, which Frappe prints as a bare "0"; show them with two decimals like the inputs
+function format_computed_weights(frm) {
+	["cane_weight", "net_cane_weight"].forEach((name) => {
+		const field = frm.fields_dict[name];
+		if (!field) return;
+		const value = format_number(flt(frm.doc[name]), null, 2);
+		field.$wrapper.find(".control-value").text(value);
+	});
+}
+
+function style_fetch_button(frm) {
+	WEIGHT_FIELDS.forEach((name) => {
+		const field = frm.fields_dict[name];
+		if (field) field.$wrapper.removeClass("input-max-width").css("max-width", "none");
+	});
+	const button = frm.fields_dict.fetch_weight;
+	if (!button) return;
+	button.$wrapper.css("text-align", "right");
+	if (button.$input) button.$input.removeClass("btn-default btn-xs").addClass("btn-primary btn-sm");
 }

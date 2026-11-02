@@ -8,11 +8,12 @@
   "contractor_no",
   "contractor_name",
   "contractor_type",
-  "vehicle_no",
   "cb_7",
   "phone",
   "disabled",
   "address",
+  "sb_tractors",
+  "tractors",
   "sb_advance_deposit",
   "advance_balance",
   "cb_8",
@@ -49,15 +50,10 @@
    "fieldname": "contractor_type",
    "fieldtype": "Select",
    "label": "Contractor Type",
-   "options": "Tractor\nTransport\nCutting Contractor\nTodani",
+   "options": "Tractor\nCutting Contractor",
    "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1
-  },
-  {
-   "fieldname": "vehicle_no",
-   "fieldtype": "Data",
-   "label": "Vehicle No."
   },
   {
    "fieldname": "cb_7",
@@ -77,6 +73,18 @@
    "fieldname": "address",
    "fieldtype": "Small Text",
    "label": "Address"
+  },
+  {
+   "fieldname": "sb_tractors",
+   "fieldtype": "Section Break",
+   "label": "Tractor Numbers"
+  },
+  {
+   "fieldname": "tractors",
+   "fieldtype": "Table",
+   "label": "Tractors of this Contractor",
+   "options": "Contractor Tractor",
+   "description": "Pick the numbers from the Tractor Number master. The number of rows is the number of tractors this contractor has."
   },
   {
    "fieldname": "sb_advance_deposit",
@@ -182,5 +190,5 @@
  "naming_rule": "Expression (old style)",
  "title_field": "contractor_name",
  "show_title_field_in_link": 1,
- "search_fields": "contractor_name,contractor_type,vehicle_no"
+ "search_fields": "contractor_name,contractor_type"
 }

@@ -1,0 +1,54 @@
+{
+ "actions": [],
+ "creation": "2026-11-02 00:20:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "delivery_type",
+  "cane_rate",
+  "todani_rate",
+  "farak_rate"
+ ],
+ "fields": [
+  {
+   "fieldname": "delivery_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Delivery Type",
+   "options": "Delivery Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cane_rate",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Cane Rate (per Ton)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "todani_rate",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Todani Rate (per Ton)"
+  },
+  {
+   "fieldname": "farak_rate",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Farak Rate (per Ton)"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-11-02 00:20:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vyavantra Weighbridge",
+ "name": "Cane Rate Delivery Type",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

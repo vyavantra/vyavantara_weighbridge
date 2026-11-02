@@ -1,48 +1,47 @@
 {
  "actions": [],
  "autoname": "naming_series:WS-.YYYY.-.#####",
- "creation": "2026-10-31 15:00:00",
+ "creation": "2026-11-02 00:35:16.909012",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "tab_slip",
   "slip_date",
-  "slip_time",
-  "shift",
   "serial_no",
   "cb_17",
-  "vehicle",
-  "trolley_type",
+  "slip_time",
+  "column_break_apzx",
+  "shift",
+  "member_information_section",
   "farmer",
+  "route",
+  "column_break_dikl",
   "farmer_name",
-  "village",
   "distance",
+  "column_break_tgws",
+  "village_name",
+  "transport_rate",
+  "village",
   "sb_cane_details",
   "cane_type",
-  "variety",
   "cb_18",
-  "delivery_type",
-  "sb_contractors_agent",
-  "transport_contractor",
-  "cb_19",
-  "cutting_contractor",
-  "cb_20",
-  "agent",
+  "variety",
   "sb_applicable_rates_per_ton",
+  "delivery_type",
   "cane_rate",
-  "transport_rate",
   "cb_21",
   "todani_rate",
   "farakt_rate",
-  "harvesting_rate",
-  "sb_weights_kg",
-  "gross_weight",
-  "tare_weight",
-  "cane_weight",
-  "cb_22",
-  "mat_weight",
-  "other_deduction",
-  "deduction_reason",
-  "net_cane_weight",
+  "sb_contractors_agent",
+  "contractor_type",
+  "transport_contractor",
+  "cb_19",
+  "vehicle",
+  "vehicle_no",
+  "cutting_contractor",
+  "cb_20",
+  "trolley_type",
+  "agent",
   "sb_billing_status",
   "farmer_bill",
   "tractor_bill",
@@ -53,7 +52,16 @@
   "correction_reason",
   "remarks",
   "naming_series",
-  "amended_from"
+  "amended_from",
+  "tab_weights",
+  "gross_weight",
+  "tare_weight",
+  "cane_weight",
+  "mat_weight",
+  "other_deduction",
+  "net_cane_weight",
+  "deduction_reason",
+  "fetch_weight"
  ],
  "fields": [
   {
@@ -64,21 +72,6 @@
    "in_standard_filter": 1,
    "label": "Slip Date",
    "reqd": 1
-  },
-  {
-   "fieldname": "slip_time",
-   "fieldtype": "Time",
-   "label": "Slip Time",
-   "no_copy": 1,
-   "default": "Now"
-  },
-  {
-   "fieldname": "shift",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Shift",
-   "options": "Weighbridge Shift"
   },
   {
    "fieldname": "serial_no",
@@ -92,50 +85,79 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "vehicle",
+   "default": "Now",
+   "fieldname": "slip_time",
+   "fieldtype": "Time",
+   "label": "Slip Time",
+   "no_copy": 1
+  },
+  {
+   "fieldname": "column_break_apzx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Set automatically from the slip time",
+   "fieldname": "shift",
    "fieldtype": "Link",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Vehicle",
-   "options": "Weighbridge Vehicle",
-   "reqd": 1
+   "label": "Shift",
+   "options": "Weighbridge Shift",
+   "read_only": 1
   },
   {
-   "fetch_from": "vehicle.trolley_type",
-   "fieldname": "trolley_type",
-   "fieldtype": "Data",
-   "label": "Trolley Type",
-   "read_only": 1
+   "fieldname": "member_information_section",
+   "fieldtype": "Section Break",
+   "label": "Member Information"
   },
   {
    "fieldname": "farmer",
    "fieldtype": "Link",
    "in_standard_filter": 1,
-   "label": "Farmer / Member",
+   "label": "Farmer / Member ID",
    "options": "Cane Supplier",
    "reqd": 1
+  },
+  {
+   "fieldname": "column_break_dikl",
+   "fieldtype": "Column Break"
   },
   {
    "fetch_from": "farmer.farmer_name",
    "fieldname": "farmer_name",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Farmer Name",
+   "label": "Farmer / Member Name",
    "read_only": 1
   },
   {
    "fetch_from": "farmer.village",
    "fieldname": "village",
    "fieldtype": "Link",
+   "hidden": 1,
    "in_standard_filter": 1,
    "label": "Village",
    "options": "Village Master"
   },
   {
-   "fetch_from": "village.distance",
+   "description": "Only the routes defined in this village's master are listed",
+   "fieldname": "route",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Village Route",
+   "options": "Route Master"
+  },
+  {
    "fieldname": "distance",
    "fieldtype": "Float",
-   "label": "Distance (Km)"
+   "label": "Distance (Km)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "transport_rate",
+   "fieldtype": "Currency",
+   "label": "Route Rate (per Ton)",
+   "read_only": 1
   },
   {
    "fieldname": "sb_cane_details",
@@ -146,46 +168,61 @@
    "fieldname": "cane_type",
    "fieldtype": "Select",
    "label": "Cane Type",
-   "options": "\nAdsali\nPre-Seasonal\nSuru\nRatoon\nOther"
-  },
-  {
-   "fieldname": "variety",
-   "fieldtype": "Link",
-   "label": "Variety",
-   "options": "Cane Variety"
+   "options": "\nPlant Cane (लागणीचा ऊस)\nRatoon Cane (खोडवा ऊस)"
   },
   {
    "fieldname": "cb_18",
    "fieldtype": "Column Break"
   },
   {
-   "default": "Farmer Cane",
+   "fieldname": "variety",
+   "fieldtype": "Link",
+   "label": "Cane Variety",
+   "options": "Cane Variety"
+  },
+  {
    "fieldname": "delivery_type",
-   "fieldtype": "Select",
+   "fieldtype": "Link",
    "in_standard_filter": 1,
    "label": "Delivery Type",
-   "options": "Farmer Cane\nFarm Delivery\nGate Cane\nHarvesting Machine",
+   "options": "Delivery Type",
    "reqd": 1
   },
   {
    "fieldname": "sb_contractors_agent",
    "fieldtype": "Section Break",
-   "label": "Contractors & Agent"
+   "label": "Contractors & Agent Information"
   },
   {
-   "fieldname": "transport_contractor",
+   "fieldname": "vehicle",
    "fieldtype": "Link",
-   "label": "Tractor / Transport Contractor",
-   "options": "Contractor Master"
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Vehicle No.",
+   "options": "Tractor Number",
+   "reqd": 1
+  },
+  {
+   "fieldname": "vehicle_no",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Vehicle Number",
+   "read_only": 1
   },
   {
    "fieldname": "cb_19",
    "fieldtype": "Column Break"
   },
   {
+   "fieldname": "trolley_type",
+   "fieldtype": "Select",
+   "label": "Trolley Type",
+   "options": "पक्का ट्रेलर वरची वायर\nपक्का ट्रेलर मधली वायर\nपक्का ट्रेलर खालची वायर\nमागचा ट्रेलर वरची वायर\nमागचा ट्रेलर मधली वायर\nमागचा ट्रेलर खालची वायर\nपक्का ट्रेलर\nमागचा ट्रेलर"
+  },
+  {
    "fieldname": "cutting_contractor",
    "fieldtype": "Link",
-   "label": "Cutting / Todani Contractor",
+   "label": "Cutting Contractor Name",
    "options": "Contractor Master"
   },
   {
@@ -193,9 +230,15 @@
    "fieldtype": "Column Break"
   },
   {
+   "fieldname": "transport_contractor",
+   "fieldtype": "Link",
+   "label": "Transporting Contractor Name",
+   "options": "Contractor Master"
+  },
+  {
    "fieldname": "agent",
    "fieldtype": "Link",
-   "label": "Agent",
+   "label": "Agent Name",
    "options": "Cane Agent"
   },
   {
@@ -207,12 +250,6 @@
    "fieldname": "cane_rate",
    "fieldtype": "Currency",
    "label": "Cane Rate",
-   "read_only": 1
-  },
-  {
-   "fieldname": "transport_rate",
-   "fieldtype": "Currency",
-   "label": "Transport Rate",
    "read_only": 1
   },
   {
@@ -232,52 +269,42 @@
    "read_only": 1
   },
   {
-   "fieldname": "harvesting_rate",
-   "fieldtype": "Currency",
-   "label": "Harvesting Rate",
-   "read_only": 1
-  },
-  {
-   "fieldname": "sb_weights_kg",
-   "fieldtype": "Section Break",
-   "label": "Weights (Kg)"
-  },
-  {
    "fieldname": "gross_weight",
    "fieldtype": "Float",
    "label": "Gross Weight (Loaded Vehicle)",
    "precision": "2",
-   "reqd": 1
+   "reqd": 1,
+   "default": "0"
   },
   {
    "fieldname": "tare_weight",
    "fieldtype": "Float",
    "label": "Tare Weight (Empty Vehicle)",
    "precision": "2",
-   "reqd": 1
+   "reqd": 1,
+   "default": "0"
   },
   {
    "fieldname": "cane_weight",
    "fieldtype": "Float",
    "label": "Cane Weight",
    "precision": "2",
-   "read_only": 1
-  },
-  {
-   "fieldname": "cb_22",
-   "fieldtype": "Column Break"
+   "read_only": 1,
+   "default": "0"
   },
   {
    "fieldname": "mat_weight",
    "fieldtype": "Float",
    "label": "Mat Weight",
-   "precision": "2"
+   "precision": "2",
+   "default": "0"
   },
   {
    "fieldname": "other_deduction",
    "fieldtype": "Float",
    "label": "Other Deduction",
-   "precision": "2"
+   "precision": "2",
+   "default": "0"
   },
   {
    "fieldname": "deduction_reason",
@@ -291,7 +318,8 @@
    "in_list_view": 1,
    "label": "Net Cane Weight",
    "precision": "2",
-   "read_only": 1
+   "read_only": 1,
+   "default": "0"
   },
   {
    "fieldname": "sb_billing_status",
@@ -369,12 +397,46 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fetch_from": "village.village_name",
+   "fieldname": "village_name",
+   "fieldtype": "Data",
+   "label": "Village Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_tgws",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "contractor_type",
+   "fieldtype": "Select",
+   "label": "Contractor Type",
+   "options": "Tractor\nCutting Contractor"
+  },
+  {
+   "fieldname": "tab_slip",
+   "fieldtype": "Tab Break",
+   "label": "Slip Details"
+  },
+  {
+   "fieldname": "tab_weights",
+   "fieldtype": "Tab Break",
+   "label": "Weights (Kg)"
+  },
+  {
+   "fieldname": "fetch_weight",
+   "fieldtype": "Button",
+   "label": "Fetch Weight",
+   "depends_on": "eval:doc.docstatus==0",
+   "description": "Reads the weighbridge: fills Gross Weight first, then Tare Weight"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-10-31 19:00:00.000000",
+ "modified": "2026-11-02 20:25:44.988368",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Weighment Slip",
@@ -436,12 +498,11 @@
   }
  ],
  "row_format": "Dynamic",
- "search_fields": "vehicle,farmer,farmer_name,village",
+ "search_fields": "vehicle_no,farmer,farmer_name,village",
  "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
  "title_field": "farmer_name",
- "track_changes": 1,
- "default_print_format": "Weighment Slip Print"
+ "track_changes": 1
 }
