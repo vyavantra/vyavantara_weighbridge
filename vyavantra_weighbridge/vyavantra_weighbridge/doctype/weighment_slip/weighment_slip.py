@@ -45,20 +45,34 @@ class WeighmentSlip(Document):
 		if self.vehicle and not self.transport_contractor:
 			self.transport_contractor = frappe.db.get_value("Weighbridge Vehicle", self.vehicle, "contractor")
 		if self.farmer and not self.village:
-			self.village = frappe.db.get_value("Cane Farmer", self.farmer, "village")
-		if self.village and not self.distance:
-			self.distance = frappe.db.get_value("Village Master", self.village, "distance")
+			self.village = frappe.db.get_value("Cane Supplier", self.farmer, "village")
+		if self.village and self.docstatus == 0:
+			self.set_route_details()
+
+	def set_route_details(self):
+		"""Distance and transport rate come from the route (a row of the village's Routes table)."""
+		routes = frappe.get_all(
+			"Village Route", filters={"parent": self.village, "parenttype": "Village Master"},
+			fields=["route", "distance_km", "transport_rate"], order_by="idx",
+		)
+		self.flags.route_rate = 0
+		row = None
+		if self.route:
+			row = next((r for r in routes if r.route == self.route), None)
+			if not row:
+				frappe.throw(_("Route {0} does not belong to village {1}").format(self.route, self.village))
+		elif len(routes) == 1:
+			row = routes[0]
+			self.route = row.route
+		elif len(routes) > 1:
+			frappe.throw(_("Village {0} has more than one route. Please select the route").format(self.village))
+		if row:
+			self.distance = flt(row.distance_km)
+			self.flags.route_rate = flt(row.transport_rate)
 
 	def set_shift(self):
 		t = get_time(self.slip_time)
-		for sh in frappe.get_all(
-			"Weighbridge Shift", filters={"disabled": 0}, fields=["name", "start_time", "end_time"]
-		):
-			start, end = get_time(sh.start_time), get_time(sh.end_time)
-			inside = start <= t < end if start < end else (t >= start or t < end)
-			if inside:
-				self.shift = sh.name
-				return
+		self.shift = shift_for(t) or self.shift
 
 	def fetch_rates(self):
 		master = frappe.db.sql(
@@ -71,19 +85,19 @@ class WeighmentSlip(Document):
 		if not master:
 			frappe.throw(_("No active Cane Rate Master found for {0}").format(self.slip_date))
 		m = master[0]
-		village_rate = flt(frappe.db.get_value("Village Master", self.village, "transport_rate")) if self.village else 0
+		village_rate = flt(self.flags.route_rate)
 		self.cane_rate = flt(m.get(RATE_BY_DELIVERY.get(self.delivery_type, "farmer_cane_rate")))
 		self.transport_rate = village_rate or flt(m.transport_rate)
 		self.todani_rate = flt(m.todani_rate)
-		self.farakt_rate = flt(m.farakt_rate)
+		self.farakt_rate = flt(m.farak_rate)
 		self.harvesting_rate = flt(m.harvesting_machine_rate)
 
 	def validate_contractors(self):
 		for field, allowed in (("transport_contractor", ("Tractor", "Transport")),
-							   ("cutting_contractor", ("Cutting", "Todani"))):
+							   ("cutting_contractor", ("Cutting Contractor", "Todani"))):
 			c = self.get(field)
 			if c:
-				ctype = frappe.db.get_value("Weighbridge Contractor", c, "contractor_type")
+				ctype = frappe.db.get_value("Contractor Master", c, "contractor_type")
 				if ctype not in allowed:
 					frappe.throw(
 						_("{0} must be a {1} contractor").format(self.meta.get_label(field), _(" / ").join(allowed))
@@ -109,6 +123,19 @@ class WeighmentSlip(Document):
 		billed = [self.get(f) for f in BILL_LINKS if self.get(f)]
 		if billed:
 			frappe.throw(_("Weighment Slip is already billed in {0}. Cancel the bill first.").format(", ".join(billed)))
+
+
+def shift_for(t):
+	for sh in frappe.get_all("Weighbridge Shift", filters={"disabled": 0}, fields=["name", "start_time", "end_time"]):
+		start, end = get_time(sh.start_time), get_time(sh.end_time)
+		if (start <= t < end) if start < end else (t >= start or t < end):
+			return sh.name
+
+
+@frappe.whitelist()
+def get_shift(slip_time=None):
+	"""Shift that covers the given time (default: now), used to fill the shift on the slip form."""
+	return shift_for(get_time(slip_time or nowtime()))
 
 
 @frappe.whitelist()

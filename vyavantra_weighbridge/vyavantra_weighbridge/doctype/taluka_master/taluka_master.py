@@ -4,5 +4,5 @@
 from frappe.model.document import Document
 
 
-class WeighbridgeBank(Document):
+class TalukaMaster(Document):
 	pass

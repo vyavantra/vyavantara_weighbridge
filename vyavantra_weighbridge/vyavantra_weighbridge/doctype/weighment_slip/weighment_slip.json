@@ -1,6 +1,7 @@
 {
  "actions": [],
- "creation": "2026-10-31 15:00:00.000000",
+ "autoname": "naming_series:WS-.YYYY.-.#####",
+ "creation": "2026-10-31 15:00:00",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -14,6 +15,7 @@
   "farmer",
   "farmer_name",
   "village",
+  "route",
   "distance",
   "sb_cane_details",
   "cane_type",
@@ -56,34 +58,35 @@
  ],
  "fields": [
   {
+   "default": "Today",
    "fieldname": "slip_date",
    "fieldtype": "Date",
-   "label": "Slip Date",
-   "reqd": 1,
-   "default": "Today",
    "in_list_view": 1,
-   "in_standard_filter": 1
+   "in_standard_filter": 1,
+   "label": "Slip Date",
+   "reqd": 1
   },
   {
    "fieldname": "slip_time",
    "fieldtype": "Time",
    "label": "Slip Time",
-   "no_copy": 1
+   "no_copy": 1,
+   "default": "Now"
   },
   {
    "fieldname": "shift",
    "fieldtype": "Link",
-   "label": "Shift",
-   "options": "Weighbridge Shift",
+   "in_list_view": 1,
    "in_standard_filter": 1,
-   "in_list_view": 1
+   "label": "Shift",
+   "options": "Weighbridge Shift"
   },
   {
    "fieldname": "serial_no",
    "fieldtype": "Int",
    "label": "Serial No.",
-   "read_only": 1,
-   "no_copy": 1
+   "no_copy": 1,
+   "read_only": 1
   },
   {
    "fieldname": "cb_17",
@@ -92,48 +95,55 @@
   {
    "fieldname": "vehicle",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Vehicle",
    "options": "Weighbridge Vehicle",
-   "reqd": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1
+   "reqd": 1
   },
   {
+   "fetch_from": "vehicle.trolley_type",
    "fieldname": "trolley_type",
    "fieldtype": "Data",
    "label": "Trolley Type",
-   "fetch_from": "vehicle.trolley_type",
    "read_only": 1
   },
   {
    "fieldname": "farmer",
    "fieldtype": "Link",
+   "in_standard_filter": 1,
    "label": "Farmer / Member",
-   "options": "Cane Farmer",
-   "reqd": 1,
-   "in_standard_filter": 1
+   "options": "Cane Supplier",
+   "reqd": 1
   },
   {
+   "fetch_from": "farmer.farmer_name",
    "fieldname": "farmer_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Farmer Name",
-   "fetch_from": "farmer.farmer_name",
-   "read_only": 1,
-   "in_list_view": 1
+   "read_only": 1
   },
   {
+   "fetch_from": "farmer.village",
    "fieldname": "village",
    "fieldtype": "Link",
+   "in_standard_filter": 1,
    "label": "Village",
-   "options": "Village Master",
-   "fetch_from": "farmer.village",
-   "in_standard_filter": 1
+   "options": "Village Master"
   },
   {
+   "fieldname": "route",
+   "fieldtype": "Link",
+   "label": "Route",
+   "options": "Route Master"
+  },
+  {
+   "fetch_from": "village.distance",
    "fieldname": "distance",
    "fieldtype": "Float",
    "label": "Distance (Km)",
-   "fetch_from": "village.distance"
+   "read_only": 1
   },
   {
    "fieldname": "sb_cane_details",
@@ -148,21 +158,22 @@
   },
   {
    "fieldname": "variety",
-   "fieldtype": "Data",
-   "label": "Variety"
+   "fieldtype": "Link",
+   "label": "Variety",
+   "options": "Cane Variety"
   },
   {
    "fieldname": "cb_18",
    "fieldtype": "Column Break"
   },
   {
+   "default": "Farmer Cane",
    "fieldname": "delivery_type",
    "fieldtype": "Select",
+   "in_standard_filter": 1,
    "label": "Delivery Type",
    "options": "Farmer Cane\nFarm Delivery\nGate Cane\nHarvesting Machine",
-   "default": "Farmer Cane",
-   "reqd": 1,
-   "in_standard_filter": 1
+   "reqd": 1
   },
   {
    "fieldname": "sb_contractors_agent",
@@ -173,7 +184,7 @@
    "fieldname": "transport_contractor",
    "fieldtype": "Link",
    "label": "Tractor / Transport Contractor",
-   "options": "Weighbridge Contractor"
+   "options": "Contractor Master"
   },
   {
    "fieldname": "cb_19",
@@ -183,7 +194,7 @@
    "fieldname": "cutting_contractor",
    "fieldtype": "Link",
    "label": "Cutting / Todani Contractor",
-   "options": "Weighbridge Contractor"
+   "options": "Contractor Master"
   },
   {
    "fieldname": "cb_20",
@@ -282,13 +293,13 @@
    "label": "Deduction Reason"
   },
   {
+   "bold": 1,
    "fieldname": "net_cane_weight",
    "fieldtype": "Float",
+   "in_list_view": 1,
    "label": "Net Cane Weight",
    "precision": "2",
-   "read_only": 1,
-   "bold": 1,
-   "in_list_view": 1
+   "read_only": 1
   },
   {
    "fieldname": "sb_billing_status",
@@ -299,17 +310,17 @@
    "fieldname": "farmer_bill",
    "fieldtype": "Link",
    "label": "Farmer Bill",
+   "no_copy": 1,
    "options": "Farmer Bill",
-   "read_only": 1,
-   "no_copy": 1
+   "read_only": 1
   },
   {
    "fieldname": "tractor_bill",
    "fieldtype": "Link",
    "label": "Tractor Bill",
+   "no_copy": 1,
    "options": "Tractor Contractor Bill",
-   "read_only": 1,
-   "no_copy": 1
+   "read_only": 1
   },
   {
    "fieldname": "cb_23",
@@ -319,17 +330,17 @@
    "fieldname": "todani_bill",
    "fieldtype": "Link",
    "label": "Todani Bill",
+   "no_copy": 1,
    "options": "Todani Contractor Bill",
-   "read_only": 1,
-   "no_copy": 1
+   "read_only": 1
   },
   {
    "fieldname": "agent_bill",
    "fieldtype": "Link",
    "label": "Agent Bill",
+   "no_copy": 1,
    "options": "Agent Bill",
-   "read_only": 1,
-   "no_copy": 1
+   "read_only": 1
   },
   {
    "fieldname": "sb_remarks",
@@ -337,12 +348,12 @@
    "label": "Remarks"
   },
   {
+   "depends_on": "eval:doc.amended_from",
+   "description": "Required when re-weighing / correcting",
    "fieldname": "correction_reason",
    "fieldtype": "Small Text",
    "label": "Correction Reason",
-   "depends_on": "eval:doc.amended_from",
-   "mandatory_depends_on": "eval:doc.amended_from",
-   "description": "Required when re-weighing / correcting"
+   "mandatory_depends_on": "eval:doc.amended_from"
   },
   {
    "fieldname": "remarks",
@@ -350,95 +361,95 @@
    "label": "Remarks"
   },
   {
+   "default": "WS-.YYYY.-.#####",
    "fieldname": "naming_series",
    "fieldtype": "Select",
-   "label": "Naming Series",
-   "options": "WS-.YYYY.-.#####",
    "hidden": 1,
-   "default": "WS-.YYYY.-.#####"
+   "label": "Naming Series",
+   "options": "WS-.YYYY.-.#####"
   },
   {
    "fieldname": "amended_from",
    "fieldtype": "Link",
    "label": "Amended From",
-   "options": "Weighment Slip",
    "no_copy": 1,
+   "options": "Weighment Slip",
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
   }
  ],
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2026-10-31 15:00:00.000000",
+ "modified": "2026-11-02 10:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Weighment Slip",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
    "role": "System Manager",
-   "read": 1,
-   "create": 1,
-   "write": 1,
-   "delete": 1,
-   "export": 1,
-   "print": 1,
-   "email": 1,
-   "report": 1,
    "share": 1,
    "submit": 1,
-   "cancel": 1,
-   "amend": 1
+   "write": 1
   },
   {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
    "role": "Weighbridge Manager",
-   "read": 1,
-   "create": 1,
-   "write": 1,
-   "delete": 1,
-   "export": 1,
-   "print": 1,
-   "email": 1,
-   "report": 1,
    "share": 1,
    "submit": 1,
-   "cancel": 1,
-   "amend": 1
+   "write": 1
   },
   {
-   "role": "Weighbridge User",
-   "read": 1,
    "create": 1,
-   "write": 1,
-   "submit": 1,
-   "print": 1,
-   "report": 1,
-   "export": 1
-  },
-  {
-   "role": "Accounts Manager",
-   "read": 1,
-   "report": 1,
    "export": 1,
-   "print": 1
-  },
-  {
-   "role": "Accounts User",
+   "print": 1,
    "read": 1,
    "report": 1,
-   "print": 1
+   "role": "Weighbridge User",
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager"
+  },
+  {
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User"
   }
  ],
+ "row_format": "Dynamic",
+ "search_fields": "vehicle,farmer,farmer_name,village",
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1,
- "autoname": "naming_series:WS-.YYYY.-.#####",
- "naming_rule": "By \"Naming Series\" field",
  "title_field": "farmer_name",
- "show_title_field_in_link": 1,
- "search_fields": "vehicle,farmer,farmer_name,village",
- "is_submittable": 1,
- "quick_entry": 0
+ "track_changes": 1,
+ "default_print_format": "Weighment Slip Print"
 }

@@ -115,7 +115,7 @@
    "fieldname": "bank",
    "fieldtype": "Link",
    "label": "Bank",
-   "options": "Weighbridge Bank",
+   "options": "Bank",
    "depends_on": "eval:doc.mode!='Cash'",
    "mandatory_depends_on": "eval:doc.mode=='Cheque'"
   },

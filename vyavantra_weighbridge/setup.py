@@ -34,8 +34,14 @@ def ensure_roles():
 def after_migrate_setup():
 	ensure_roles()
 	create_shifts()
+	ensure_bank_fields()
+	seed_varieties()
+	seed_report_heading()
+	create_message_templates()
 	create_dashboard()
-	extend_workspace()
+	rebuild_workspace()
+	create_dashboard_workspace()
+	set_default_print_formats()
 	frappe.db.commit()
 
 
@@ -130,12 +136,17 @@ SECTIONS = (
 	)),
 	("Weighbridge Masters", (
 		("Village Master", "DocType", "Village Master", "List"),
-		("Cane Farmer", "DocType", "Cane Farmer", "List"),
+		("Taluka Master", "DocType", "Taluka Master", "List"),
+		("District Master", "DocType", "District Master", "List"),
+		("Distance Master", "DocType", "Distance Master", "List"),
+		("Route Master", "DocType", "Route Master", "List"),
+		("Cane Supplier", "DocType", "Cane Supplier", "List"),
+		("Cane Variety", "DocType", "Cane Variety", "List"),
 		("Cane Rate Master", "DocType", "Cane Rate Master", "List"),
-		("Contractor Master", "DocType", "Weighbridge Contractor", "List"),
+		("Contractor Master", "DocType", "Contractor Master", "List"),
 		("Vehicle Master", "DocType", "Weighbridge Vehicle", "List"),
 		("Agent Master", "DocType", "Cane Agent", "List"),
-		("Bank Master", "DocType", "Weighbridge Bank", "List"),
+		("Bank", "DocType", "Bank", "List"),
 		("Shift Master", "DocType", "Weighbridge Shift", "List"),
 		("Weighbridge Settings", "DocType", "Weighbridge Settings", "List"),
 	)),
@@ -145,6 +156,9 @@ SECTIONS = (
 		("Bill Outstanding Report", "Report", "Bill Outstanding Report", None),
 		("Agent Commission Report", "Report", "Agent Commission Report", None),
 		("Payment Register", "Report", "Payment Register", None),
+		("Shift Wise Report", "Report", "Shift Wise Report", None),
+		("Datewise Report", "Report", "Datewise Report", None),
+		("Datewise Crushing Report", "Report", "Datewise Crushing Report", None),
 	)),
 )
 
@@ -154,26 +168,15 @@ def extend_workspace():
 		return
 	ws = frappe.get_doc("Workspace", WORKSPACE)
 	content = json.loads(ws.content or "[]")
-	if any(b.get("id") == "wbreq_hdr_dash" for b in content):
+	if any(str(b.get("id", "")).startswith("wbreq_hdr0") for b in content):
 		return  # already extended
 	existing = {s.label for s in ws.shortcuts}
 
-	blocks = [{"id": "wbreq_hdr_dash", "type": "header",
-			   "data": {"text": '<span class="h4"><b>Weighbridge Dashboard</b></span>', "col": 12}}]
-	for i, (label, *_rest) in enumerate(CARDS):
-		if frappe.db.exists("Number Card", label):
-			if not any(c.label == label for c in ws.number_cards):
-				ws.append("number_cards", {"label": label, "number_card_name": label})
-			blocks.append({"id": f"wbreq_nc{i}", "type": "number_card", "data": {"number_card_name": label, "col": 4}})
-	for i, label in enumerate(("Daily Cane Weight (Kg)", "Village-wise Cane Supply (Kg)")):
-		if frappe.db.exists("Dashboard Chart", label):
-			if not any(c.chart_name == label for c in ws.charts):
-				ws.append("charts", {"label": label, "chart_name": label})
-			blocks.append({"id": f"wbreq_ch{i}", "type": "chart", "data": {"chart_name": label, "col": 6}})
+	blocks = []
 
 	for si, (title, items) in enumerate(SECTIONS):
-		blocks.append({"id": f"wbreq_hdr{si}", "type": "header",
-					   "data": {"text": f'<span class="h4"><b>{title}</b></span>', "col": 12}})
+		blocks.append({"id": f"wbreq_hdr{si}", "type": "custom_block",
+					   "data": {"custom_block_name": divider_block(title), "col": 12}})
 		for ii, (label, kind, target, view) in enumerate(items):
 			exists = frappe.db.exists("DocType" if kind == "DocType" else "Report", target)
 			if not exists:
@@ -186,6 +189,244 @@ def extend_workspace():
 			blocks.append({"id": f"wbreq_sc{si}_{ii}", "type": "shortcut", "data": {"shortcut_name": label, "col": 3}})
 		blocks.append({"id": f"wbreq_sp{si}", "type": "spacer", "data": {"col": 12}})
 
-	ws.content = json.dumps(content + blocks)
+	banner = [{"id": "wbreq_banner", "type": "custom_block", "data": {"custom_block_name": banner_block(), "col": 12}}]
+	ws.content = json.dumps(banner + content + blocks)
+	sync_custom_blocks(ws)
 	ws.flags.ignore_links = True
 	ws.save(ignore_permissions=True)
+
+
+OLD_SHORTCUT_LABELS = {"Cane Farmer", "Bank Master"}
+VARIETIES = ("86032", "265", "10001", "15012", "671", "9805", "8005", "419", "0265")
+
+
+def ensure_bank_fields():
+	"""IFSC code and address on the core Bank doctype (the weighbridge uses Bank, not its own bank master)."""
+	from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
+
+	create_custom_fields({"Bank": [
+		{"fieldname": "ifsc_code", "fieldtype": "Data", "label": "IFSC Code", "insert_after": "bank_name",
+		 "in_list_view": 1},
+		{"fieldname": "bank_address", "fieldtype": "Small Text", "label": "Address", "insert_after": "ifsc_code"},
+	]}, ignore_validate=True)
+
+
+def seed_varieties():
+	if not frappe.db.exists("DocType", "Cane Variety"):
+		return
+	for v in VARIETIES:
+		if not frappe.db.exists("Cane Variety", v):
+			frappe.get_doc({"doctype": "Cane Variety", "variety_name": v}).insert(ignore_permissions=True)
+
+
+def rebuild_workspace():
+	"""Re-create the blocks and shortcuts this module added; the original workspace content is left alone."""
+	if not frappe.db.exists("Workspace", WORKSPACE):
+		return
+	ws = frappe.get_doc("Workspace", WORKSPACE)
+	ours = {label for _t, items in SECTIONS for label, *_ in items} | OLD_SHORTCUT_LABELS
+	ws.content = json.dumps(restyle_headers([b for b in json.loads(ws.content or "[]") if not str(b.get("id", "")).startswith("wbreq_")]))
+	ws.shortcuts = [s for s in ws.shortcuts if s.label not in ours]
+	ws.number_cards = []
+	ws.charts = []
+	ws.flags.ignore_links = True
+	ws.save(ignore_permissions=True)
+	extend_workspace()
+
+
+def seed_report_heading():
+	"""Default heading printed on the weighbridge reports; editable in Weighbridge Settings."""
+	s = frappe.get_doc("Weighbridge Settings")
+	if s.report_company_name == "Diamond Agro Industry":
+		s.report_company_name = "Rajdatta Agro Industry"
+		s.flags.ignore_mandatory = True
+		s.save(ignore_permissions=True)
+		return
+	if s.report_company_name or s.report_address:
+		return
+	s.report_company_name = "Rajdatta Agro Industry"
+	s.report_address = "GAT NO 584, AP POST APSHINGE (RAHIMATPUR) TQ.KOREGAON DIST. SATARA, MAHARASHTRA 415501"
+	s.report_phone = "9423866719"
+	s.flags.ignore_mandatory = True
+	s.save(ignore_permissions=True)
+
+
+MARATHI_TEMPLATES = {
+	"Weighment Slip - Marathi": (
+		"वजन पावती {{ doc.name }}",
+		"<p>नमस्कार {{ doc.farmer_name }},</p>"
+		"<p>आपल्या वाहन क्र. <b>{{ doc.vehicle }}</b> चे वजन पावती क्र. <b>{{ doc.name }}</b> "
+		"दिनांक {{ frappe.utils.formatdate(doc.slip_date, 'dd/MM/yyyy') }} रोजी नोंदविण्यात आले आहे.</p>"
+		"<p>एकूण (भरलेले) वजन: {{ '%.3f' % ((doc.gross_weight or 0) / 1000) }} मे. टन<br>"
+		"वाहनाचे (रिकामे) वजन: {{ '%.3f' % ((doc.tare_weight or 0) / 1000) }} मे. टन<br>"
+		"<b>निव्वळ ऊस वजन: {{ '%.3f' % ((doc.net_cane_weight or 0) / 1000) }} मे. टन</b></p>"
+		"<p>धन्यवाद.</p>",
+	),
+	"Farmer Bill - Marathi": (
+		"ऊस बिल {{ doc.name }}",
+		"<p>नमस्कार {{ doc.farmer_name }},</p>"
+		"<p>आपले ऊस बिल क्र. <b>{{ doc.name }}</b> दिनांक {{ frappe.utils.formatdate(doc.bill_date, 'dd/MM/yyyy') }} "
+		"रोजी तयार झाले आहे.</p>"
+		"<p>कालावधी: {{ frappe.utils.formatdate(doc.from_date, 'dd/MM/yyyy') }} ते "
+		"{{ frappe.utils.formatdate(doc.to_date, 'dd/MM/yyyy') }}<br>"
+		"एकूण ऊस: {{ '%.3f' % (doc.total_quantity or 0) }} मे. टन<br>"
+		"एकूण रक्कम: ₹ {{ '%.2f' % (doc.total_amount or 0) }}<br>"
+		"एकूण कपात: ₹ {{ '%.2f' % (doc.total_deductions or 0) }}<br>"
+		"<b>देय रक्कम: ₹ {{ '%.2f' % (doc.net_payable or 0) }}</b></p>"
+		"<p>धन्यवाद.</p>",
+	),
+	"Weighbridge Payment - Marathi": (
+		"पेमेंट पावती {{ doc.name }}",
+		"<p>नमस्कार {{ doc.party_name }},</p>"
+		"<p>बिल क्र. <b>{{ doc.bill }}</b> साठी ₹ <b>{{ '%.2f' % (doc.amount or 0) }}</b> चे पेमेंट "
+		"({{ doc.mode }}) दिनांक {{ frappe.utils.formatdate(doc.payment_date, 'dd/MM/yyyy') }} रोजी अदा करण्यात आले आहे.</p>"
+		"{% if doc.cheque_no %}<p>चेक क्र.: {{ doc.cheque_no }}</p>{% endif %}"
+		"{% if doc.reference_no %}<p>संदर्भ क्र.: {{ doc.reference_no }}</p>{% endif %}"
+		"<p>धन्यवाद.</p>",
+	),
+}
+
+
+def create_message_templates():
+	"""Marathi message templates (Email Template) for the weighment slip, farmer bill and payment."""
+	for name, (subject, body) in MARATHI_TEMPLATES.items():
+		if frappe.db.exists("Email Template", name):
+			continue
+		frappe.get_doc({"doctype": "Email Template", "name": name, "subject": subject, "use_html": 1,
+						"response_html": body, "response": body}).insert(ignore_permissions=True)
+
+
+# ---------------------------------------------------------------------------- Dashboard workspace
+DASH = "Dashboard"
+CHARTS = ("Daily Cane Weight (Kg)", "Village-wise Cane Supply (Kg)")
+# doctype -> print format used by the Print button and the PDF download
+PRINT_FORMATS = {
+	"Weighment Slip": "Weighment Slip Print",
+	"Weighbridge Payment": "Cheque Issue Voucher",
+	"Diesel Issue Entry": "Diesel Issue Slip",
+	"Farmer Bill": "Farmer Bill Print",
+	"Tractor Contractor Bill": "Tractor Contractor Bill Print",
+	"Todani Contractor Bill": "Todani Contractor Bill Print",
+	"Agent Bill": "Agent Bill Print",
+	"Weighbridge Advance": "Weighbridge Advance Print",
+}
+
+
+def _tpl(name):
+	with open(frappe.get_app_path("vyavantra_weighbridge", "templates", "dashboard", name), encoding="utf-8") as f:
+		return f.read()
+
+
+def create_dashboard_workspace():
+	"""Custom HTML Block (KPIs, trend, shifts, villages, recent slips) shown on its own first workspace."""
+	block = "Weighbridge Dashboard"
+	vals = {"html": _tpl("dash.html"), "style": _tpl("dash.css"), "script": _tpl("dash.js"), "private": 0}
+	divider_block("Interactive Charts")
+	if frappe.db.exists("Custom HTML Block", block):
+		doc = frappe.get_doc("Custom HTML Block", block)
+		doc.update(vals)
+		doc.save(ignore_permissions=True)
+	else:
+		frappe.get_doc({"doctype": "Custom HTML Block", "name": block, **vals}).insert(ignore_permissions=True)
+
+	content = [
+		{"id": "dash_main", "type": "custom_block", "data": {"custom_block_name": block, "col": 12}},
+		{"id": "dash_hdr", "type": "custom_block", "data": {"custom_block_name": divider_block("Interactive Charts"), "col": 12}},
+	]
+	charts = []
+	for i, label in enumerate(CHARTS):
+		if frappe.db.exists("Dashboard Chart", label):
+			charts.append({"label": label, "chart_name": label})
+			content.append({"id": f"dash_ch{i}", "type": "chart", "data": {"chart_name": label, "col": 6}})
+	content.append({"id": "dash_sp", "type": "spacer", "data": {"col": 12}})
+
+	if frappe.db.exists("Workspace", DASH):
+		ws = frappe.get_doc("Workspace", DASH)
+	else:
+		ws = frappe.new_doc("Workspace")
+		ws.name = DASH
+	ws.update({"label": DASH, "title": DASH, "public": 1, "is_hidden": 0, "icon": "dashboard", "indicator_color": "blue",
+			   "module": MODULE, "sequence_id": 0.5, "description": "Weighbridge operations at a glance",
+			   "content": json.dumps(content)})
+	sync_custom_blocks(ws, content)
+	ws.charts = []
+	for c in charts:
+		ws.append("charts", c)
+	ws.flags.ignore_links = True
+	ws.save(ignore_permissions=True)
+
+
+def set_default_print_formats():
+	"""Print button / PDF of these documents use the custom print format by default."""
+	for doctype, fmt in PRINT_FORMATS.items():
+		if not (frappe.db.exists("DocType", doctype) and frappe.db.exists("Print Format", fmt)):
+			continue
+		name = f"{doctype}-main-default_print_format"
+		if frappe.db.exists("Property Setter", name):
+			frappe.db.set_value("Property Setter", name, "value", fmt)
+		else:
+			frappe.make_property_setter({"doctype": doctype, "doctype_or_field": "DocType", "property": "default_print_format",
+										 "value": fmt, "property_type": "Data"}, ignore_validate=True)
+
+
+# ---------------------------------------------------------------------------- shared look: section dividers and banner
+DIVIDERS = {
+	"Diesel Management": ("\u26FD", "OPERATIONS"), "Master Data": ("\u25A6", "CONFIGURATION"),
+	"Weighment": ("\u2696", "OPERATIONS"), "Billing": ("\u25A4", "BILLS"),
+	"Accounting & Payments": ("\u20B9", "ACCOUNTS"), "Weighbridge Masters": ("\u25A6", "CONFIGURATION"),
+	"Weighbridge Reports": ("\u25A4", "REPORTS"), "Interactive Charts": ("\u25D4", "ANALYTICS"),
+}
+
+
+def _upsert_block(name, html, style, script=""):
+	vals = {"html": html, "style": style, "script": script, "private": 0}
+	if frappe.db.exists("Custom HTML Block", name):
+		doc = frappe.get_doc("Custom HTML Block", name)
+		doc.update(vals)
+		doc.save(ignore_permissions=True)
+	else:
+		frappe.get_doc({"doctype": "Custom HTML Block", "name": name, **vals}).insert(ignore_permissions=True)
+	return name
+
+
+def divider_block(title):
+	"""Same section heading as the Rajdatta Agro Industry workspace (line - title chip - line)."""
+	icon, status = DIVIDERS.get(title, ("\u25A6", "WEIGHBRIDGE"))
+	title_html = frappe.utils.escape_html(title).upper()
+	html = (f'<div class="wbs"><span class="line"></span><div class="sh"><span class="ic">{icon}</span><b>{title_html}</b>'
+			f'<em><i class="led"></i>{status}</em></div><span class="line r"></span></div>')
+	return _upsert_block(f"WB Divider {title}", html, _tpl("divider.css"))
+
+
+def banner_block():
+	html = ('<div class="wbb"><div><h2>Vyavantra Weighbridge</h2><p>Weighment, billing, payments, masters and reports</p></div>'
+			'<div class="acts"><button class="b solid" data-new="Weighment Slip">+ New Weighment Slip</button>'
+			'<button class="b" data-go="Workspaces/Dashboard">Open Dashboard</button></div></div>')
+	return _upsert_block("WB Banner Weighbridge", html, _tpl("banner.css"), _tpl("banner.js"))
+
+
+def restyle_headers(content):
+	"""The original plain headers (Diesel Management, Master Data...) take the shared divider look."""
+	out = []
+	for b in content:
+		if b.get("type") == "header":
+			title = frappe.utils.strip_html(b["data"].get("text", "")).strip()
+			if title in DIVIDERS:
+				b = {"id": b["id"], "type": "custom_block", "data": {"custom_block_name": divider_block(title), "col": 12}}
+		out.append(b)
+	return out
+
+
+def sync_custom_blocks(ws, content=None):
+	"""Keep the workspace's custom block rows equal to the custom_block entries in its content."""
+	content = content if content is not None else json.loads(ws.content or "[]")
+	names = []
+	for b in content:
+		n = b.get("data", {}).get("custom_block_name")
+		if b.get("type") == "custom_block" and n and n not in names:
+			names.append(n)
+	have = {r.custom_block_name for r in ws.custom_blocks}
+	ws.custom_blocks = [r for r in ws.custom_blocks if r.custom_block_name in names or not r.custom_block_name.startswith("WB ")]
+	for n in names:
+		if n not in {r.custom_block_name for r in ws.custom_blocks}:
+			ws.append("custom_blocks", {"custom_block_name": n, "label": n})

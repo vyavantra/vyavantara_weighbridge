@@ -72,13 +72,13 @@
   {
    "fieldname": "farakt_rate",
    "fieldtype": "Currency",
-   "label": "Farakt Rate",
+   "label": "Farak Rate",
    "hidden": 0
   },
   {
    "fieldname": "farakt_amount",
    "fieldtype": "Currency",
-   "label": "Farakt Amount",
+   "label": "Farak Amount",
    "read_only": 1
   }
  ],

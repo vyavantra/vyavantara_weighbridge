@@ -12,23 +12,27 @@
   "sb_rates_per_ton",
   "farmer_cane_rate",
   "farm_delivery_rate",
+  "farak_bill_rate_farm_delivery",
   "gate_cane_rate",
+  "farak_bill_rate_gate_cane",
   "harvesting_machine_rate",
+  "farak_bill_rate_harvesting",
   "cb_6",
   "transport_rate",
   "todani_rate",
-  "farakt_rate",
+  "farak_rate",
+  "farak_bill_pct_harvester_transporter",
   "naming_series"
  ],
  "fields": [
   {
    "fieldname": "season",
-   "fieldtype": "Data",
-   "label": "Season",
+   "fieldtype": "Link",
+   "label": "Season (Fiscal Year)",
    "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "description": "e.g. 2026-27"
+   "options": "Fiscal Year"
   },
   {
    "fieldname": "effective_from",
@@ -68,14 +72,29 @@
    "label": "Farm Delivery Rate"
   },
   {
+   "fieldname": "farak_bill_rate_farm_delivery",
+   "fieldtype": "Currency",
+   "label": "Farm Delivery Farak Bill Rate (Rs.)"
+  },
+  {
    "fieldname": "gate_cane_rate",
    "fieldtype": "Currency",
    "label": "Gate Cane Rate"
   },
   {
+   "fieldname": "farak_bill_rate_gate_cane",
+   "fieldtype": "Currency",
+   "label": "Gate Cane Farak Bill Rate (Rs.)"
+  },
+  {
    "fieldname": "harvesting_machine_rate",
    "fieldtype": "Currency",
    "label": "Harvesting Machine Rate"
+  },
+  {
+   "fieldname": "farak_bill_rate_harvesting",
+   "fieldtype": "Currency",
+   "label": "Harvesting Machine Farak Bill Rate (Rs.)"
   },
   {
    "fieldname": "cb_6",
@@ -93,9 +112,14 @@
    "label": "Todani Rate"
   },
   {
-   "fieldname": "farakt_rate",
+   "fieldname": "farak_rate",
    "fieldtype": "Currency",
-   "label": "Farakt Rate"
+   "label": "Farak Rate"
+  },
+  {
+   "fieldname": "farak_bill_pct_harvester_transporter",
+   "fieldtype": "Percent",
+   "label": "Farak Bill Rate for Harvester and Transporter (%)"
   },
   {
    "fieldname": "naming_series",
@@ -108,7 +132,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-31 15:00:00.000000",
+ "modified": "2026-11-02 10:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Cane Rate Master",

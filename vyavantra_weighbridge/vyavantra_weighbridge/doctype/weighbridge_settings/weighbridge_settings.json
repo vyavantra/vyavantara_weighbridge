@@ -14,7 +14,12 @@
   "indicator_url",
   "cb_16",
   "indicator_serial_port",
-  "indicator_baud_rate"
+  "indicator_baud_rate",
+  "sb_report_heading",
+  "report_company_name",
+  "report_phone",
+  "cb_rh",
+  "report_address"
  ],
  "fields": [
   {
@@ -77,11 +82,35 @@
    "fieldtype": "Int",
    "label": "Indicator Baud Rate",
    "default": "9600"
+  },
+  {
+   "fieldname": "sb_report_heading",
+   "fieldtype": "Section Break",
+   "label": "Report Heading"
+  },
+  {
+   "fieldname": "report_company_name",
+   "fieldtype": "Data",
+   "label": "Company Name (reports)"
+  },
+  {
+   "fieldname": "report_phone",
+   "fieldtype": "Data",
+   "label": "Phone"
+  },
+  {
+   "fieldname": "cb_rh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "report_address",
+   "fieldtype": "Small Text",
+   "label": "Address"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-31 15:00:00.000000",
+ "modified": "2026-11-02 10:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Weighbridge Settings",

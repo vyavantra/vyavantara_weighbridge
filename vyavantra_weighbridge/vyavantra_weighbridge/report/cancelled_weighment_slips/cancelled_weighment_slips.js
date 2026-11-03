@@ -5,7 +5,7 @@ frappe.query_reports["Cancelled Weighment Slips"] = {
 	filters: [
 		{ fieldname: "from_date", label: __("From Date"), fieldtype: "Date", reqd: 1, default: frappe.datetime.add_months(frappe.datetime.get_today(), -1) },
 		{ fieldname: "to_date", label: __("To Date"), fieldtype: "Date", reqd: 1, default: frappe.datetime.get_today() },
-		{ fieldname: "farmer", label: __("Farmer"), fieldtype: "Link", options: "Cane Farmer" },
+		{ fieldname: "farmer", label: __("Cane Supplier"), fieldtype: "Link", options: "Cane Supplier" },
 		{ fieldname: "village", label: __("Village"), fieldtype: "Link", options: "Village Master" },
 		{ fieldname: "vehicle", label: __("Vehicle"), fieldtype: "Link", options: "Weighbridge Vehicle" },
 		{ fieldname: "slip_no", label: __("Slip / Serial No."), fieldtype: "Data" },

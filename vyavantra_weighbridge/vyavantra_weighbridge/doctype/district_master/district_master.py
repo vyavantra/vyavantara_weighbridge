@@ -4,5 +4,5 @@
 from frappe.model.document import Document
 
 
-class WeighbridgeContractor(Document):
+class DistrictMaster(Document):
 	pass

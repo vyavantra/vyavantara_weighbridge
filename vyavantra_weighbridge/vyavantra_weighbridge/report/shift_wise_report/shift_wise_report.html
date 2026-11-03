@@ -1,0 +1,40 @@
+<style>
+.wbr { font-family: "Noto Sans Devanagari", "Lohit Devanagari", "DejaVu Sans", Arial, sans-serif; font-size: 11px; color: #000; }
+.wbr .co { text-align: center; font-weight: bold; font-size: 14px; text-transform: uppercase; }
+.wbr .ad { text-align: center; font-size: 11px; margin-top: 2px; }
+.wbr .ti { text-align: center; font-weight: bold; font-size: 12px; margin: 8px 0 2px 0; text-transform: uppercase; }
+.wbr table { width: 100%; margin-left: auto; margin-right: auto; border-collapse: collapse; page-break-inside: auto; }
+.wbr thead { display: table-header-group; }
+.wbr tr { page-break-inside: avoid; }
+.wbr th, .wbr td { border: 1px solid #000; padding: 3px 5px; vertical-align: middle; }
+.wbr th { text-align: center; font-weight: bold; background: #fff; }
+.wbr td.n { text-align: right; white-space: nowrap; }
+.wbr td.c { text-align: center; }
+.wbr tr.tot td { font-weight: bold; }
+.wbr tr.dh td { border-left: none; border-right: none; font-weight: bold; text-align: center; }
+.wbr tr.st td { font-weight: bold; border-left: none; border-right: none; }
+</style>
+<div id="footer-html" class="visible-pdf"><p class="text-center small page-number visible-pdf" style="text-align: center; width: 100%;">Page <span class="page"></span> of <span class="topage"></span></p></div>
+{% var h = (report && report.wb_heading) || {}; var tz = function(v) { return (parseFloat(v) || 0).toFixed(3); }; var ds = function(s) { if (!s) { return ""; } var p = String(s).split("-"); return p.length === 3 ? p[2] + "/" + p[1] + "/" + p[0] : s; }; var today = ds(frappe.datetime.get_today()); %}
+<div class="wbr">
+<div class="co">{{ h.company || "" }}</div>
+<div class="ad">{{ h.address || "" }}</div>
+<div class="ad">{% if (h.phone) { %}PH.NO.: {{ h.phone }}{% } %}</div>
+
+<table style="width: 100%; margin: 10px 0 6px 0;"><tr><td style="border: none; text-align: left;"><b>Report Date</b> &nbsp; {{ ds(filters.report_date) }}</td><td style="border: none; text-align: right;"><b>Print Date</b> &nbsp; {{ today }}</td></tr></table>
+<div class="ti">SHIFTWISE REPORT</div>
+{% var groups = ["First Shift", "Second Shift", "Third Shift", "Today", "Till Yesterday", "To Date"]; var keys = ["s0", "s1", "s2", "today", "yest", "todate"]; %}
+<table>
+<thead>
+<tr><th rowspan="2">Vehicle Type</th>{% for (var i = 0; i < groups.length; i++) { %}<th colspan="2">{{ groups[i] }}</th>{% } %}</tr>
+<tr>{% for (var i = 0; i < groups.length; i++) { %}<th>Nos</th><th>Tonnage</th>{% } %}</tr>
+</thead>
+<tbody>
+{% for (var r = 0; r < data.length; r++) { var row = data[r]; %}
+<tr class="{%= r === data.length - 1 ? "tot" : "" %}"><td>{{ row.vehicle_type }}</td>
+{% for (var i = 0; i < keys.length; i++) { %}<td class="n">{{ row[keys[i] + "_nos"] || 0 }}</td><td class="n">{{ tz(row[keys[i] + "_ton"]) }}</td>{% } %}
+</tr>
+{% } %}
+</tbody>
+</table>
+</div>

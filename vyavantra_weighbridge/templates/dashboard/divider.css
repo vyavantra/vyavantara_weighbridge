@@ -1,0 +1,11 @@
+:host { display: block; }
+.wbs { display: flex; align-items: center; gap: 16px; width: 100%; margin: 22px 0 16px; box-sizing: border-box; }
+.wbs .line { height: 2px; flex: 1; min-width: 12px; border-radius: 4px; background: linear-gradient(90deg, transparent, #cbd5e1 25%, #64748b 75%, #2563eb); }
+.wbs .line.r { transform: scaleX(-1); }
+.wbs .sh { display: flex; align-items: center; gap: 12px; padding: 11px 18px; border: 1px solid #cbd5e1; border-left: 4px solid #2563eb; border-radius: 7px;
+  background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%); box-shadow: 0 3px 10px rgba(15, 23, 42, 0.06); }
+.wbs .ic { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; flex: none; border-radius: 6px; background: #e2e8f0; color: #1d4ed8; font-size: 20px; }
+.wbs b { font-size: 13px; font-weight: 800; letter-spacing: 1.15px; color: #0f172a; white-space: nowrap; }
+.wbs em { font-style: normal; display: flex; align-items: center; gap: 6px; margin-left: 6px; padding-left: 13px; border-left: 1px solid #cbd5e1; font-size: 9px; font-weight: 700; letter-spacing: .8px; color: #475569; white-space: nowrap; }
+.wbs .led { width: 7px; height: 7px; border-radius: 50%; background: #16a34a; box-shadow: 0 0 0 3px #dcfce7; display: inline-block; }
+@media (max-width: 600px) { .wbs { gap: 7px; } .wbs .sh { padding: 8px 10px; gap: 8px; } .wbs .ic { width: 28px; height: 28px; } .wbs b { font-size: 11px; letter-spacing: .5px; } .wbs em { display: none; } }

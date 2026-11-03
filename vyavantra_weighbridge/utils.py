@@ -31,8 +31,12 @@ def _below_1000(n: int) -> str:
 def _integer_words(n: int) -> str:
 	if n < 1000:
 		return _below_1000(n)
+	if n >= 10000000:
+		cr, rest = divmod(n, 10000000)
+		return f"{_integer_words(cr)} कोटी" + (f" {_integer_words(rest)}" if rest else "")
 	if n >= 100000:
-		raise ValueError("marathi_number_words supports values below 1,00,000")
+		lk, rest = divmod(n, 100000)
+		return f"{_UNITS[lk]} लाख" + (f" {_integer_words(rest)}" if rest else "")
 	th, rest = divmod(n, 1000)
 	return f"{_UNITS[th]} हजार" + (f" {_below_1000(rest)}" if rest else "")
 
@@ -40,7 +44,7 @@ def _integer_words(n: int) -> str:
 def marathi_number_words(value, unit: str = "") -> str:
 	"""30 -> "तीस", 30.5 -> "तीस पूर्णांक पाच दशांश", 125 -> "एकशे पंचवीस".
 
-	`unit` is appended as-is (for example "लिटर"). Up to 2 decimal places, below 1,00,000.
+	`unit` is appended as-is (for example "लिटर"). Up to 2 decimal places.
 	"""
 	if value in (None, ""):
 		return ""

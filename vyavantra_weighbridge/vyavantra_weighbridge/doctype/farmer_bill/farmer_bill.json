@@ -1,6 +1,7 @@
 {
  "actions": [],
- "creation": "2026-10-31 15:00:00.000000",
+ "autoname": "naming_series:FB-.YYYY.-.#####",
+ "creation": "2026-10-31 15:00:00",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -36,20 +37,20 @@
  ],
  "fields": [
   {
+   "default": "Today",
    "fieldname": "bill_date",
    "fieldtype": "Date",
-   "label": "Bill Date",
-   "reqd": 1,
-   "default": "Today",
    "in_list_view": 1,
-   "in_standard_filter": 1
+   "in_standard_filter": 1,
+   "label": "Bill Date",
+   "reqd": 1
   },
   {
    "fieldname": "from_date",
    "fieldtype": "Date",
+   "in_standard_filter": 1,
    "label": "From Date",
-   "reqd": 1,
-   "in_standard_filter": 1
+   "reqd": 1
   },
   {
    "fieldname": "to_date",
@@ -64,25 +65,25 @@
   {
    "fieldname": "farmer",
    "fieldtype": "Link",
+   "in_standard_filter": 1,
    "label": "Farmer No. / Member",
-   "options": "Cane Farmer",
-   "reqd": 1,
-   "in_standard_filter": 1
+   "options": "Cane Supplier",
+   "reqd": 1
   },
   {
+   "fetch_from": "farmer.farmer_name",
    "fieldname": "farmer_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Farmer Name",
-   "fetch_from": "farmer.farmer_name",
-   "read_only": 1,
-   "in_list_view": 1
+   "read_only": 1
   },
   {
+   "fetch_from": "farmer.village",
    "fieldname": "village",
    "fieldtype": "Link",
    "label": "Village",
-   "options": "Village Master",
-   "fetch_from": "farmer.village"
+   "options": "Village Master"
   },
   {
    "fieldname": "sb_weighment_slips",
@@ -159,12 +160,12 @@
    "fieldtype": "Column Break"
   },
   {
+   "bold": 1,
    "fieldname": "net_payable",
    "fieldtype": "Currency",
+   "in_list_view": 1,
    "label": "Net Payable Amount",
-   "read_only": 1,
-   "bold": 1,
-   "in_list_view": 1
+   "read_only": 1
   },
   {
    "fieldname": "sb_payment_summary",
@@ -175,129 +176,129 @@
    "fieldname": "paid_amount",
    "fieldtype": "Currency",
    "label": "Paid Amount",
-   "read_only": 1,
-   "no_copy": 1
+   "no_copy": 1,
+   "read_only": 1
   },
   {
    "fieldname": "outstanding_amount",
    "fieldtype": "Currency",
+   "in_list_view": 1,
    "label": "Outstanding Amount",
-   "read_only": 1,
    "no_copy": 1,
-   "in_list_view": 1
+   "read_only": 1
   },
   {
    "fieldname": "cb_24",
    "fieldtype": "Column Break"
   },
   {
+   "default": "Unpaid",
    "fieldname": "payment_status",
    "fieldtype": "Select",
-   "label": "Payment Status",
-   "options": "Unpaid\nPartly Paid\nPaid",
-   "default": "Unpaid",
-   "read_only": 1,
-   "no_copy": 1,
    "in_list_view": 1,
-   "in_standard_filter": 1
+   "in_standard_filter": 1,
+   "label": "Payment Status",
+   "no_copy": 1,
+   "options": "Unpaid\nPartly Paid\nPaid",
+   "read_only": 1
   },
   {
+   "default": "FB-.YYYY.-.#####",
    "fieldname": "naming_series",
    "fieldtype": "Select",
-   "label": "Naming Series",
-   "options": "FB-.YYYY.-.#####",
    "hidden": 1,
-   "default": "FB-.YYYY.-.#####"
+   "label": "Naming Series",
+   "options": "FB-.YYYY.-.#####"
   },
   {
    "fieldname": "amended_from",
    "fieldtype": "Link",
    "label": "Amended From",
-   "options": "Farmer Bill",
    "no_copy": 1,
+   "options": "Farmer Bill",
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
   }
  ],
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2026-10-31 15:00:00.000000",
+ "modified": "2026-10-31 16:50:42.145855",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Farmer Bill",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
    "role": "System Manager",
-   "read": 1,
-   "create": 1,
-   "write": 1,
-   "delete": 1,
-   "export": 1,
-   "print": 1,
-   "email": 1,
-   "report": 1,
    "share": 1,
    "submit": 1,
-   "cancel": 1,
-   "amend": 1
+   "write": 1
   },
   {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
    "role": "Accounts Manager",
-   "read": 1,
-   "create": 1,
-   "write": 1,
-   "delete": 1,
-   "export": 1,
-   "print": 1,
-   "email": 1,
-   "report": 1,
    "share": 1,
    "submit": 1,
-   "cancel": 1,
-   "amend": 1
+   "write": 1
   },
   {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
    "role": "Weighbridge Manager",
-   "read": 1,
-   "create": 1,
-   "write": 1,
-   "delete": 1,
-   "export": 1,
-   "print": 1,
-   "email": 1,
-   "report": 1,
    "share": 1,
    "submit": 1,
-   "cancel": 1,
-   "amend": 1
+   "write": 1
   },
   {
-   "role": "Accounts User",
-   "read": 1,
    "create": 1,
-   "write": 1,
-   "submit": 1,
+   "export": 1,
    "print": 1,
+   "read": 1,
    "report": 1,
-   "export": 1
+   "role": "Accounts User",
+   "submit": 1,
+   "write": 1
   },
   {
-   "role": "Weighbridge User",
-   "read": 1,
    "print": 1,
-   "report": 1
+   "read": 1,
+   "report": 1,
+   "role": "Weighbridge User"
   }
  ],
+ "row_format": "Dynamic",
+ "search_fields": "farmer,farmer_name",
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1,
- "autoname": "naming_series:FB-.YYYY.-.#####",
- "naming_rule": "By \"Naming Series\" field",
  "title_field": "farmer_name",
- "show_title_field_in_link": 1,
- "search_fields": "farmer,farmer_name",
- "is_submittable": 1
+ "track_changes": 1
 }

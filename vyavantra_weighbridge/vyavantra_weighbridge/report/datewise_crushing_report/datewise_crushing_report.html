@@ -1,0 +1,42 @@
+<style>
+.wbr { font-family: "Noto Sans Devanagari", "Lohit Devanagari", "DejaVu Sans", Arial, sans-serif; font-size: 11px; color: #000; }
+.wbr .co { text-align: center; font-weight: bold; font-size: 14px; text-transform: uppercase; }
+.wbr .ad { text-align: center; font-size: 11px; margin-top: 2px; }
+.wbr .ti { text-align: center; font-weight: bold; font-size: 12px; margin: 8px 0 2px 0; text-transform: uppercase; }
+.wbr table { width: 100%; margin-left: auto; margin-right: auto; border-collapse: collapse; page-break-inside: auto; }
+.wbr thead { display: table-header-group; }
+.wbr tr { page-break-inside: avoid; }
+.wbr th, .wbr td { border: 1px solid #000; padding: 3px 5px; vertical-align: middle; }
+.wbr th { text-align: center; font-weight: bold; background: #fff; }
+.wbr td.n { text-align: right; white-space: nowrap; }
+.wbr td.c { text-align: center; }
+.wbr tr.tot td { font-weight: bold; }
+.wbr tr.dh td { border-left: none; border-right: none; font-weight: bold; text-align: center; }
+.wbr tr.st td { font-weight: bold; border-left: none; border-right: none; }
+</style>
+<div id="footer-html" class="visible-pdf"><p class="text-center small page-number visible-pdf" style="text-align: center; width: 100%;">Page <span class="page"></span> of <span class="topage"></span></p></div>
+{% var h = (report && report.wb_heading) || {}; var tz = function(v) { return (parseFloat(v) || 0).toFixed(3); }; var ds = function(s) { if (!s) { return ""; } var p = String(s).split("-"); return p.length === 3 ? p[2] + "/" + p[1] + "/" + p[0] : s; }; var today = ds(frappe.datetime.get_today()); %}
+<div class="wbr">
+<div class="co">{{ h.company || "" }}</div>
+<div class="ad">{{ h.address || "" }}</div>
+<div class="ad">{% if (h.phone) { %}PH.NO.: {{ h.phone }}{% } %}</div>
+
+<div class="ti" style="margin-bottom: 0;">CANE CRUSHING REPORT</div>
+<div class="ad" style="margin-bottom: 8px;">{{ ds(filters.from_date) }} &nbsp;&nbsp;&nbsp; {{ ds(filters.to_date) }}</div>
+<table style="font-size: 10px;">
+<thead><tr><th>Sr No</th><th>Farmer Name</th><th>Village</th><th>Cane Variety</th><th>Veh No</th><th>Slip No</th><th>Tod Cont Name</th><th>Transporter Name</th><th>Cn Wt</th></tr></thead>
+<tbody>
+{% for (var r = 0; r < data.length; r++) { var row = data[r]; %}
+{% if (row.row_type === "date") { %}
+<tr class="dh"><td colspan="9" style="text-align: left; padding-top: 8px;">{{ row.farmer_name }}</td></tr>
+{% } else if (row.row_type === "subtotal") { %}
+<tr class="st"><td colspan="8" style="text-align: right;">{{ row.farmer_name }}</td><td class="n">{{ tz(row.cane_weight) }}</td></tr>
+{% } else if (row.row_type === "total") { %}
+<tr class="tot"><td colspan="8" style="text-align: right;">{{ row.farmer_name }}</td><td class="n">{{ tz(row.cane_weight) }}</td></tr>
+{% } else { %}
+<tr><td class="c">{{ row.sr_no }}</td><td>{{ row.farmer_name || "" }}</td><td>{{ row.village || "" }}</td><td class="c">{{ row.variety || "" }}</td><td>{{ row.vehicle || "" }}</td><td>{{ row.slip_no }}</td><td>{{ row.todani_contractor || "" }}</td><td>{{ row.transporter || "" }}</td><td class="n">{{ tz(row.cane_weight) }}</td></tr>
+{% } %}
+{% } %}
+</tbody>
+</table>
+</div>

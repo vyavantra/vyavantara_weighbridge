@@ -1,0 +1,10 @@
+:host { display: block; }
+.wbb { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding: 20px 24px; border-radius: 14px; color: #fff;
+  background: linear-gradient(120deg, #0f172a 0%, #1e3a8a 55%, #2563eb 100%); }
+.wbb h2 { margin: 0; font-size: 20px; font-weight: 700; color: #fff; }
+.wbb p { margin: 4px 0 0; font-size: 13px; opacity: .9; }
+.wbb .acts { display: flex; gap: 8px; flex-wrap: wrap; }
+.wbb .b { border: 0; cursor: pointer; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,.18); color: #fff; }
+.wbb .b:hover { background: rgba(255,255,255,.3); }
+.wbb .b.solid { background: #fff; color: #1d4ed8; }
+@media (max-width: 560px) { .wbb { padding: 16px; } }

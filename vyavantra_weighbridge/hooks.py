@@ -253,3 +253,8 @@ jinja = {
 # ignore_translatable_strings_from = []
 
 after_install = "vyavantra_weighbridge.setup.after_install"
+after_migrate = "vyavantra_weighbridge.setup.after_migrate_setup"
+
+fixtures = [
+	{"dt": "Custom Field", "filters": [["name", "in", ["Bank-ifsc_code", "Bank-bank_address"]]]},
+]

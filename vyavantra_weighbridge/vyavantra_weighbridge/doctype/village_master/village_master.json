@@ -9,20 +9,20 @@
   "cb_1",
   "taluka",
   "district",
-  "sb_distance_rate",
-  "distance",
-  "cb_2",
-  "transport_rate"
+  "sb_routes",
+  "routes"
  ],
  "fields": [
   {
    "fieldname": "village_no",
    "fieldtype": "Data",
    "label": "Village No.",
-   "reqd": 1,
-   "unique": 1,
+   "reqd": 0,
    "in_list_view": 1,
-   "in_standard_filter": 1
+   "in_standard_filter": 1,
+   "read_only": 1,
+   "no_copy": 1,
+   "description": "Generated automatically"
   },
   {
    "fieldname": "village_name",
@@ -37,41 +37,37 @@
   },
   {
    "fieldname": "taluka",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "label": "Taluka",
-   "in_list_view": 1
+   "options": "Taluka Master",
+   "in_list_view": 1,
+   "in_standard_filter": 1
   },
   {
    "fieldname": "district",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "label": "District",
-   "in_list_view": 1
+   "options": "District Master",
+   "fetch_from": "taluka.district",
+   "read_only": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
   },
   {
-   "fieldname": "sb_distance_rate",
+   "fieldname": "sb_routes",
    "fieldtype": "Section Break",
-   "label": "Distance & Rate"
+   "label": "Routes"
   },
   {
-   "fieldname": "distance",
-   "fieldtype": "Float",
-   "label": "Distance (Km)",
-   "in_list_view": 1
-  },
-  {
-   "fieldname": "cb_2",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "transport_rate",
-   "fieldtype": "Currency",
-   "label": "Transport Rate (per Ton)",
-   "in_list_view": 1
+   "fieldname": "routes",
+   "fieldtype": "Table",
+   "label": "Routes",
+   "options": "Village Route"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-31 15:00:00.000000",
+ "modified": "2026-11-02 10:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Village Master",
@@ -127,8 +123,8 @@
  "sort_order": "DESC",
  "states": [],
  "track_changes": 1,
- "autoname": "field:village_no",
- "naming_rule": "By fieldname",
+ "autoname": "Village-.###",
+ "naming_rule": "Expression (old style)",
  "title_field": "village_name",
  "show_title_field_in_link": 1,
  "search_fields": "village_name,taluka,district"
