@@ -1,136 +1,173 @@
-/* Weighment Slip > "Weights (Kg)" tab: a colour-coded sheet, one coloured card per field.
+/* Weighment Slip > "Weights (Kg)" tab: a compact, colour-coded calculation sheet that fits one screen.
    Scoped by the .wbs-slip class that weighment_slip.js puts on the page while the form is open. */
 
+.wbs-slip #weighment-slip-tab_weights .form-layout,
+.wbs-slip #weighment-slip-tab_weights { --wbs-gap: 6px; }
+
+/* the three sections (weights, % + Kg row, result) read as one sheet */
 .wbs-slip #weighment-slip-tab_weights .form-section {
-	max-width: 820px;
-	margin: 18px auto 24px;
-	padding: 0 0 8px;
+	max-width: 760px;
+	margin: 0 auto;
+	padding: 0;
+	border: 0;
+	background: transparent;
+}
+.wbs-slip #weighment-slip-tab_weights .form-section:first-child {
+	margin-top: 10px;
+	padding-top: 0;
 	border: 1px solid var(--border-color);
-	border-radius: 14px;
+	border-bottom: 0;
+	border-radius: 12px 12px 0 0;
 	background: var(--card-bg, #fff);
-	box-shadow: 0 6px 22px rgba(36, 52, 90, 0.10);
 	overflow: hidden;
 }
-
-/* title banner */
-.wbs-slip #weighment-slip-tab_weights .form-section::before {
+.wbs-slip #weighment-slip-tab_weights .form-section:first-child::before {
 	content: "\2696\00a0\00a0WEIGHMENT DETAILS";
 	display: block;
-	padding: 16px 24px;
-	font-size: 15px;
+	margin-bottom: 10px;
+	padding: 10px 18px;
+	font-size: 13px;
 	font-weight: 800;
-	letter-spacing: 1.2px;
+	letter-spacing: 1px;
 	color: #fff;
 	background: linear-gradient(100deg, #1e63d6 0%, #12a4c7 55%, #19b88a 100%);
 }
-.wbs-slip #weighment-slip-tab_weights .section-body { padding: 18px 22px 4px; }
-.wbs-slip #weighment-slip-tab_weights .form-column { padding: 0; }
+.wbs-slip #weighment-slip-tab_weights .form-section:not(:first-child) {
+	border-left: 1px solid var(--border-color);
+	border-right: 1px solid var(--border-color);
+	background: var(--card-bg, #fff);
+}
+.wbs-slip #weighment-slip-tab_weights .form-section:last-child {
+	border-bottom: 1px solid var(--border-color);
+	border-radius: 0 0 12px 12px;
+	padding-bottom: 6px;
+}
+.wbs-slip #weighment-slip-tab_weights .section-body { padding: 0 14px; }
+.wbs-slip #weighment-slip-tab_weights .form-column { padding: 0 4px; }
 
-/* every field is a tinted card with a coloured edge */
+/* every field: slim tinted row, label on the left, value on the right */
 .wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname] {
-	margin: 0 0 12px;
-	padding: 10px 16px 12px;
+	margin: 0 0 var(--wbs-gap);
+	padding: 4px 12px 5px;
 	background: var(--bg, #f4f6f9);
 	border: 1px solid rgba(0, 0, 0, 0.05);
-	border-left: 6px solid var(--c, #64748b);
-	border-radius: 10px;
+	border-left: 5px solid var(--c, #64748b);
+	border-radius: 8px;
 }
-.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="gross_weight"]     { --c: #2563eb; --bg: #eaf1ff; }
-.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="tare_weight"]      { --c: #f97316; --bg: #fff2e6; }
-.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="cane_weight"]      { --c: #7c3aed; --bg: #f1eaff; }
-.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="mat_weight"]       { --c: #d99a00; --bg: #fff7de; }
-.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="other_deduction"]  { --c: #e11d48; --bg: #ffe9ee; }
-.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="net_cane_weight"]  { --c: #16a34a; --bg: #e6f8ec; }
-.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="deduction_reason"] { --c: #64748b; --bg: #f1f4f8; }
+.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="gross_weight"]       { --c: #2563eb; --bg: #eaf1ff; }
+.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="tare_weight"]        { --c: #f97316; --bg: #fff2e6; }
+.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="cane_weight"]        { --c: #7c3aed; --bg: #f1eaff; }
+.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="mat_weight"]         { --c: #d99a00; --bg: #fff7de; }
+.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="net_after_binding"]  { --c: #0891b2; --bg: #e4f6fa; }
+.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="other_deduction_percent"],
+.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="other_deduction"]    { --c: #e11d48; --bg: #ffe9ee; }
+.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="net_cane_weight"]    { --c: #16a34a; --bg: #e6f8ec; }
+.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="deduction_reason"]   { --c: #64748b; --bg: #f1f4f8; }
 
-/* labels: bold, in the card's colour */
+.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname] .clearfix { margin: 0; min-height: 0; }
 .wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname] .control-label {
-	margin-bottom: 6px;
-	font-size: 13px;
+	display: block;
+	margin: 0 0 2px;
+	line-height: 15px;
+	font-size: 12px;
 	font-weight: 800;
-	letter-spacing: 0.3px;
+	letter-spacing: 0.2px;
 	color: var(--c, #64748b);
 }
+.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname] .form-group { margin: 0; }
 
-/* values: big, bold numbers */
+/* values */
 .wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname] input.form-control,
 .wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname] .like-disabled-input {
-	height: 44px;
-	line-height: 44px;
-	padding: 0 14px;
-	font-size: 20px;
+	height: 32px;
+	line-height: 32px;
+	padding: 0 12px;
+	font-size: 17px;
 	font-weight: 700;
 	text-align: right;
 	color: #1f2937;
 	background: #fff;
 	border: 1px solid rgba(0, 0, 0, 0.12);
-	border-radius: 8px;
+	border-radius: 6px;
 }
 .wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname] input.form-control:focus {
-	border-color: var(--c);
+	border-color: var(--c, #64748b);
 	box-shadow: 0 0 0 3px color-mix(in srgb, var(--c, #64748b) 25%, transparent);
 }
-/* computed (read-only) values look like a result: tinted, no input chrome */
+/* results: no input chrome, value in the card's colour */
 .wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="cane_weight"] .like-disabled-input,
+.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="net_after_binding"] .like-disabled-input,
+.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="other_deduction"] .like-disabled-input,
 .wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="net_cane_weight"] .like-disabled-input {
 	background: transparent;
 	border: 0;
-	padding: 0 6px;
 	color: var(--c, #16a34a);
 }
-.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="net_cane_weight"] { padding-top: 14px; padding-bottom: 16px; border-left-width: 10px; }
-.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="net_cane_weight"] .control-label { font-size: 15px; }
-.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="net_cane_weight"] .control-value.like-disabled-input {
-	height: 56px;
-	line-height: 56px;
-	font-size: 34px;
+
+/* Other Deduction: the % box and its Kg amount share one row */
+.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="other_deduction_percent"] input.form-control { text-align: right; }
+.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="other_deduction"] .control-label { display: none; }
+/* the Kg amount has no label of its own; a small "Kg" tag keeps its box level with the % box */
+.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="other_deduction"]::before {
+	content: "Kg";
+	display: block;
+	margin: 0 0 2px;
+	font-size: 12px;
+	line-height: 15px;
+	font-weight: 800;
+	color: var(--c);
+}
+.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="other_deduction"] .control-input,
+.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="other_deduction"] .control-value { margin: 0; }
+
+/* Net Weight: the answer, a little bigger */
+.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="net_cane_weight"] { border-left-width: 8px; padding-top: 6px; }
+.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="net_cane_weight"] .control-label { font-size: 13px; }
+.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="net_cane_weight"] .like-disabled-input {
+	height: 40px;
+	line-height: 40px;
+	font-size: 26px;
 	font-weight: 800;
 }
 .wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="deduction_reason"] textarea {
-	height: 70px !important;
-	min-height: 70px;
+	height: 46px !important;
+	min-height: 46px;
 	font-size: 14px;
 	font-weight: 500;
 	text-align: left;
 	background: #fff;
 	border: 1px solid rgba(0, 0, 0, 0.12);
-	border-radius: 8px;
+	border-radius: 6px;
 }
-.wbs-slip #weighment-slip-tab_weights .help-box { display: none; }
+.wbs-slip #weighment-slip-tab_weights .help-box,
+.wbs-slip #weighment-slip-tab_weights .tooltip-content { display: none; }
 
-/* Fetch Weight: the action of the sheet, bottom right */
+/* Fetch Weight: bottom right */
 .wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="fetch_weight"] {
-	margin: 6px 0 16px;
+	margin: 4px 0 6px;
 	padding: 0;
 	background: transparent;
 	border: 0;
 	text-align: right;
 }
 .wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="fetch_weight"] .btn {
-	min-width: 230px;
-	height: 52px;
-	padding: 0 28px;
-	font-size: 17px;
+	min-width: 190px;
+	height: 42px;
+	padding: 0 22px;
+	font-size: 15px;
 	font-weight: 800;
-	letter-spacing: 0.5px;
+	letter-spacing: 0.4px;
 	color: #fff;
 	background: linear-gradient(100deg, #1e63d6, #12a4c7);
 	border: 0;
-	border-radius: 12px;
-	box-shadow: 0 6px 16px rgba(30, 99, 214, 0.40);
+	border-radius: 10px;
+	box-shadow: 0 4px 12px rgba(30, 99, 214, 0.38);
 	transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
 }
 .wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="fetch_weight"] .btn::before { content: "\2696\00a0\00a0"; }
-.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="fetch_weight"] .btn:hover {
-	filter: brightness(1.08);
-	transform: translateY(-1px);
-	box-shadow: 0 9px 20px rgba(30, 99, 214, 0.48);
-}
-.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="fetch_weight"] .btn:active {
-	transform: translateY(1px);
-	box-shadow: 0 2px 6px rgba(30, 99, 214, 0.4);
-}
+.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="fetch_weight"] .btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="fetch_weight"] .btn:active { transform: translateY(1px); box-shadow: none; }
 
-/* the tab header itself */
+/* the tab header */
 .wbs-slip .form-tabs-list .form-tabs .nav-item .nav-link { font-weight: 700; }
 .wbs-slip .form-tabs-list .form-tabs .nav-item .nav-link.active { color: #1e63d6; border-bottom: 3px solid #1e63d6; }

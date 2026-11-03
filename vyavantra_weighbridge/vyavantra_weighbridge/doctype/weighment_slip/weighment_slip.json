@@ -58,7 +58,12 @@
   "tare_weight",
   "cane_weight",
   "mat_weight",
+  "net_after_binding",
+  "sb_deduction",
+  "other_deduction_percent",
+  "column_break_deduct",
   "other_deduction",
+  "sb_net",
   "net_cane_weight",
   "deduction_reason",
   "fetch_weight"
@@ -271,17 +276,15 @@
   {
    "fieldname": "gross_weight",
    "fieldtype": "Float",
-   "label": "Gross Weight (Loaded Vehicle)",
+   "label": "Loaded Vehicle Weight",
    "precision": "2",
-   "reqd": 1,
    "default": "0"
   },
   {
    "fieldname": "tare_weight",
    "fieldtype": "Float",
-   "label": "Tare Weight (Empty Vehicle)",
+   "label": "Empty Vehicle Weight",
    "precision": "2",
-   "reqd": 1,
    "default": "0"
   },
   {
@@ -295,28 +298,22 @@
   {
    "fieldname": "mat_weight",
    "fieldtype": "Float",
-   "label": "Mat Weight",
-   "precision": "2",
-   "default": "0"
-  },
-  {
-   "fieldname": "other_deduction",
-   "fieldtype": "Float",
-   "label": "Other Deduction",
+   "label": "Binding Material Weight",
    "precision": "2",
    "default": "0"
   },
   {
    "fieldname": "deduction_reason",
    "fieldtype": "Small Text",
-   "label": "Deduction Reason"
+   "label": "Reason",
+   "mandatory_depends_on": "eval:flt(doc.other_deduction_percent) > 0"
   },
   {
    "bold": 1,
    "fieldname": "net_cane_weight",
    "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "Net Cane Weight",
+   "label": "Net Weight",
    "precision": "2",
    "read_only": 1,
    "default": "0"
@@ -429,8 +426,41 @@
    "fieldname": "fetch_weight",
    "fieldtype": "Button",
    "label": "Fetch Weight",
-   "depends_on": "eval:doc.docstatus==0",
-   "description": "Reads the weighbridge: fills Gross Weight first, then Tare Weight"
+   "depends_on": "eval:doc.docstatus==0"
+  },
+  {
+   "default": "0",
+   "fieldname": "net_after_binding",
+   "fieldtype": "Float",
+   "label": "Net Cane Weight",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "other_deduction_percent",
+   "fieldtype": "Percent",
+   "label": "Other Deduction"
+  },
+  {
+   "fieldname": "column_break_deduct",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "other_deduction",
+   "fieldtype": "Float",
+   "label": "",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_deduction",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "sb_net",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,

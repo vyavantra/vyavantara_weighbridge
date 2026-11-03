@@ -85,20 +85,33 @@ class WeighmentSlip(Document):
 					)
 
 	def calculate_weights(self):
-		gross, tare = flt(self.gross_weight), flt(self.tare_weight)
-		if gross < 0 or tare < 0 or flt(self.mat_weight) < 0 or flt(self.other_deduction) < 0:
-			frappe.throw(_("Weights and deductions cannot be negative"))
-		if gross and tare and gross <= tare:
-			frappe.throw(_("Gross (loaded) weight must be greater than Tare (empty) weight"))
-		self.cane_weight = flt(gross - tare, 2) if (gross and tare) else 0
-		self.net_cane_weight = flt(self.cane_weight - flt(self.mat_weight) - flt(self.other_deduction), 2)
-		if (flt(self.mat_weight) or flt(self.other_deduction)) and not self.deduction_reason:
-			frappe.throw(_("Please enter the reason for the mat / other deduction"))
+		"""Cane Weight = Loaded - Empty. Net Cane Weight = Cane Weight - Binding Material.
+		Other Deduction (Kg) = Other Deduction % of the Net Cane Weight. Net Weight = Net Cane Weight - Other Deduction,
+		the quantity that is billed. Every figure is recalculated here, whatever the client sent."""
+		loaded, empty, binding = flt(self.gross_weight), flt(self.tare_weight), flt(self.mat_weight)
+		percent = flt(self.other_deduction_percent)
+		if loaded < 0 or empty < 0 or binding < 0:
+			frappe.throw(_("Weights cannot be negative"))
+		if not 0 <= percent <= 100:
+			frappe.throw(_("Other Deduction % must be between 0 and 100"))
+		if loaded and empty and loaded <= empty:
+			frappe.throw(_("Loaded Vehicle Weight must be greater than Empty Vehicle Weight"))
+		# the formula always applies: with the empty weight still 0 the figures simply follow the loaded weight
+		self.cane_weight = flt(loaded - empty, 2) if loaded else 0
+		if binding > self.cane_weight:
+			frappe.throw(_("Binding Material Weight cannot be more than the Cane Weight"))
+		self.net_after_binding = flt(self.cane_weight - binding, 2)
+		self.other_deduction = flt(self.net_after_binding * percent / 100, 2)
+		self.net_cane_weight = flt(self.net_after_binding - self.other_deduction, 2)
+		if percent and not self.deduction_reason:
+			frappe.throw(_("Please enter the Reason for the Other Deduction"))
 
 	# --- submit / cancel --------------------------------------------------------------
 	def before_submit(self):
+		if not flt(self.tare_weight):
+			frappe.throw(_("Empty Vehicle Weight is not taken yet"))
 		if flt(self.net_cane_weight) <= 0:
-			frappe.throw(_("Net Cane Weight must be greater than zero"))
+			frappe.throw(_("Net Weight must be greater than zero"))
 
 	def on_cancel(self):
 		billed = [self.get(f) for f in BILL_LINKS if self.get(f)]

@@ -23,8 +23,6 @@ frappe.ui.form.on("Weighment Slip", {
 		style_fetch_button(frm);
 		format_computed_weights(frm);
 		if (frm.doc.docstatus === 0) {
-			frm.add_custom_button(__("Capture Gross Weight"), () => capture(frm, "gross_weight"), __("Indicator"));
-			frm.add_custom_button(__("Capture Tare Weight"), () => capture(frm, "tare_weight"), __("Indicator"));
 			if (frm.is_new()) {
 				show_cane_rates(frm);
 				set_shift(frm);
@@ -73,6 +71,9 @@ frappe.ui.form.on("Weighment Slip", {
 	delivery_type: show_cane_rates,
 	slip_date: show_cane_rates,
 	slip_time: set_shift,
+	after_save(frm) {
+		format_computed_weights(frm);
+	},
 	on_hide(frm) {
 		frm.page.wrapper.removeClass("wbs-slip");
 	},
@@ -80,14 +81,12 @@ frappe.ui.form.on("Weighment Slip", {
 		// the first reading is the loaded vehicle (gross), the next one the empty vehicle (tare)
 		if (!flt(frm.doc.gross_weight)) return capture(frm, "gross_weight");
 		if (!flt(frm.doc.tare_weight)) return capture(frm, "tare_weight");
-		frappe.show_alert({ message: __("Gross and Tare weights are already taken. Use Indicator > Capture to read again."), indicator: "orange" });
+		frappe.show_alert({ message: __("Loaded and Empty Vehicle Weights are already taken. Edit a weight to read it again."), indicator: "orange" });
 	},
-	cane_weight: format_computed_weights,
-	net_cane_weight: format_computed_weights,
 	gross_weight: calc,
 	tare_weight: calc,
 	mat_weight: calc,
-	other_deduction: calc,
+	other_deduction_percent: calc,
 });
 
 // the shift is decided by the slip time, never typed by hand
@@ -149,11 +148,20 @@ function show_cane_rates(frm) {
 	});
 }
 
+// Same chain as WeighmentSlip.calculate_weights(); the server repeats it on save.
+// It runs whenever any input changes, so typing only the Loaded Vehicle Weight already fills everything below it.
 function calc(frm) {
-	const gross = flt(frm.doc.gross_weight), tare = flt(frm.doc.tare_weight);
-	const cane = gross && tare ? gross - tare : 0;
+	if (frm.doc.docstatus !== 0) return;
+	const loaded = flt(frm.doc.gross_weight), empty = flt(frm.doc.tare_weight), binding = flt(frm.doc.mat_weight);
+	const percent = Math.min(Math.max(flt(frm.doc.other_deduction_percent), 0), 100);
+	const cane = loaded ? flt(loaded - empty, 2) : 0;
+	const net_after_binding = flt(cane - binding, 2);
+	const deduction = flt((net_after_binding * percent) / 100, 2);
 	frm.set_value("cane_weight", cane);
-	frm.set_value("net_cane_weight", cane - flt(frm.doc.mat_weight) - flt(frm.doc.other_deduction));
+	frm.set_value("net_after_binding", net_after_binding);
+	frm.set_value("other_deduction", deduction);
+	frm.set_value("net_cane_weight", flt(net_after_binding - deduction, 2));
+	setTimeout(() => format_computed_weights(frm), 50);
 }
 
 function capture(frm, field) {
@@ -167,16 +175,15 @@ function capture(frm, field) {
 	});
 }
 
-// weights tab: one column, every field the same width, Fetch Weight at the bottom right
-const WEIGHT_FIELDS = ["gross_weight", "tare_weight", "cane_weight", "mat_weight", "other_deduction", "net_cane_weight", "deduction_reason", "fetch_weight"];
+// weights tab: one page, every field full width, Fetch Weight at the bottom right
+const WEIGHT_FIELDS = ["gross_weight", "tare_weight", "cane_weight", "mat_weight", "net_after_binding", "other_deduction_percent", "other_deduction", "net_cane_weight", "deduction_reason", "fetch_weight"];
+const COMPUTED_WEIGHTS = ["cane_weight", "net_after_binding", "other_deduction", "net_cane_weight"];
 
 // computed weights are read-only, which Frappe prints as a bare "0"; show them with two decimals like the inputs
 function format_computed_weights(frm) {
-	["cane_weight", "net_cane_weight"].forEach((name) => {
+	COMPUTED_WEIGHTS.forEach((name) => {
 		const field = frm.fields_dict[name];
-		if (!field) return;
-		const value = format_number(flt(frm.doc[name]), null, 2);
-		field.$wrapper.find(".control-value").text(value);
+		if (field) field.$wrapper.find(".control-value").text(format_number(flt(frm.doc[name]), null, 2));
 	});
 }
 
