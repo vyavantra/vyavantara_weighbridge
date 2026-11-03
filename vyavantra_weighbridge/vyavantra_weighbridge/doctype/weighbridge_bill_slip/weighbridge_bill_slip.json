@@ -1,0 +1,98 @@
+{
+ "actions": [],
+ "creation": "2026-10-31 15:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "slip",
+  "slip_date",
+  "vehicle",
+  "village",
+  "net_weight",
+  "quantity",
+  "rate",
+  "amount",
+  "farakt_rate",
+  "farakt_amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "slip",
+   "fieldtype": "Link",
+   "label": "Weighment Slip",
+   "options": "Weighment Slip",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "slip_date",
+   "fieldtype": "Date",
+   "label": "Slip Date",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "vehicle",
+   "fieldtype": "Data",
+   "label": "Vehicle",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "village",
+   "fieldtype": "Data",
+   "label": "Village"
+  },
+  {
+   "fieldname": "net_weight",
+   "fieldtype": "Float",
+   "label": "Net Weight (Kg)",
+   "precision": "2",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Float",
+   "label": "Quantity (Ton)",
+   "precision": "3",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "label": "Rate",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "farakt_rate",
+   "fieldtype": "Currency",
+   "label": "Farak Rate",
+   "hidden": 0
+  },
+  {
+   "fieldname": "farakt_amount",
+   "fieldtype": "Currency",
+   "label": "Farak Amount",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-10-31 15:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vyavantra Weighbridge",
+ "name": "Weighbridge Bill Slip",
+ "owner": "Administrator",
+ "permissions": [],
+ "states": [],
+ "istable": 1,
+ "editable_grid": 1,
+ "sort_field": "creation",
+ "sort_order": "ASC"
+}

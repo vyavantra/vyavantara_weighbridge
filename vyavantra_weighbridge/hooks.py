@@ -26,6 +26,7 @@ app_license = "mit"
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/vyavantra_weighbridge/css/vyavantra_weighbridge.css"
+app_include_css = "/assets/vyavantra_weighbridge/css/weighment_slip.css"
 # app_include_js = "/assets/vyavantra_weighbridge/js/vyavantra_weighbridge.js"
 
 # include js, css files in header of web template
@@ -252,3 +253,4 @@ jinja = {
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
 
+after_install = "vyavantra_weighbridge.setup.after_install"

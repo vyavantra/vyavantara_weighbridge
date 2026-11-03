@@ -1,0 +1,131 @@
+{
+ "actions": [],
+ "autoname": "Village-.###",
+ "creation": "2026-10-31 15:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "village_no",
+  "village_name",
+  "cb_1",
+  "taluka",
+  "district",
+  "sb_routes",
+  "routes"
+ ],
+ "fields": [
+  {
+   "description": "Generated automatically",
+   "fieldname": "village_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Village No.",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "village_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Village Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "taluka",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Taluka",
+   "options": "Taluka Master"
+  },
+  {
+   "fetch_from": "taluka.district",
+   "fieldname": "district",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "District",
+   "options": "District Master",
+   "read_only": 1
+  },
+  {
+   "description": "Add every route that serves this village, with its distance and transport rate",
+   "fieldname": "sb_routes",
+   "fieldtype": "Section Break",
+   "label": "Routes, Distance & Rate"
+  },
+  {
+   "fieldname": "routes",
+   "fieldtype": "Table",
+   "label": "Routes",
+   "options": "Village Route"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-11-01 23:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vyavantra Weighbridge",
+ "name": "Village Master",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Weighbridge Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Weighbridge User",
+   "write": 1
+  },
+  {
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager"
+  },
+  {
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User"
+  }
+ ],
+ "search_fields": "village_name,taluka,district",
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "village_name",
+ "track_changes": 1
+}

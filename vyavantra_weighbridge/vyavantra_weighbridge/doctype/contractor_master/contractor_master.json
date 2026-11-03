@@ -1,0 +1,194 @@
+{
+ "actions": [],
+ "creation": "2026-10-31 15:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "sb_contractor_info",
+  "contractor_no",
+  "contractor_name",
+  "contractor_type",
+  "cb_7",
+  "phone",
+  "disabled",
+  "address",
+  "sb_tractors",
+  "tractors",
+  "sb_advance_deposit",
+  "advance_balance",
+  "cb_8",
+  "deposit_balance",
+  "sb_bank",
+  "bank",
+  "cb_9",
+  "bank_account_no"
+ ],
+ "fields": [
+  {
+   "fieldname": "sb_contractor_info",
+   "fieldtype": "Section Break",
+   "label": "Contractor Information"
+  },
+  {
+   "fieldname": "contractor_no",
+   "fieldtype": "Data",
+   "label": "Contractor No.",
+   "reqd": 0,
+   "in_list_view": 1,
+   "read_only": 1,
+   "no_copy": 1,
+   "description": "Generated automatically"
+  },
+  {
+   "fieldname": "contractor_name",
+   "fieldtype": "Data",
+   "label": "Contractor Name",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "contractor_type",
+   "fieldtype": "Select",
+   "label": "Contractor Type",
+   "options": "Tractor\nCutting Contractor",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "cb_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "phone",
+   "fieldtype": "Data",
+   "label": "Phone"
+  },
+  {
+   "fieldname": "disabled",
+   "fieldtype": "Check",
+   "label": "Disabled"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Small Text",
+   "label": "Address"
+  },
+  {
+   "fieldname": "sb_tractors",
+   "fieldtype": "Section Break",
+   "label": "Tractor Numbers"
+  },
+  {
+   "fieldname": "tractors",
+   "fieldtype": "Table",
+   "label": "Tractors of this Contractor",
+   "options": "Contractor Tractor",
+   "description": "Pick the numbers from the Tractor Number master. The number of rows is the number of tractors this contractor has."
+  },
+  {
+   "fieldname": "sb_advance_deposit",
+   "fieldtype": "Section Break",
+   "label": "Advance & Deposit"
+  },
+  {
+   "fieldname": "advance_balance",
+   "fieldtype": "Currency",
+   "label": "Advance Balance",
+   "description": "Outstanding advance given (reduced by bill deductions)"
+  },
+  {
+   "fieldname": "cb_8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "deposit_balance",
+   "fieldtype": "Currency",
+   "label": "Deposit Balance",
+   "description": "Deposit held (reduced by bill deductions)"
+  },
+  {
+   "fieldname": "sb_bank",
+   "fieldtype": "Section Break",
+   "label": "Bank"
+  },
+  {
+   "fieldname": "bank",
+   "fieldtype": "Link",
+   "label": "Bank",
+   "options": "Bank"
+  },
+  {
+   "fieldname": "cb_9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "bank_account_no",
+   "fieldtype": "Data",
+   "label": "Bank Account No."
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-10-31 18:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vyavantra Weighbridge",
+ "name": "Contractor Master",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "create": 1,
+   "write": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Weighbridge Manager",
+   "read": 1,
+   "create": 1,
+   "write": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Weighbridge User",
+   "read": 1,
+   "create": 1,
+   "write": 1,
+   "print": 1,
+   "report": 1
+  },
+  {
+   "role": "Accounts Manager",
+   "read": 1,
+   "report": 1,
+   "export": 1,
+   "print": 1
+  },
+  {
+   "role": "Accounts User",
+   "read": 1,
+   "report": 1,
+   "print": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "autoname": "Contractor-.###",
+ "naming_rule": "Expression (old style)",
+ "title_field": "contractor_name",
+ "show_title_field_in_link": 1,
+ "search_fields": "contractor_name,contractor_type"
+}

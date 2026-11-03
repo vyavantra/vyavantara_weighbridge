@@ -1,0 +1,538 @@
+{
+ "actions": [],
+ "autoname": "naming_series:WS-.YYYY.-.#####",
+ "creation": "2026-11-02 00:35:16.909012",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "tab_slip",
+  "slip_date",
+  "serial_no",
+  "cb_17",
+  "slip_time",
+  "column_break_apzx",
+  "shift",
+  "member_information_section",
+  "farmer",
+  "route",
+  "column_break_dikl",
+  "farmer_name",
+  "distance",
+  "column_break_tgws",
+  "village_name",
+  "transport_rate",
+  "village",
+  "sb_cane_details",
+  "cane_type",
+  "cb_18",
+  "variety",
+  "sb_applicable_rates_per_ton",
+  "delivery_type",
+  "cane_rate",
+  "cb_21",
+  "todani_rate",
+  "farakt_rate",
+  "sb_contractors_agent",
+  "contractor_type",
+  "transport_contractor",
+  "cb_19",
+  "vehicle",
+  "vehicle_no",
+  "cutting_contractor",
+  "cb_20",
+  "trolley_type",
+  "agent",
+  "sb_billing_status",
+  "farmer_bill",
+  "tractor_bill",
+  "cb_23",
+  "todani_bill",
+  "agent_bill",
+  "sb_remarks",
+  "correction_reason",
+  "remarks",
+  "naming_series",
+  "amended_from",
+  "tab_weights",
+  "gross_weight",
+  "tare_weight",
+  "cane_weight",
+  "mat_weight",
+  "net_after_binding",
+  "sb_deduction",
+  "other_deduction_percent",
+  "column_break_deduct",
+  "other_deduction",
+  "sb_net",
+  "net_cane_weight",
+  "deduction_reason",
+  "fetch_weight"
+ ],
+ "fields": [
+  {
+   "default": "Today",
+   "fieldname": "slip_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Slip Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "serial_no",
+   "fieldtype": "Int",
+   "label": "Serial No.",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_17",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Now",
+   "fieldname": "slip_time",
+   "fieldtype": "Time",
+   "label": "Slip Time",
+   "no_copy": 1
+  },
+  {
+   "fieldname": "column_break_apzx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Set automatically from the slip time",
+   "fieldname": "shift",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Shift",
+   "options": "Weighbridge Shift",
+   "read_only": 1
+  },
+  {
+   "fieldname": "member_information_section",
+   "fieldtype": "Section Break",
+   "label": "Member Information"
+  },
+  {
+   "fieldname": "farmer",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Farmer / Member ID",
+   "options": "Cane Supplier",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_dikl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "farmer.farmer_name",
+   "fieldname": "farmer_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Farmer / Member Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "farmer.village",
+   "fieldname": "village",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "in_standard_filter": 1,
+   "label": "Village",
+   "options": "Village Master"
+  },
+  {
+   "description": "Only the routes defined in this village's master are listed",
+   "fieldname": "route",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Village Route",
+   "options": "Route Master"
+  },
+  {
+   "fieldname": "distance",
+   "fieldtype": "Float",
+   "label": "Distance (Km)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "transport_rate",
+   "fieldtype": "Currency",
+   "label": "Route Rate (per Ton)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_cane_details",
+   "fieldtype": "Section Break",
+   "label": "Cane Details"
+  },
+  {
+   "fieldname": "cane_type",
+   "fieldtype": "Select",
+   "label": "Cane Type",
+   "options": "\nPlant Cane (लागणीचा ऊस)\nRatoon Cane (खोडवा ऊस)"
+  },
+  {
+   "fieldname": "cb_18",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "variety",
+   "fieldtype": "Link",
+   "label": "Cane Variety",
+   "options": "Cane Variety"
+  },
+  {
+   "fieldname": "delivery_type",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Delivery Type",
+   "options": "Delivery Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sb_contractors_agent",
+   "fieldtype": "Section Break",
+   "label": "Contractors & Agent Information"
+  },
+  {
+   "fieldname": "vehicle",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Vehicle No.",
+   "options": "Tractor Number",
+   "reqd": 1
+  },
+  {
+   "fieldname": "vehicle_no",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Vehicle Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_19",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "trolley_type",
+   "fieldtype": "Select",
+   "label": "Trolley Type",
+   "options": "पक्का ट्रेलर वरची वायर\nपक्का ट्रेलर मधली वायर\nपक्का ट्रेलर खालची वायर\nमागचा ट्रेलर वरची वायर\nमागचा ट्रेलर मधली वायर\nमागचा ट्रेलर खालची वायर\nपक्का ट्रेलर\nमागचा ट्रेलर"
+  },
+  {
+   "fieldname": "cutting_contractor",
+   "fieldtype": "Link",
+   "label": "Cutting Contractor Name",
+   "options": "Contractor Master"
+  },
+  {
+   "fieldname": "cb_20",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "transport_contractor",
+   "fieldtype": "Link",
+   "label": "Transporting Contractor Name",
+   "options": "Contractor Master"
+  },
+  {
+   "fieldname": "agent",
+   "fieldtype": "Link",
+   "label": "Agent Name",
+   "options": "Cane Agent"
+  },
+  {
+   "fieldname": "sb_applicable_rates_per_ton",
+   "fieldtype": "Section Break",
+   "label": "Applicable Rates (per Ton)"
+  },
+  {
+   "fieldname": "cane_rate",
+   "fieldtype": "Currency",
+   "label": "Cane Rate",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_21",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "todani_rate",
+   "fieldtype": "Currency",
+   "label": "Todani Rate",
+   "read_only": 1
+  },
+  {
+   "fieldname": "farakt_rate",
+   "fieldtype": "Currency",
+   "label": "Farakt Rate",
+   "read_only": 1
+  },
+  {
+   "fieldname": "gross_weight",
+   "fieldtype": "Float",
+   "label": "Loaded Vehicle Weight",
+   "precision": "2",
+   "default": "0"
+  },
+  {
+   "fieldname": "tare_weight",
+   "fieldtype": "Float",
+   "label": "Empty Vehicle Weight",
+   "precision": "2",
+   "default": "0"
+  },
+  {
+   "fieldname": "cane_weight",
+   "fieldtype": "Float",
+   "label": "Cane Weight",
+   "precision": "2",
+   "read_only": 1,
+   "default": "0"
+  },
+  {
+   "fieldname": "mat_weight",
+   "fieldtype": "Float",
+   "label": "Binding Material Weight",
+   "precision": "2",
+   "default": "0"
+  },
+  {
+   "fieldname": "deduction_reason",
+   "fieldtype": "Small Text",
+   "label": "Reason",
+   "mandatory_depends_on": "eval:flt(doc.other_deduction_percent) > 0"
+  },
+  {
+   "bold": 1,
+   "fieldname": "net_cane_weight",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Net Weight",
+   "precision": "2",
+   "read_only": 1,
+   "default": "0"
+  },
+  {
+   "fieldname": "sb_billing_status",
+   "fieldtype": "Section Break",
+   "label": "Billing Status"
+  },
+  {
+   "fieldname": "farmer_bill",
+   "fieldtype": "Link",
+   "label": "Farmer Bill",
+   "no_copy": 1,
+   "options": "Farmer Bill",
+   "read_only": 1
+  },
+  {
+   "fieldname": "tractor_bill",
+   "fieldtype": "Link",
+   "label": "Tractor Bill",
+   "no_copy": 1,
+   "options": "Tractor Contractor Bill",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_23",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "todani_bill",
+   "fieldtype": "Link",
+   "label": "Todani Bill",
+   "no_copy": 1,
+   "options": "Todani Contractor Bill",
+   "read_only": 1
+  },
+  {
+   "fieldname": "agent_bill",
+   "fieldtype": "Link",
+   "label": "Agent Bill",
+   "no_copy": 1,
+   "options": "Agent Bill",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_remarks",
+   "fieldtype": "Section Break",
+   "label": "Remarks"
+  },
+  {
+   "depends_on": "eval:doc.amended_from",
+   "description": "Required when re-weighing / correcting",
+   "fieldname": "correction_reason",
+   "fieldtype": "Small Text",
+   "label": "Correction Reason",
+   "mandatory_depends_on": "eval:doc.amended_from"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "default": "WS-.YYYY.-.#####",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Naming Series",
+   "options": "WS-.YYYY.-.#####"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Weighment Slip",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fetch_from": "village.village_name",
+   "fieldname": "village_name",
+   "fieldtype": "Data",
+   "label": "Village Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_tgws",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "contractor_type",
+   "fieldtype": "Select",
+   "label": "Contractor Type",
+   "options": "Tractor\nCutting Contractor"
+  },
+  {
+   "fieldname": "tab_slip",
+   "fieldtype": "Tab Break",
+   "label": "Slip Details"
+  },
+  {
+   "fieldname": "tab_weights",
+   "fieldtype": "Tab Break",
+   "label": "Weights (Kg)"
+  },
+  {
+   "fieldname": "fetch_weight",
+   "fieldtype": "Button",
+   "label": "Fetch Weight",
+   "depends_on": "eval:doc.docstatus==0"
+  },
+  {
+   "default": "0",
+   "fieldname": "net_after_binding",
+   "fieldtype": "Float",
+   "label": "Net Cane Weight",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "other_deduction_percent",
+   "fieldtype": "Percent",
+   "label": "Other Deduction"
+  },
+  {
+   "fieldname": "column_break_deduct",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "other_deduction",
+   "fieldtype": "Float",
+   "label": "",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_deduction",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "sb_net",
+   "fieldtype": "Section Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-11-02 20:25:44.988368",
+ "modified_by": "Administrator",
+ "module": "Vyavantra Weighbridge",
+ "name": "Weighment Slip",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Weighbridge Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Weighbridge User",
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager"
+  },
+  {
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User"
+  }
+ ],
+ "row_format": "Dynamic",
+ "search_fields": "vehicle_no,farmer,farmer_name,village",
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "farmer_name",
+ "track_changes": 1
+}

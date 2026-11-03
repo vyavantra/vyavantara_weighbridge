@@ -1,0 +1,315 @@
+{
+ "actions": [],
+ "autoname": "naming_series:TDB-.YYYY.-.#####",
+ "creation": "2026-10-31 15:00:00",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "bill_date",
+  "from_date",
+  "to_date",
+  "cb_32",
+  "contractor",
+  "contractor_name",
+  "contractor_type",
+  "sb_weighment_slips",
+  "slips",
+  "sb_amounts",
+  "total_quantity",
+  "total_amount",
+  "cb_28",
+  "farakt_amount",
+  "sb_deductions",
+  "advance_deduction",
+  "deposit_deduction",
+  "cb_29",
+  "other_deduction",
+  "deduction_remarks",
+  "sb_net",
+  "total_deductions",
+  "cb_30",
+  "net_payable",
+  "sb_payment_summary",
+  "paid_amount",
+  "outstanding_amount",
+  "cb_24",
+  "payment_status",
+  "naming_series",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "default": "Today",
+   "fieldname": "bill_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Bill Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "From Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_32",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "contractor",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Contractor No.",
+   "options": "Contractor Master",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "contractor.contractor_name",
+   "fieldname": "contractor_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Contractor Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "contractor.contractor_type",
+   "fieldname": "contractor_type",
+   "fieldtype": "Data",
+   "label": "Contractor Type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_weighment_slips",
+   "fieldtype": "Section Break",
+   "label": "Weighment Slips"
+  },
+  {
+   "fieldname": "slips",
+   "fieldtype": "Table",
+   "label": "Weighment Slips",
+   "options": "Weighbridge Bill Slip",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sb_amounts",
+   "fieldtype": "Section Break",
+   "label": "Amounts"
+  },
+  {
+   "fieldname": "total_quantity",
+   "fieldtype": "Float",
+   "label": "Total Eligible Cane (Ton)",
+   "precision": "3",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "label": "Total Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_28",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "farakt_amount",
+   "fieldtype": "Currency",
+   "label": "Farakt Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_deductions",
+   "fieldtype": "Section Break",
+   "label": "Deductions"
+  },
+  {
+   "fieldname": "advance_deduction",
+   "fieldtype": "Currency",
+   "label": "Advance Deduction"
+  },
+  {
+   "fieldname": "deposit_deduction",
+   "fieldtype": "Currency",
+   "label": "Deposit Deduction"
+  },
+  {
+   "fieldname": "cb_29",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "other_deduction",
+   "fieldtype": "Currency",
+   "label": "Other Deduction"
+  },
+  {
+   "fieldname": "deduction_remarks",
+   "fieldtype": "Small Text",
+   "label": "Deduction Remarks"
+  },
+  {
+   "fieldname": "sb_net",
+   "fieldtype": "Section Break",
+   "label": "Net"
+  },
+  {
+   "fieldname": "total_deductions",
+   "fieldtype": "Currency",
+   "label": "Total Deductions",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_30",
+   "fieldtype": "Column Break"
+  },
+  {
+   "bold": 1,
+   "fieldname": "net_payable",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Net Payable Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_payment_summary",
+   "fieldtype": "Section Break",
+   "label": "Payment Summary"
+  },
+  {
+   "fieldname": "paid_amount",
+   "fieldtype": "Currency",
+   "label": "Paid Amount",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "outstanding_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Outstanding Amount",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_24",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Unpaid",
+   "fieldname": "payment_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Payment Status",
+   "no_copy": 1,
+   "options": "Unpaid\nPartly Paid\nPaid",
+   "read_only": 1
+  },
+  {
+   "default": "TDB-.YYYY.-.#####",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Naming Series",
+   "options": "TDB-.YYYY.-.#####"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Todani Contractor Bill",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-10-31 16:50:45.330569",
+ "modified_by": "Administrator",
+ "module": "Vyavantra Weighbridge",
+ "name": "Todani Contractor Bill",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Weighbridge Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Weighbridge User"
+  }
+ ],
+ "row_format": "Dynamic",
+ "search_fields": "contractor,contractor_name",
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "contractor_name",
+ "track_changes": 1
+}
