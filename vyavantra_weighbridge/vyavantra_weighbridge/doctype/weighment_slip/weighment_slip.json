@@ -59,13 +59,11 @@
   "cane_weight",
   "mat_weight",
   "net_after_binding",
-  "sb_deduction",
   "other_deduction_percent",
-  "column_break_deduct",
   "other_deduction",
-  "sb_net",
   "net_cane_weight",
   "deduction_reason",
+  "column_break_fetch",
   "fetch_weight"
  ],
  "fields": [
@@ -440,27 +438,19 @@
    "default": "0",
    "fieldname": "other_deduction_percent",
    "fieldtype": "Percent",
-   "label": "Other Deduction"
-  },
-  {
-   "fieldname": "column_break_deduct",
-   "fieldtype": "Column Break"
+   "label": "Other Deduction (%)"
   },
   {
    "default": "0",
    "fieldname": "other_deduction",
    "fieldtype": "Float",
-   "label": "",
+   "label": "Other Deduction (Kg)",
    "precision": "2",
    "read_only": 1
   },
   {
-   "fieldname": "sb_deduction",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "sb_net",
-   "fieldtype": "Section Break"
+   "fieldname": "column_break_fetch",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,

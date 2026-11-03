@@ -20,7 +20,6 @@ frappe.ui.form.on("Weighment Slip", {
 	},
 	refresh(frm) {
 		frm.page.wrapper.addClass("wbs-slip"); // scopes weighment_slip.css to this form only
-		style_fetch_button(frm);
 		format_computed_weights(frm);
 		if (frm.doc.docstatus === 0) {
 			if (frm.is_new()) {
@@ -175,8 +174,7 @@ function capture(frm, field) {
 	});
 }
 
-// weights tab: one page, every field full width, Fetch Weight at the bottom right
-const WEIGHT_FIELDS = ["gross_weight", "tare_weight", "cane_weight", "mat_weight", "net_after_binding", "other_deduction_percent", "other_deduction", "net_cane_weight", "deduction_reason", "fetch_weight"];
+// weights tab layout: public/css/weighment_slip.css
 const COMPUTED_WEIGHTS = ["cane_weight", "net_after_binding", "other_deduction", "net_cane_weight"];
 
 // computed weights are read-only, which Frappe prints as a bare "0"; show them with two decimals like the inputs
@@ -185,15 +183,4 @@ function format_computed_weights(frm) {
 		const field = frm.fields_dict[name];
 		if (field) field.$wrapper.find(".control-value").text(format_number(flt(frm.doc[name]), null, 2));
 	});
-}
-
-function style_fetch_button(frm) {
-	WEIGHT_FIELDS.forEach((name) => {
-		const field = frm.fields_dict[name];
-		if (field) field.$wrapper.removeClass("input-max-width").css("max-width", "none");
-	});
-	const button = frm.fields_dict.fetch_weight;
-	if (!button) return;
-	button.$wrapper.css("text-align", "right");
-	if (button.$input) button.$input.removeClass("btn-default btn-xs").addClass("btn-primary btn-sm");
 }
