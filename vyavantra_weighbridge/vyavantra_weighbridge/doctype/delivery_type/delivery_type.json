@@ -76,6 +76,10 @@
    "read": 1,
    "report": 1,
    "print": 1
+  },
+  {
+   "read": 1,
+   "role": "Chit Boy"
   }
  ],
  "sort_field": "modified",

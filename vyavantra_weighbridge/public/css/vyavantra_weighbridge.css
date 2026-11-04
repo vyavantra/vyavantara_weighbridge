@@ -1,0 +1,12 @@
+/* Desk-wide styles of the Vyavantra Weighbridge app. */
+
+/* bigger logo in the top-left corner; the navbar grows with it and the sticky page headers follow --navbar-height */
+:root { --navbar-height: 56px; }
+.navbar { height: var(--navbar-height); }
+.navbar .navbar-home img.app-logo {
+	height: 55px;
+	max-height: 60px;
+	width: auto;
+	max-width: 200px;
+	object-fit: contain;
+}

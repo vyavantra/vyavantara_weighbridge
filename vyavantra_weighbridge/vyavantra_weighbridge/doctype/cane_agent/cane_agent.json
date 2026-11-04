@@ -132,6 +132,14 @@
    "read": 1,
    "report": 1,
    "print": 1
+  },
+  {
+   "create": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Chit Boy",
+   "write": 1
   }
  ],
  "sort_field": "modified",

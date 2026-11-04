@@ -12,7 +12,7 @@ import frappe
 
 MODULE = "Vyavantra Weighbridge"
 WORKSPACE = "Vyavantra Weighbridge"
-ROLES = ("Weighbridge Manager", "Weighbridge User")
+ROLES = ("Weighbridge Manager", "Weighbridge User", "Chit Boy")
 SHIFTS = (
 	("Shift 1", "04:00:00", "12:00:00"),
 	("Shift 2", "12:00:00", "20:00:00"),
@@ -45,7 +45,10 @@ def after_migrate_setup():
 
 # A standard DocType cannot carry `default_print_format` in its JSON (DocType.validate throws), so it is
 # applied as a Property Setter, which is what Customize Form creates.
-DEFAULT_PRINT_FORMATS = (("Weighment Slip", "Weighment Slip Print"),)
+DEFAULT_PRINT_FORMATS = (
+	("Weighment Slip", "Weighment Slip Print"),
+	("General Weighment Slip", "General Weighment Slip Print"),
+)
 
 
 def set_default_print_formats():
@@ -141,7 +144,10 @@ def create_dashboard():
 
 # ---------------------------------------------------------------------------- workspace
 SECTIONS = (
-	("Weighment", (("Weighment Slip", "DocType", "Weighment Slip", "List"),)),
+	("Weighment", (
+		("Weighment Slip", "DocType", "Weighment Slip", "List"),
+		("General Weighment Slip", "DocType", "General Weighment Slip", "List"),
+	)),
 	("Billing", (
 		("Farmer Bill", "DocType", "Farmer Bill", "List"),
 		("Tractor Contractor Bill", "DocType", "Tractor Contractor Bill", "List"),
