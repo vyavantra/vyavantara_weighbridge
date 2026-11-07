@@ -15,7 +15,7 @@ class TodaniContractorBill(SlipBill):
 	slip_rate_field = "todani_rate"
 	party_doctype = "Contractor Master"
 	balance_deductions = (("advance_deduction", "advance_balance"), ("deposit_deduction", "deposit_balance"))
-	allowed_types = ("Cutting Contractor",)
+	allowed_types = ("Cutting Contractor", "Both")
 
 	def validate_party(self):
 		ctype = frappe.db.get_value("Contractor Master", self.contractor, "contractor_type")

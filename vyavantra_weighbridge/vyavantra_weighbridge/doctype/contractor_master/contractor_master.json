@@ -44,16 +44,19 @@
    "fieldtype": "Data",
    "label": "Contractor Name",
    "reqd": 1,
-   "in_list_view": 1
+   "in_list_view": 1,
+   "allow_in_quick_entry": 1
   },
   {
    "fieldname": "contractor_type",
    "fieldtype": "Select",
    "label": "Contractor Type",
-   "options": "Tractor\nCutting Contractor",
+   "options": "Tractor\nCutting Contractor\nBoth",
    "reqd": 1,
    "in_list_view": 1,
-   "in_standard_filter": 1
+   "in_standard_filter": 1,
+   "allow_in_quick_entry": 1,
+   "description": "Both: the same contractor does the tractor transport and the cutting (todani)"
   },
   {
    "fieldname": "cb_7",
@@ -62,7 +65,9 @@
   {
    "fieldname": "phone",
    "fieldtype": "Data",
-   "label": "Phone"
+   "label": "Phone",
+   "allow_in_quick_entry": 1,
+   "options": "Phone"
   },
   {
    "fieldname": "disabled",
@@ -72,7 +77,8 @@
   {
    "fieldname": "address",
    "fieldtype": "Small Text",
-   "label": "Address"
+   "label": "Address",
+   "allow_in_quick_entry": 1
   },
   {
    "fieldname": "sb_tractors",
@@ -130,7 +136,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-31 18:00:00.000000",
+ "modified": "2026-11-06 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Contractor Master",
@@ -198,5 +204,6 @@
  "naming_rule": "Expression (old style)",
  "title_field": "contractor_name",
  "show_title_field_in_link": 1,
- "search_fields": "contractor_name,contractor_type"
+ "search_fields": "contractor_name,contractor_type",
+ "quick_entry": 1
 }

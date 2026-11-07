@@ -53,3 +53,48 @@ def marathi_number_words(value, unit: str = "") -> str:
 		else:
 			words += f" पूर्णांक {_UNITS[hundredths]} शतांश"
 	return f"{words} {unit}".strip()
+
+
+def validate_indian_mobile(doc, method=None):
+	"""Doc event: every phone field of the document must be a 10 digit Indian mobile number (optionally with +91 / 0).
+	Frappe's own Phone check only limits the characters, so "1" would pass."""
+	import re
+
+	import frappe
+	from frappe import _
+
+	for df in doc.meta.get("fields", {"fieldtype": "Data", "options": "Phone"}):
+		value = (doc.get(df.fieldname) or "").strip()
+		if not value:
+			continue
+		digits = re.sub(r"[\s\-]", "", value)
+		digits = re.sub(r"^(\+?91|0)(?=\d{10}$)", "", digits)
+		if not re.fullmatch(r"[6-9]\d{9}", digits):
+			frappe.throw(
+				_("{0}: {1} is not a valid mobile number. Enter 10 digits starting with 6, 7, 8 or 9.").format(
+					_(df.label), frappe.bold(value)
+				),
+				title=_("Invalid Phone Number"),
+			)
+		doc.set(df.fieldname, digits)
+
+
+# (min, max, default) in px; 0 means "use the default" (width: automatic)
+LOGO_LIMITS = {"logo_height": (20, 120, 55), "logo_width": (20, 400, 0)}
+
+
+def logo_size():
+	"""{"height": px, "width": px} of the top-left logo from Weighbridge Settings; width 0 = automatic."""
+	import frappe
+	from frappe.utils import cint
+
+	values = frappe.db.get_singles_dict("Weighbridge Settings")
+	out = {}
+	for key, (low, high, default) in LOGO_LIMITS.items():
+		v = cint(values.get(key))
+		out[key.replace("logo_", "")] = min(max(v, low), high) if v else default
+	return out
+
+
+def boot_logo_size(bootinfo):
+	bootinfo.weighbridge_logo = logo_size()

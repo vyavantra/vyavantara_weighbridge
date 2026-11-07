@@ -75,7 +75,10 @@ class WeighmentSlip(Document):
 		self.farakt_rate = rates["farakt_rate"]
 
 	def validate_contractors(self):
-		for field, allowed in (("transport_contractor", ("Tractor",)), ("cutting_contractor", ("Cutting Contractor",))):
+		for field, allowed in (
+			("transport_contractor", ("Tractor", "Both")),
+			("cutting_contractor", ("Cutting Contractor", "Both")),
+		):
 			c = self.get(field)
 			if c:
 				ctype = frappe.db.get_value("Contractor Master", c, "contractor_type")
@@ -127,7 +130,7 @@ def get_tractor_contractor(tractor):
 	owners = frappe.db.sql(
 		"""select distinct c.name from `tabContractor Master` c join `tabContractor Tractor` t
 		on t.parent = c.name and t.parenttype = 'Contractor Master'
-		where t.tractor_number = %s and c.contractor_type = 'Tractor' and c.disabled = 0""",
+		where t.tractor_number = %s and c.contractor_type in ('Tractor', 'Both') and c.disabled = 0""",
 		tractor,
 	)
 	return owners[0][0] if len(owners) == 1 else None

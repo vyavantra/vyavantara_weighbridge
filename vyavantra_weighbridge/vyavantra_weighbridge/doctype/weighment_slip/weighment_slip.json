@@ -148,7 +148,8 @@
    "fieldtype": "Link",
    "in_standard_filter": 1,
    "label": "Village Route",
-   "options": "Route Master"
+   "options": "Route Master",
+   "depends_on": "eval:doc.village"
   },
   {
    "fieldname": "distance",
@@ -408,7 +409,7 @@
    "fieldname": "contractor_type",
    "fieldtype": "Select",
    "label": "Contractor Type",
-   "options": "Tractor\nCutting Contractor"
+   "options": "Tractor\nCutting Contractor\nBoth"
   },
   {
    "fieldname": "tab_slip",
@@ -456,7 +457,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-11-02 20:25:44.988368",
+ "modified": "2026-11-06 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Weighment Slip",

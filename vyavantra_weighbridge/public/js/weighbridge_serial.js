@@ -1,0 +1,154 @@
+// Fetch Weight for the weighbridge slips.
+//
+// Weighbridge Settings > "Read weight from":
+//   Server               the server asks the indicator (HTTP URL or the server's own serial port)
+//   Browser Serial Port  this browser (Chrome / Edge, https or localhost) reads the COM port of the PC it runs on
+//
+// vyavantra.weighbridge.read(server_method) resolves with the weight in Kg.
+
+frappe.provide("vyavantra.weighbridge");
+
+(function () {
+	const CONFIG = "vyavantra_weighbridge.indicator.get_indicator_config";
+	const READ_TIMEOUT_MS = 8000;
+
+	class WeighbridgeError extends Error {}
+
+	// first number of a line, same rule as the server (indicator.py)
+	function parse_weight(line) {
+		const m = /-?\d+(?:\.\d+)?/.exec(line);
+		return m ? parseFloat(m[0]) : null;
+	}
+
+	async function pick_port() {
+		if (!("serial" in navigator)) {
+			throw new WeighbridgeError(
+				window.isSecureContext
+					? __("This browser cannot read a COM port. Use Chrome or Edge.")
+					: __("The COM port can only be read on a secure (https) page.")
+			);
+		}
+		// a port the user already allowed on this site is reused without asking again
+		const granted = await navigator.serial.getPorts();
+		if (granted.length) return granted[0];
+		try {
+			return await navigator.serial.requestPort();
+		} catch (e) {
+			// the chooser was closed, or the PC has no COM port at all
+			throw new WeighbridgeError(__("No COM port was selected. Press Fetch Weight again and choose the weighbridge port."));
+		}
+	}
+
+	// the indicator streams a line every few hundred ms; the weight is accepted once it has been
+	// the same for `need` readings in a row, so a truck that is still rocking is never captured
+	async function collect(port, need) {
+		const reader = port.readable.getReader();
+		const decoder = new TextDecoder();
+		const timer = setTimeout(() => reader.cancel().catch(() => {}), READ_TIMEOUT_MS);
+		let buffer = "";
+		let synced = false; // the first chunk usually starts in the middle of a line
+		let last = null;
+		let run = 0;
+		let seen = null;
+		try {
+			while (true) {
+				const { value, done } = await reader.read();
+				if (done) break;
+				buffer += decoder.decode(value, { stream: true });
+				const parts = buffer.split(/[\r\n]+/);
+				buffer = parts.pop();
+				if (!synced) {
+					if (!parts.length) continue;
+					synced = true;
+					parts.shift();
+				}
+				for (const line of parts) {
+					const weight = parse_weight(line);
+					if (weight === null) continue;
+					seen = weight;
+					run = weight === last ? run + 1 : 1;
+					last = weight;
+					if (run >= need) return weight;
+				}
+			}
+		} finally {
+			clearTimeout(timer);
+			try {
+				await reader.cancel();
+			} catch (e) {
+				/* already cancelled */
+			}
+			reader.releaseLock();
+		}
+		throw new WeighbridgeError(
+			seen === null
+				? __("No weight received from the indicator. Check the cable, the COM port and the baud rate.")
+				: __("The weight is not stable ({0} Kg). Wait until the scale settles and try again.", [seen])
+		);
+	}
+
+	async function read_serial(config) {
+		const port = await pick_port();
+		try {
+			await port.open({
+				baudRate: config.baud_rate,
+				dataBits: config.data_bits,
+				stopBits: config.stop_bits,
+				parity: config.parity,
+			});
+		} catch (e) {
+			throw new WeighbridgeError(__("Could not open the COM port: {0}", [e.message]));
+		}
+		frappe.dom.freeze(__("Reading weight..."));
+		try {
+			return await collect(port, config.stable_readings);
+		} finally {
+			frappe.dom.unfreeze();
+			try {
+				await port.close();
+			} catch (e) {
+				/* already closed */
+			}
+		}
+	}
+
+	vyavantra.weighbridge.read = async function (server_method) {
+		const config = await frappe.call({ method: CONFIG }).then((r) => r.message || {});
+		if (config.source !== "Browser Serial Port") {
+			return frappe
+				.call({ method: server_method, freeze: true, freeze_message: __("Reading weight indicator...") })
+				.then((r) => r.message);
+		}
+		return read_serial(config);
+	};
+
+	// Fetch Weight handler: puts the reading into `field`, explains a failure to the operator
+	vyavantra.weighbridge.capture = function (frm, field, server_method) {
+		return vyavantra.weighbridge
+			.read(server_method)
+			.then((weight) => {
+				if (weight !== undefined && weight !== null) frm.set_value(field, weight);
+			})
+			.catch((e) => {
+				if (e && e.message) frappe.msgprint({ title: __("Weight not read"), message: e.message, indicator: "red" });
+			});
+	};
+
+	// "Select Weighbridge COM Port" in the form menu: forget the old port and ask for the right one
+	vyavantra.weighbridge.select_port = async function () {
+		if (!("serial" in navigator)) {
+			frappe.msgprint(__("This browser cannot read a COM port. Use Chrome or Edge."));
+			return;
+		}
+		const granted = await navigator.serial.getPorts();
+		for (const port of granted) {
+			if (port.forget) await port.forget();
+		}
+		try {
+			await navigator.serial.requestPort();
+			frappe.show_alert({ message: __("COM port saved for this browser"), indicator: "green" });
+		} catch (e) {
+			// the chooser was closed without a choice
+		}
+	};
+})();

@@ -13,7 +13,8 @@
   {
    "fieldname": "tractor_number",
    "fieldtype": "Data",
-   "label": "Tractor Number"
+   "label": "Tractor Number",
+   "allow_in_quick_entry": 1
   },
   {
    "fieldname": "naming_series",
@@ -26,7 +27,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-29 23:21:12.501559",
+ "modified": "2026-11-06 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Tractor Number",
@@ -91,5 +92,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "tractor_number"
+ "title_field": "tractor_number",
+ "quick_entry": 1
 }

@@ -35,3 +35,20 @@ def read_indicator_weight():
 	if not m:
 		frappe.throw(_("No weight reading received from the indicator"))
 	return flt(m.group())
+
+
+@frappe.whitelist()
+def get_indicator_config():
+	"""How the browser should read the weight. Weighbridge Settings is readable by managers only, but every
+	user who can create a slip has to be able to press Fetch Weight."""
+	if not any(frappe.has_permission(dt, "create") for dt in ("Weighment Slip", "General Weighment Slip")):
+		frappe.throw(_("Not permitted"), frappe.PermissionError)
+	s = frappe.get_cached_doc("Weighbridge Settings")
+	return {
+		"source": s.indicator_source or "Server",
+		"baud_rate": cint(s.indicator_baud_rate) or 9600,
+		"parity": s.indicator_parity or "none",
+		"data_bits": cint(s.indicator_data_bits) or 8,
+		"stop_bits": cint(s.indicator_stop_bits) or 1,
+		"stable_readings": cint(s.indicator_stable_readings) or 3,
+	}

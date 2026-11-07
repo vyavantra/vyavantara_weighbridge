@@ -31,8 +31,8 @@ frappe.ready(function () {
 		delivery_type: ["Delivery Type", { disabled: 0 }],
 		variety: ["Cane Variety", { disabled: 0 }],
 		vehicle: ["Tractor Number", {}],
-		transport_contractor: ["Contractor Master", { contractor_type: "Tractor", disabled: 0 }],
-		cutting_contractor: ["Contractor Master", { contractor_type: "Cutting Contractor", disabled: 0 }],
+		transport_contractor: ["Contractor Master", { contractor_type: ["in", ["Tractor", "Both"]], disabled: 0 }],
+		cutting_contractor: ["Contractor Master", { contractor_type: ["in", ["Cutting Contractor", "Both"]], disabled: 0 }],
 	};
 	const reload = (name) => rows_of(...SOURCES[name]).then((rows) => field(name).set_data(rows));
 	Object.keys(SOURCES).forEach(reload);
@@ -293,6 +293,7 @@ frappe.ready(function () {
 	// only the routes defined in the member's village
 	let current_village = "";
 	field("route").set_data([]);
+	form.set_df_property("route", "hidden", 1);
 
 	function load_routes(village, select) {
 		return call(WS + "get_village_routes", { village }).then((routes) => {
@@ -306,6 +307,7 @@ frappe.ready(function () {
 			);
 			// the slip needs a route whenever the village has any; a single route needs no choice
 			form.set_df_property("route", "reqd", routes.length ? 1 : 0);
+			form.set_df_property("route", "hidden", 0);
 			if (select) form.set_value("route", select);
 			else if (routes.length === 1) form.set_value("route", routes[0].route);
 		});
@@ -317,6 +319,7 @@ frappe.ready(function () {
 		form.set_value("farmer_name", "");
 		form.set_value("village_name", "");
 		form.set_df_property("route", "reqd", 0);
+		form.set_df_property("route", "hidden", 1); // no village yet, so no route to pick
 		field("route").set_data([]);
 		if (!farmer) return;
 		call("frappe.client.get_value", { doctype: "Cane Supplier", filters: { name: farmer }, fieldname: ["farmer_name", "village"] }).then((m) => {

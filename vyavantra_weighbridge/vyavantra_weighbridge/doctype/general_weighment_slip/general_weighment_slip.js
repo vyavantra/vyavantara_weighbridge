@@ -5,6 +5,7 @@ const GWS_METHOD = "vyavantra_weighbridge.vyavantra_weighbridge.doctype.general_
 
 frappe.ui.form.on("General Weighment Slip", {
 	refresh(frm) {
+		frm.page.add_menu_item(__("Select Weighbridge COM Port"), () => vyavantra.weighbridge.select_port());
 		if (frm.doc.docstatus === 1) {
 			frm.add_custom_button(__("Print Slip"), () => frm.print_doc());
 		}
@@ -27,12 +28,5 @@ function calc(frm) {
 }
 
 function capture(frm, field) {
-	frappe.call({
-		method: GWS_METHOD,
-		freeze: true,
-		freeze_message: __("Reading weight indicator..."),
-		callback: (r) => {
-			if (r.message !== undefined) frm.set_value(field, r.message);
-		},
-	});
+	return vyavantra.weighbridge.capture(frm, field, GWS_METHOD);
 }

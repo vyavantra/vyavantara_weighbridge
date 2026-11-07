@@ -7,8 +7,8 @@ const WS_METHOD = WS_PATH + "get_indicator_weight";
 frappe.ui.form.on("Weighment Slip", {
 	setup(frm) {
 		// each contractor field lists only the contractors of its own type
-		frm.set_query("transport_contractor", () => ({ filters: { contractor_type: "Tractor", disabled: 0 } }));
-		frm.set_query("cutting_contractor", () => ({ filters: { contractor_type: "Cutting Contractor", disabled: 0 } }));
+		frm.set_query("transport_contractor", () => ({ filters: { contractor_type: ["in", ["Tractor", "Both"]], disabled: 0 } }));
+		frm.set_query("cutting_contractor", () => ({ filters: { contractor_type: ["in", ["Cutting Contractor", "Both"]], disabled: 0 } }));
 		frm.set_query("farmer", () => ({ filters: { disabled: 0 } }));
 		frm.set_query("agent", () => ({ filters: { disabled: 0 } }));
 		frm.set_query("delivery_type", () => ({ filters: { disabled: 0 } }));
@@ -20,6 +20,7 @@ frappe.ui.form.on("Weighment Slip", {
 	},
 	refresh(frm) {
 		frm.page.wrapper.addClass("wbs-slip"); // scopes weighment_slip.css to this form only
+		frm.page.add_menu_item(__("Select Weighbridge COM Port"), () => vyavantra.weighbridge.select_port());
 		format_computed_weights(frm);
 		if (frm.doc.docstatus === 0) {
 			if (frm.is_new()) {
@@ -164,14 +165,7 @@ function calc(frm) {
 }
 
 function capture(frm, field) {
-	frappe.call({
-		method: WS_METHOD,
-		freeze: true,
-		freeze_message: __("Reading weight indicator..."),
-		callback: (r) => {
-			if (r.message !== undefined) frm.set_value(field, r.message);
-		},
-	});
+	return vyavantra.weighbridge.capture(frm, field, WS_METHOD);
 }
 
 // weights tab layout: public/css/weighment_slip.css

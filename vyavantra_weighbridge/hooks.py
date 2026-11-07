@@ -29,7 +29,10 @@ app_include_css = [
 	"/assets/vyavantra_weighbridge/css/vyavantra_weighbridge.css",
 	"/assets/vyavantra_weighbridge/css/weighment_slip.css",
 ]
-# app_include_js = "/assets/vyavantra_weighbridge/js/vyavantra_weighbridge.js"
+app_include_js = [
+	"/assets/vyavantra_weighbridge/js/weighbridge_serial.js",
+	"/assets/vyavantra_weighbridge/js/weighbridge_logo.js",
+]
 
 # include js, css files in header of web template
 # web_include_css = "/assets/vyavantra_weighbridge/css/vyavantra_weighbridge.css"
@@ -152,6 +155,15 @@ jinja = {
 # 		"on_trash": "method"
 # 	}
 # }
+
+# phone numbers: 10 digit Indian mobile, checked on every doctype that has a Phone field
+doc_events = {
+	dt: {"validate": "vyavantra_weighbridge.utils.validate_indian_mobile"}
+	for dt in ("Cane Supplier", "Cane Agent", "Contractor Master", "Weighbridge Settings")
+}
+
+# logo size of the top bar comes from Weighbridge Settings
+boot_session = "vyavantra_weighbridge.utils.boot_logo_size"
 
 # Scheduled Tasks
 # ---------------

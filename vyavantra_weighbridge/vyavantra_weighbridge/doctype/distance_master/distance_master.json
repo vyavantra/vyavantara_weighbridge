@@ -22,7 +22,8 @@
    "label": "Distance (Km)",
    "reqd": 1,
    "unique": 1,
-   "in_list_view": 1
+   "in_list_view": 1,
+   "allow_in_quick_entry": 1
   },
   {
    "fieldname": "transport_rate",
@@ -30,12 +31,13 @@
    "label": "Transport Rate (per Ton)",
    "reqd": 1,
    "in_list_view": 1,
-   "description": "Rate applied to every village with this distance."
+   "description": "Rate applied to every village with this distance.",
+   "allow_in_quick_entry": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-31 15:00:00.000000",
+ "modified": "2026-11-06 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Distance Master",
@@ -100,5 +102,6 @@
  "states": [],
  "track_changes": 1,
  "autoname": "field:distance_label",
- "naming_rule": "By fieldname"
+ "naming_rule": "By fieldname",
+ "quick_entry": 1
 }

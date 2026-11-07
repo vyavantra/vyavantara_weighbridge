@@ -15,7 +15,8 @@
    "in_list_view": 1,
    "label": "Delivery Type",
    "reqd": 1,
-   "unique": 1
+   "unique": 1,
+   "allow_in_quick_entry": 1
   },
   {
    "fieldname": "disabled",
@@ -25,7 +26,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-11-02 00:30:00.000000",
+ "modified": "2026-11-06 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Delivery Type",
@@ -85,5 +86,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "quick_entry": 1
 }

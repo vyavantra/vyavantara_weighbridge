@@ -3,6 +3,8 @@
 
 frappe.ui.form.on("Farmer Bill", {
 	setup(frm) {
+		// the slips come only from "Fetch Weighment Slips" (by farmer and dates); rows can be removed but not added by hand
+		frm.get_field("slips").grid.cannot_add_rows = true;
 	},
 	refresh(frm) {
 		if (frm.doc.docstatus === 0) {

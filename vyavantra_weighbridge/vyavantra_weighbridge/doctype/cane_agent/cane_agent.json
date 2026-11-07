@@ -32,7 +32,8 @@
    "fieldtype": "Data",
    "label": "Agent Name",
    "reqd": 1,
-   "in_list_view": 1
+   "in_list_view": 1,
+   "allow_in_quick_entry": 1
   },
   {
    "fieldname": "cb_11",
@@ -41,13 +42,16 @@
   {
    "fieldname": "phone",
    "fieldtype": "Data",
-   "label": "Phone"
+   "label": "Phone",
+   "allow_in_quick_entry": 1,
+   "options": "Phone"
   },
   {
    "fieldname": "commission_rate",
    "fieldtype": "Currency",
    "label": "Commission Rate (per Ton)",
-   "in_list_view": 1
+   "in_list_view": 1,
+   "allow_in_quick_entry": 1
   },
   {
    "fieldname": "sb_agent_address",
@@ -57,7 +61,8 @@
   {
    "fieldname": "address",
    "fieldtype": "Small Text",
-   "label": "Address"
+   "label": "Address",
+   "allow_in_quick_entry": 1
   },
   {
    "fieldname": "sb_advance",
@@ -82,7 +87,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-31 18:00:00.000000",
+ "modified": "2026-11-06 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Cane Agent",
@@ -150,5 +155,6 @@
  "naming_rule": "Expression (old style)",
  "title_field": "agent_name",
  "show_title_field_in_link": 1,
- "search_fields": "agent_name,phone"
+ "search_fields": "agent_name,phone",
+ "quick_entry": 1
 }
