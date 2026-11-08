@@ -84,7 +84,7 @@ frappe.ready(function () {
 
 	function add_new_link(control, handler) {
 		const $label = control.$wrapper.find(".control-label").first();
-		$("<a href='#' class='chit-new'></a>")
+		$("<a href='#' class='slip-new'></a>")
 			.text("+ " + __("New"))
 			.css({ marginLeft: "10px", fontWeight: 600 })
 			.on("click", (e) => {

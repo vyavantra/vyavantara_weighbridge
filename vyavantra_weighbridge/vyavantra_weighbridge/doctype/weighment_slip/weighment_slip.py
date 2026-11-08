@@ -106,8 +106,6 @@ class WeighmentSlip(Document):
 		self.net_after_binding = flt(self.cane_weight - binding, 2)
 		self.other_deduction = flt(self.net_after_binding * percent / 100, 2)
 		self.net_cane_weight = flt(self.net_after_binding - self.other_deduction, 2)
-		if percent and not self.deduction_reason:
-			frappe.throw(_("Please enter the Reason for the Other Deduction"))
 
 	# --- submit / cancel --------------------------------------------------------------
 	def before_submit(self):

@@ -1,0 +1,329 @@
+{
+ "charts": [
+  {
+   "chart_name": "Daily Cane Weight (Kg)",
+   "label": "Daily Cane Weight (Kg)"
+  },
+  {
+   "chart_name": "Village-wise Cane Supply (Kg)",
+   "label": "Village-wise Cane Supply (Kg)"
+  }
+ ],
+ "content": "[{\"id\": \"f3049a1ae0\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>DIESEL MANAGEMENT</b></span>\", \"col\": 12}}, {\"id\": \"816b29dd08\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Create Diesel Issue Entry \\u26fd\", \"col\": 3}}, {\"id\": \"u0eybv9K6x\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"3e9f33cfcf\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"\\ud83d\\udc68\\u200d\\ud83d\\udd27 Diesel Receiver\", \"col\": 3}}, {\"id\": \"e95a6ae225\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"\\ud83d\\ude9c Tractor Number\", \"col\": 3}}, {\"id\": \"b3fdb1132a\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"\\u26fd Petrol Pump\", \"col\": 3}}, {\"id\": \"ht5yICYU2s\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Report</b></span>\", \"col\": 12}}, {\"id\": \"PgRgtSoS2V\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Shift Wise Report\", \"col\": 3}}, {\"id\": \"_kBTUbvL85\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Datewise Report\", \"col\": 3}}, {\"id\": \"tz9-JFzd-5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Datewise Crushing Report\", \"col\": 3}}, {\"id\": \"wbreq_hdr_dash\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Weighbridge Dashboard</b></span>\", \"col\": 12}}, {\"id\": \"wbreq_nc0\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Today's Net Cane (Kg)\", \"col\": 4}}, {\"id\": \"wbreq_nc1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Today's Vehicle Trips\", \"col\": 4}}, {\"id\": \"wbreq_nc2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Total Net Cane (Kg)\", \"col\": 4}}, {\"id\": \"wbreq_nc3\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Cancelled Weighment Slips\", \"col\": 4}}, {\"id\": \"wbreq_nc4\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Farmer Outstanding\", \"col\": 4}}, {\"id\": \"wbreq_nc5\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Tractor Contractor Outstanding\", \"col\": 4}}, {\"id\": \"wbreq_nc6\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Todani Contractor Outstanding\", \"col\": 4}}, {\"id\": \"wbreq_nc7\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Agent Outstanding\", \"col\": 4}}, {\"id\": \"wbreq_nc8\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Payments Pending Approval\", \"col\": 4}}, {\"id\": \"wbreq_ch0\", \"type\": \"chart\", \"data\": {\"chart_name\": \"Daily Cane Weight (Kg)\", \"col\": 6}}, {\"id\": \"wbreq_ch1\", \"type\": \"chart\", \"data\": {\"chart_name\": \"Village-wise Cane Supply (Kg)\", \"col\": 6}}, {\"id\": \"wbreq_hdr0\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Weighment</b></span>\", \"col\": 12}}, {\"id\": \"wbreq_sc0_0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Weighment Slip\", \"col\": 3}}, {\"id\": \"wbreq_sc0_1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"General Weighment Slip\", \"col\": 3}}, {\"id\": \"wbreq_sp0\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"wbreq_hdr1\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Billing</b></span>\", \"col\": 12}}, {\"id\": \"wbreq_sc1_0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Farmer Bill\", \"col\": 3}}, {\"id\": \"wbreq_sc1_1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Tractor Contractor Bill\", \"col\": 3}}, {\"id\": \"wbreq_sc1_2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Todani Contractor Bill\", \"col\": 3}}, {\"id\": \"wbreq_sc1_3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Agent Bill\", \"col\": 3}}, {\"id\": \"wbreq_sp1\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"wbreq_hdr2\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Accounting & Payments</b></span>\", \"col\": 12}}, {\"id\": \"wbreq_sc2_0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Weighbridge Payment\", \"col\": 3}}, {\"id\": \"wbreq_sc2_1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Advance / Deposit\", \"col\": 3}}, {\"id\": \"wbreq_sp2\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"wbreq_hdr3\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Weighbridge Masters</b></span>\", \"col\": 12}}, {\"id\": \"wbreq_sc3_0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Village Master\", \"col\": 3}}, {\"id\": \"wbreq_sc3_1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Taluka Master\", \"col\": 3}}, {\"id\": \"wbreq_sc3_2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"District Master\", \"col\": 3}}, {\"id\": \"wbreq_sc3_3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Distance Master\", \"col\": 3}}, {\"id\": \"wbreq_sc3_4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Route Master\", \"col\": 3}}, {\"id\": \"wbreq_sc3_5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Cane Supplier\", \"col\": 3}}, {\"id\": \"wbreq_sc3_6\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Cane Variety\", \"col\": 3}}, {\"id\": \"wbreq_sc3_7\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Delivery Type\", \"col\": 3}}, {\"id\": \"wbreq_sc3_8\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Cane Rate Master\", \"col\": 3}}, {\"id\": \"wbreq_sc3_9\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Contractor Master\", \"col\": 3}}, {\"id\": \"wbreq_sc3_10\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Tractor Number\", \"col\": 3}}, {\"id\": \"wbreq_sc3_11\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Agent Master\", \"col\": 3}}, {\"id\": \"wbreq_sc3_12\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Bank\", \"col\": 3}}, {\"id\": \"wbreq_sc3_13\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Shift Master\", \"col\": 3}}, {\"id\": \"wbreq_sc3_14\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Weighbridge Settings\", \"col\": 3}}, {\"id\": \"wbreq_sp3\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"wbreq_hdr4\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Weighbridge Reports</b></span>\", \"col\": 12}}, {\"id\": \"wbreq_sc4_0\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Weighment Register\", \"col\": 3}}, {\"id\": \"wbreq_sc4_1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Cancelled Weighment Slips\", \"col\": 3}}, {\"id\": \"wbreq_sc4_2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Bill Outstanding Report\", \"col\": 3}}, {\"id\": \"wbreq_sc4_3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Agent Commission Report\", \"col\": 3}}, {\"id\": \"wbreq_sc4_4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Payment Register\", \"col\": 3}}, {\"id\": \"wbreq_sp4\", \"type\": \"spacer\", \"data\": {\"col\": 12}}]",
+ "creation": "2026-10-29 21:56:42.041890",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "color-review-points",
+ "idx": 0,
+ "indicator_color": "green",
+ "is_hidden": 0,
+ "label": "Vyavantra Weighbridge",
+ "links": [],
+ "modified": "2026-11-08 11:08:17.077854",
+ "modified_by": "Administrator",
+ "module": "Vyavantra Weighbridge",
+ "name": "Vyavantra Weighbridge",
+ "number_cards": [
+  {
+   "label": "Today's Net Cane (Kg)",
+   "number_card_name": "Today's Net Cane (Kg)"
+  },
+  {
+   "label": "Today's Vehicle Trips",
+   "number_card_name": "Today's Vehicle Trips"
+  },
+  {
+   "label": "Total Net Cane (Kg)",
+   "number_card_name": "Total Net Cane (Kg)"
+  },
+  {
+   "label": "Cancelled Weighment Slips",
+   "number_card_name": "Cancelled Weighment Slips"
+  },
+  {
+   "label": "Farmer Outstanding",
+   "number_card_name": "Farmer Outstanding"
+  },
+  {
+   "label": "Tractor Contractor Outstanding",
+   "number_card_name": "Tractor Contractor Outstanding"
+  },
+  {
+   "label": "Todani Contractor Outstanding",
+   "number_card_name": "Todani Contractor Outstanding"
+  },
+  {
+   "label": "Agent Outstanding",
+   "number_card_name": "Agent Outstanding"
+  },
+  {
+   "label": "Payments Pending Approval",
+   "number_card_name": "Payments Pending Approval"
+  }
+ ],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 44.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Shift Wise Report",
+   "link_to": "Shift Wise Report",
+   "report_ref_doctype": "Weighment Slip",
+   "type": "Report"
+  },
+  {
+   "color": "Orange",
+   "doc_view": "List",
+   "label": "Create Diesel Issue Entry \u26fd",
+   "link_to": "Diesel Issue Entry",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Datewise Report",
+   "link_to": "Datewise Report",
+   "report_ref_doctype": "Weighment Slip",
+   "type": "Report"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "label": "\ud83d\udc68\u200d\ud83d\udd27 Diesel Receiver",
+   "link_to": "Diesel Receiver",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Datewise Crushing Report",
+   "link_to": "Datewise Crushing Report",
+   "report_ref_doctype": "Weighment Slip",
+   "type": "Report"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "label": "\ud83d\ude9c Tractor Number",
+   "link_to": "Tractor Number",
+   "type": "DocType"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "label": "\u26fd Petrol Pump",
+   "link_to": "Petrol Pump",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Weighment Slip",
+   "link_to": "Weighment Slip",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "General Weighment Slip",
+   "link_to": "General Weighment Slip",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Farmer Bill",
+   "link_to": "Farmer Bill",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Tractor Contractor Bill",
+   "link_to": "Tractor Contractor Bill",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Todani Contractor Bill",
+   "link_to": "Todani Contractor Bill",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Agent Bill",
+   "link_to": "Agent Bill",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Weighbridge Payment",
+   "link_to": "Weighbridge Payment",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Advance / Deposit",
+   "link_to": "Weighbridge Advance",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Village Master",
+   "link_to": "Village Master",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Taluka Master",
+   "link_to": "Taluka Master",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "District Master",
+   "link_to": "District Master",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Distance Master",
+   "link_to": "Distance Master",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Route Master",
+   "link_to": "Route Master",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Cane Supplier",
+   "link_to": "Cane Supplier",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Cane Variety",
+   "link_to": "Cane Variety",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Delivery Type",
+   "link_to": "Delivery Type",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Cane Rate Master",
+   "link_to": "Cane Rate Master",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Contractor Master",
+   "link_to": "Contractor Master",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Tractor Number",
+   "link_to": "Tractor Number",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Agent Master",
+   "link_to": "Cane Agent",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Bank",
+   "link_to": "Bank",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Shift Master",
+   "link_to": "Weighbridge Shift",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Weighbridge Settings",
+   "link_to": "Weighbridge Settings",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "",
+   "label": "Weighment Register",
+   "link_to": "Weighment Register",
+   "report_ref_doctype": "Weighment Slip",
+   "type": "Report"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "",
+   "label": "Cancelled Weighment Slips",
+   "link_to": "Cancelled Weighment Slips",
+   "report_ref_doctype": "Weighment Slip",
+   "type": "Report"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "",
+   "label": "Bill Outstanding Report",
+   "link_to": "Bill Outstanding Report",
+   "report_ref_doctype": "Farmer Bill",
+   "type": "Report"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "",
+   "label": "Agent Commission Report",
+   "link_to": "Agent Commission Report",
+   "report_ref_doctype": "Agent Bill",
+   "type": "Report"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "",
+   "label": "Payment Register",
+   "link_to": "Payment Register",
+   "report_ref_doctype": "Weighbridge Payment",
+   "type": "Report"
+  }
+ ],
+ "title": "Vyavantra Weighbridge"
+}

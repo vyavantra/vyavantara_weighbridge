@@ -304,8 +304,7 @@
   {
    "fieldname": "deduction_reason",
    "fieldtype": "Small Text",
-   "label": "Reason",
-   "mandatory_depends_on": "eval:flt(doc.other_deduction_percent) > 0"
+   "label": "Reason"
   },
   {
    "bold": 1,
@@ -520,7 +519,7 @@
   {
    "create": 1,
    "read": 1,
-   "role": "Chit Boy",
+   "role": "Slip Boy",
    "if_owner": 1
   }
  ],

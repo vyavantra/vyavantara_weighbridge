@@ -6,7 +6,7 @@ vyavantra_weighbridge.patches.v0_2.ensure_roles
 vyavantra_weighbridge.patches.v0_3.rename_masters
 vyavantra_weighbridge.patches.v0_4.move_village_rate_to_routes
 vyavantra_weighbridge.patches.v0_6.contractor_tractors
-vyavantra_weighbridge.patches.v0_8.ensure_chit_boy_role
+vyavantra_weighbridge.patches.v0_9.rename_chit_boy_to_slip_boy
 
 [post_model_sync]
 # Patches added in this section will be executed after doctypes are migrated
