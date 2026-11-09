@@ -161,6 +161,8 @@ doc_events = {
 	dt: {"validate": "vyavantra_weighbridge.utils.validate_indian_mobile"}
 	for dt in ("Cane Supplier", "Cane Agent", "Contractor Master", "Weighbridge Settings")
 }
+for _dt in ("Cane Supplier", "Contractor Master"):
+	doc_events[_dt]["validate"] = [doc_events[_dt]["validate"], "vyavantra_weighbridge.utils.validate_ifsc"]
 
 # logo size of the top bar comes from Weighbridge Settings
 boot_session = "vyavantra_weighbridge.utils.boot_logo_size"

@@ -21,7 +21,8 @@
   "sb_bank",
   "bank",
   "cb_9",
-  "bank_account_no"
+  "bank_account_no",
+  "ifsc_code"
  ],
  "fields": [
   {
@@ -132,11 +133,18 @@
    "fieldname": "bank_account_no",
    "fieldtype": "Data",
    "label": "Bank Account No."
+  },
+  {
+   "fieldname": "ifsc_code",
+   "fieldtype": "Data",
+   "label": "IFSC Code",
+   "length": 11,
+   "description": "11 characters, e.g. SBIN0001234"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-11-06 12:00:00.000000",
+ "modified": "2026-11-09 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Contractor Master",

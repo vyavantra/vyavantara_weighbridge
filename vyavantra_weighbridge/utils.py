@@ -98,3 +98,19 @@ def logo_size():
 
 def boot_logo_size(bootinfo):
 	bootinfo.weighbridge_logo = logo_size()
+
+
+def validate_ifsc(doc, method=None):
+	"""IFSC code: 4 letters, a zero, 6 letters or digits (e.g. SBIN0001234). Saved in capitals."""
+	import re
+
+	import frappe
+	from frappe import _
+
+	value = (doc.get("ifsc_code") or "").strip().upper()
+	if value and not re.fullmatch(r"[A-Z]{4}0[A-Z0-9]{6}", value):
+		frappe.throw(
+			_("IFSC Code {0} is not valid. It has 11 characters, like SBIN0001234.").format(frappe.bold(value)),
+			title=_("Invalid IFSC Code"),
+		)
+	doc.ifsc_code = value
