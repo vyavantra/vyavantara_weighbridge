@@ -51,4 +51,6 @@ def get_indicator_config():
 		"data_bits": cint(s.indicator_data_bits) or 8,
 		"stop_bits": cint(s.indicator_stop_bits) or 1,
 		"stable_readings": cint(s.indicator_stable_readings) or 3,
+		"service_url": (s.indicator_service_url or "").strip(),
+		"service_timeout_ms": cint(s.indicator_service_timeout) or 15000,
 	}

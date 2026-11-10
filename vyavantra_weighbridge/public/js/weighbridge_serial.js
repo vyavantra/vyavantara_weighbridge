@@ -3,6 +3,7 @@
 // Weighbridge Settings > "Read weight from":
 //   Server               the server asks the indicator (HTTP URL or the server's own serial port)
 //   Browser Serial Port  this browser (Chrome / Edge, https or localhost) reads the COM port of the PC it runs on
+//   Weighbridge Service  this browser asks the WeighbridgeService running on the weighbridge PC (HTTP, stable weight)
 //
 // vyavantra.weighbridge.read(server_method) resolves with the weight in Kg.
 
@@ -112,8 +113,40 @@ frappe.provide("vyavantra.weighbridge");
 		}
 	}
 
+	// WeighbridgeService answers { ok, weight } or { ok: false, error, live }; fetch does not throw on 408 / 503,
+	// so data.ok is always checked
+	async function read_service(config) {
+		if (!config.service_url) {
+			throw new WeighbridgeError(__("Weighbridge Service URL is not set in Weighbridge Settings."));
+		}
+		const url = new URL(config.service_url);
+		url.searchParams.set("timeoutMs", config.service_timeout_ms);
+		frappe.dom.freeze(__("Waiting for stable weight..."));
+		try {
+			let data;
+			try {
+				const res = await fetch(url, { cache: "no-store" });
+				data = await res.json();
+			} catch (e) {
+				throw new WeighbridgeError(
+					__('Weighbridge service not reachable. Open this slip on the weighbridge PC and make sure "WeighbridgeService" is running.')
+				);
+			}
+			if (!data.ok) {
+				throw new WeighbridgeError(
+					frappe.utils.escape_html(data.error || "") +
+						(data.live != null ? `<br>${__("Current reading")}: ${flt(data.live)} kg` : "")
+				);
+			}
+			return flt(data.weight);
+		} finally {
+			frappe.dom.unfreeze();
+		}
+	}
+
 	vyavantra.weighbridge.read = async function (server_method) {
 		const config = await frappe.call({ method: CONFIG }).then((r) => r.message || {});
+		if (config.source === "Weighbridge Service") return read_service(config);
 		if (config.source !== "Browser Serial Port") {
 			return frappe
 				.call({ method: server_method, freeze: true, freeze_message: __("Reading weight indicator...") })
@@ -122,12 +155,25 @@ frappe.provide("vyavantra.weighbridge");
 		return read_serial(config);
 	};
 
-	// Fetch Weight handler: puts the reading into `field`, explains a failure to the operator
-	vyavantra.weighbridge.capture = function (frm, field, server_method) {
+	// Fetch Weight handler: puts the reading into `field`, explains a failure to the operator.
+	// options (optional):
+	//   check(weight)  returns a message to refuse the reading (the field is left unchanged), or nothing to accept it
+	//   time_field     Datetime field that gets the capture time
+	vyavantra.weighbridge.capture = function (frm, field, server_method, options) {
+		options = options || {};
 		return vyavantra.weighbridge
 			.read(server_method)
-			.then((weight) => {
-				if (weight !== undefined && weight !== null) frm.set_value(field, weight);
+			.then(async (weight) => {
+				if (weight === undefined || weight === null) return;
+				const refusal = options.check && options.check(weight);
+				if (refusal) {
+					frappe.msgprint({ title: __("Check vehicle"), message: refusal, indicator: "orange" });
+					return;
+				}
+				await frm.set_value(field, weight);
+				if (options.time_field && frm.fields_dict[options.time_field]) {
+					await frm.set_value(options.time_field, frappe.datetime.now_datetime());
+				}
 			})
 			.catch((e) => {
 				if (e && e.message) frappe.msgprint({ title: __("Weight not read"), message: e.message, indicator: "red" });

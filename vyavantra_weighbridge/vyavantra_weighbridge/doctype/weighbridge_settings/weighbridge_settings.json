@@ -12,6 +12,8 @@
   "bank_account",
   "sb_weight_indicator",
   "indicator_source",
+  "indicator_service_url",
+  "indicator_service_timeout",
   "indicator_url",
   "cb_16",
   "indicator_serial_port",
@@ -75,7 +77,7 @@
    "fieldtype": "Data",
    "label": "Indicator HTTP URL",
    "description": "URL returning the current weight as text/JSON (e.g. a serial-to-HTTP gateway)",
-   "depends_on": "eval:doc.indicator_source!='Browser Serial Port'"
+   "depends_on": "eval:!doc.indicator_source || doc.indicator_source=='Server'"
   },
   {
    "fieldname": "cb_16",
@@ -86,7 +88,7 @@
    "fieldtype": "Data",
    "label": "Indicator Serial Port",
    "description": "e.g. COM3 or /dev/ttyUSB0 (needs pyserial on the server)",
-   "depends_on": "eval:doc.indicator_source!='Browser Serial Port'"
+   "depends_on": "eval:!doc.indicator_source || doc.indicator_source=='Server'"
   },
   {
    "fieldname": "indicator_baud_rate",
@@ -124,9 +126,26 @@
    "fieldname": "indicator_source",
    "fieldtype": "Select",
    "label": "Read weight from",
-   "options": "Server\nBrowser Serial Port",
+   "options": "Server\nBrowser Serial Port\nWeighbridge Service",
    "default": "Server",
-   "description": "Server: the server reads the indicator (URL below or its own COM port). Browser Serial Port: the Chrome / Edge of the weighbridge PC reads its COM port"
+   "description": "Server: the server reads the indicator (URL below or its own COM port). Browser Serial Port: the Chrome / Edge of the weighbridge PC reads its COM port. Weighbridge Service: the browser asks the WeighbridgeService running on the weighbridge PC"
+  },
+  {
+   "fieldname": "indicator_service_url",
+   "fieldtype": "Data",
+   "label": "Weighbridge Service URL",
+   "default": "http://127.0.0.1:8765/weight/stable",
+   "depends_on": "eval:doc.indicator_source=='Weighbridge Service'",
+   "mandatory_depends_on": "eval:doc.indicator_source=='Weighbridge Service'",
+   "description": "Stable-weight endpoint of the WeighbridgeService. 127.0.0.1 means the PC the browser runs on, so the ERP must be opened on the weighbridge PC"
+  },
+  {
+   "fieldname": "indicator_service_timeout",
+   "fieldtype": "Int",
+   "label": "Stable Weight Wait (ms)",
+   "default": "15000",
+   "depends_on": "eval:doc.indicator_source=='Weighbridge Service'",
+   "description": "How long the service may wait for the scale to settle before it gives up"
   },
   {
    "fieldname": "indicator_parity",
@@ -186,7 +205,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-11-06 12:00:00.000000",
+ "modified": "2026-11-10 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Weighbridge Settings",

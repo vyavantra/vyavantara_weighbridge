@@ -164,8 +164,22 @@ function calc(frm) {
 	setTimeout(() => format_computed_weights(frm), 50);
 }
 
+// weight and capture time of each weighing; the scale must also agree with the weighing already taken
+const WEIGHT_TIME_FIELD = { gross_weight: "gross_weight_time", tare_weight: "tare_weight_time" };
+
 function capture(frm, field) {
-	return vyavantra.weighbridge.capture(frm, field, WS_METHOD);
+	return vyavantra.weighbridge.capture(frm, field, WS_METHOD, {
+		time_field: WEIGHT_TIME_FIELD[field],
+		check: (weight) => {
+			const loaded = flt(frm.doc.gross_weight), empty = flt(frm.doc.tare_weight);
+			if (field === "tare_weight" && loaded && weight >= loaded) {
+				return __("Scale shows {0} kg, but Loaded Vehicle Weight is {1} kg. Is the vehicle unloaded?", [weight, loaded]);
+			}
+			if (field === "gross_weight" && empty && weight <= empty) {
+				return __("Scale shows {0} kg, but Empty Vehicle Weight is {1} kg. Is the vehicle loaded?", [weight, empty]);
+			}
+		},
+	});
 }
 
 // weights tab layout: public/css/weighment_slip.css

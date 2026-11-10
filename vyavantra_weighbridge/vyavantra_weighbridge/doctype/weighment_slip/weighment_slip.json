@@ -56,6 +56,8 @@
   "tab_weights",
   "gross_weight",
   "tare_weight",
+  "gross_weight_time",
+  "tare_weight_time",
   "cane_weight",
   "mat_weight",
   "net_after_binding",
@@ -287,6 +289,20 @@
    "default": "0"
   },
   {
+   "fieldname": "gross_weight_time",
+   "fieldtype": "Datetime",
+   "label": "Loaded Vehicle Weight Time",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "tare_weight_time",
+   "fieldtype": "Datetime",
+   "label": "Empty Vehicle Weight Time",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
    "fieldname": "cane_weight",
    "fieldtype": "Float",
    "label": "Cane Weight",
@@ -456,7 +472,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-11-06 12:00:00.000000",
+ "modified": "2026-11-10 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Weighment Slip",
