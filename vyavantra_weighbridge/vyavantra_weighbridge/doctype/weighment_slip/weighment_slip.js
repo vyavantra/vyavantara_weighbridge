@@ -4,6 +4,11 @@
 const WS_PATH = "vyavantra_weighbridge.vyavantra_weighbridge.doctype.weighment_slip.weighment_slip.";
 const WS_METHOD = WS_PATH + "get_indicator_weight";
 
+// the Slip Details that identify the vehicle; without them a captured weight cannot be placed
+const REQUIRED_BEFORE_WEIGHT = ["farmer", "delivery_type", "vehicle"];
+// the slip is saved right after each weighing, so a reading is never lost
+const AUTO_SAVE_AFTER_FETCH = true;
+
 frappe.ui.form.on("Weighment Slip", {
 	setup(frm) {
 		// each contractor field lists only the contractors of its own type
@@ -23,8 +28,9 @@ frappe.ui.form.on("Weighment Slip", {
 		frm.page.add_menu_item(__("Select Weighbridge COM Port"), () => vyavantra.weighbridge.select_port());
 		format_computed_weights(frm);
 		if (frm.doc.docstatus === 0) {
-			// the Fetch Weight button in the Weights tab takes the next missing weighing; these two take a
-			// named one, so an operator can re-read just the loaded or just the empty vehicle
+			set_fetch_label(frm);
+			// Fetch Weight takes the next missing weighing; these two take a named one, so an operator
+			// can re-read just the loaded or just the empty vehicle
 			frm.add_custom_button(__("Loaded Vehicle Weight"), () => capture(frm, "gross_weight"), __("Capture"));
 			frm.add_custom_button(__("Empty Vehicle Weight"), () => capture(frm, "tare_weight"), __("Capture"));
 			if (frm.is_new()) {
@@ -77,18 +83,22 @@ frappe.ui.form.on("Weighment Slip", {
 	slip_time: set_shift,
 	after_save(frm) {
 		format_computed_weights(frm);
+		set_fetch_label(frm);
 	},
 	on_hide(frm) {
 		frm.page.wrapper.removeClass("wbs-slip");
 	},
 	fetch_weight(frm) {
-		// the first reading is the loaded vehicle (gross), the next one the empty vehicle (tare)
-		if (!flt(frm.doc.gross_weight)) return capture(frm, "gross_weight");
-		if (!flt(frm.doc.tare_weight)) return capture(frm, "tare_weight");
-		frappe.show_alert({ message: __("Loaded and Empty Vehicle Weights are already taken. Edit a weight to read it again."), indicator: "orange" });
+		fetch_next_weight(frm);
 	},
-	gross_weight: calc,
-	tare_weight: calc,
+	gross_weight(frm) {
+		calc(frm);
+		set_fetch_label(frm);
+	},
+	tare_weight(frm) {
+		calc(frm);
+		set_fetch_label(frm);
+	},
 	mat_weight: calc,
 	other_deduction_percent: calc,
 });
@@ -171,6 +181,63 @@ function calc(frm) {
 // weight and capture time of each weighing; the scale must also agree with the weighing already taken
 const WEIGHT_TIME_FIELD = { gross_weight: "gross_weight_time", tare_weight: "tare_weight_time" };
 
+// Fetch Weight takes the weighing that is still missing: loaded first, empty after unloading.
+// With both already taken the operator picks the one to read again.
+async function fetch_next_weight(frm) {
+	if (frm.doc.docstatus !== 0) return;
+
+	const missing = REQUIRED_BEFORE_WEIGHT.filter((f) => frm.fields_dict[f] && !frm.doc[f]).map((f) =>
+		__(frm.fields_dict[f].df.label)
+	);
+	if (missing.length) {
+		return frappe.msgprint({
+			title: __("Fill Slip Details first"),
+			indicator: "orange",
+			message: __("Please fill: {0}", [missing.join(", ")]),
+		});
+	}
+
+	let field;
+	if (!flt(frm.doc.gross_weight)) field = "gross_weight";
+	else if (!flt(frm.doc.tare_weight)) field = "tare_weight";
+	else field = await ask_which_weight();
+	if (field) await capture(frm, field);
+}
+
+function ask_which_weight() {
+	return new Promise((resolve) => {
+		const d = new frappe.ui.Dialog({
+			title: __("Both weights are already taken"),
+			fields: [
+				{
+					fieldname: "which",
+					fieldtype: "Select",
+					label: __("Take again"),
+					options: [__("Loaded Vehicle Weight"), __("Empty Vehicle Weight")].join("\n"),
+					default: __("Empty Vehicle Weight"),
+					reqd: 1,
+				},
+			],
+			primary_action_label: __("Fetch"),
+			primary_action(values) {
+				d.hide();
+				resolve(values.which === __("Loaded Vehicle Weight") ? "gross_weight" : "tare_weight");
+			},
+		});
+		d.onhide = () => resolve(null); // closed without choosing
+		d.show();
+	});
+}
+
+// "Fetch Loaded Weight" -> "Fetch Empty Weight" -> "Fetch Weight", so the button says what it will do next
+function set_fetch_label(frm) {
+	if (!frm.fields_dict.fetch_weight) return;
+	let label = __("Fetch Weight");
+	if (!flt(frm.doc.gross_weight)) label = __("Fetch Loaded Weight");
+	else if (!flt(frm.doc.tare_weight)) label = __("Fetch Empty Weight");
+	frm.set_df_property("fetch_weight", "label", label);
+}
+
 function capture(frm, field) {
 	return vyavantra.weighbridge.capture(frm, field, WS_METHOD, {
 		time_field: WEIGHT_TIME_FIELD[field],
@@ -181,6 +248,14 @@ function capture(frm, field) {
 			}
 			if (field === "gross_weight" && empty && weight <= empty) {
 				return __("Scale shows {0} kg, but Empty Vehicle Weight is {1} kg. Is the vehicle loaded?", [weight, empty]);
+			}
+		},
+		after: async () => {
+			if (!AUTO_SAVE_AFTER_FETCH || !frm.is_dirty()) return;
+			try {
+				await frm.save();
+			} catch (e) {
+				// Frappe already shows why the save failed, e.g. a missing mandatory field
 			}
 		},
 	});

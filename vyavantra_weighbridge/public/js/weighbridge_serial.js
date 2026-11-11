@@ -16,7 +16,19 @@ frappe.provide("vyavantra.weighbridge");
 	// the service listens here on the weighbridge PC itself; 127.0.0.1 always means "the PC running this browser"
 	const DEFAULT_SERVICE_URL = "http://127.0.0.1:8765/weight/stable";
 
-	class WeighbridgeError extends Error {}
+	// title and indicator travel with the message, so each failure keeps its own wording
+	class WeighbridgeError extends Error {
+		constructor(message, title, indicator) {
+			super(message);
+			this.title = title || __("Weight not read");
+			this.indicator = indicator || "red";
+		}
+	}
+
+	// the settings are read once per click, so a changed setting takes effect without a reload
+	function get_config() {
+		return frappe.call({ method: CONFIG }).then((r) => r.message || {});
+	}
 
 	// first number of a line, same rule as the server (indicator.py)
 	function parse_weight(line) {
@@ -117,7 +129,7 @@ frappe.provide("vyavantra.weighbridge");
 	}
 
 	// WeighbridgeService answers { ok, weight } or { ok: false, error, live }; fetch does not throw on 408 / 503,
-	// so data.ok is always checked
+	// so data.ok is always checked. Its own wording is shown to the operator unchanged.
 	async function ask_service(url, timeout_ms) {
 		const target = new URL(url);
 		target.searchParams.set("timeoutMs", timeout_ms);
@@ -134,27 +146,28 @@ frappe.provide("vyavantra.weighbridge");
 
 		frappe.dom.freeze(__("Waiting for stable weight..."));
 		try {
-			// a request that is simply unreachable moves on to the next address
 			for (const url of urls) {
 				let data;
 				try {
 					data = await ask_service(url, timeout_ms);
 				} catch (e) {
-					continue;
+					continue; // nothing listens here, try the next address
 				}
-				// the service answered: an unstable scale is its answer, not a reason to ask somewhere else
+				// the service answered: a scale that is not steady is its answer, not a reason to ask elsewhere
 				if (!data.ok) {
 					throw new WeighbridgeError(
 						frappe.utils.escape_html(data.error || "") +
-							(data.live != null ? `<br>${__("Current reading")}: ${flt(data.live)} kg` : "")
+							(data.live != null ? `<br>${__("Current reading")}: ${flt(data.live)} kg` : ""),
+						__("Weight not captured"),
+						"orange"
 					);
 				}
 				return flt(data.weight);
 			}
 			throw new WeighbridgeError(
-				__('Weighbridge service not reachable at {0}. Open this slip on the weighbridge PC and make sure "WeighbridgeService" is running.', [
-					urls.join(" " + __("or") + " "),
-				])
+				__('Open this slip on the weighbridge PC and make sure "WeighbridgeService" is running.'),
+				__("Weighbridge service not reachable"),
+				"red"
 			);
 		} finally {
 			frappe.dom.unfreeze();
@@ -162,7 +175,7 @@ frappe.provide("vyavantra.weighbridge");
 	}
 
 	vyavantra.weighbridge.read = async function (server_method) {
-		const config = await frappe.call({ method: CONFIG }).then((r) => r.message || {});
+		const config = await get_config();
 		if (config.source === "Weighbridge Service") return read_service(config);
 		if (config.source !== "Browser Serial Port") {
 			return frappe
@@ -176,8 +189,10 @@ frappe.provide("vyavantra.weighbridge");
 	// options (optional):
 	//   check(weight)  returns a message to refuse the reading (the field is left unchanged), or nothing to accept it
 	//   time_field     Datetime field that gets the capture time
+	//   after(weight)  runs once the weight and its time are in the form, e.g. to save the slip
 	vyavantra.weighbridge.capture = function (frm, field, server_method, options) {
 		options = options || {};
+		const label = frm.fields_dict[field] ? __(frm.fields_dict[field].df.label) : field;
 		return vyavantra.weighbridge
 			.read(server_method)
 			.then(async (weight) => {
@@ -191,9 +206,13 @@ frappe.provide("vyavantra.weighbridge");
 				if (options.time_field && frm.fields_dict[options.time_field]) {
 					await frm.set_value(options.time_field, frappe.datetime.now_datetime());
 				}
+				frappe.show_alert({ message: __("{0}: {1} kg", [label, weight]), indicator: "green" });
+				if (options.after) await options.after(weight);
 			})
 			.catch((e) => {
-				if (e && e.message) frappe.msgprint({ title: __("Weight not read"), message: e.message, indicator: "red" });
+				if (e && e.message) {
+					frappe.msgprint({ title: e.title || __("Weight not read"), message: e.message, indicator: e.indicator || "red" });
+				}
 			});
 	};
 
