@@ -6,6 +6,11 @@ const GWS_METHOD = "vyavantra_weighbridge.vyavantra_weighbridge.doctype.general_
 frappe.ui.form.on("General Weighment Slip", {
 	refresh(frm) {
 		frm.page.add_menu_item(__("Select Weighbridge COM Port"), () => vyavantra.weighbridge.select_port());
+		if (frm.doc.docstatus === 0) {
+			// Fetch Weight takes the next missing weighing; these two take a named one
+			frm.add_custom_button(__("Loaded Vehicle Weight"), () => capture(frm, "loaded_weight"), __("Capture"));
+			frm.add_custom_button(__("Empty Vehicle Weight"), () => capture(frm, "empty_weight"), __("Capture"));
+		}
 		if (frm.doc.docstatus === 1) {
 			frm.add_custom_button(__("Print Slip"), () => frm.print_doc());
 		}
@@ -28,5 +33,15 @@ function calc(frm) {
 }
 
 function capture(frm, field) {
-	return vyavantra.weighbridge.capture(frm, field, GWS_METHOD);
+	return vyavantra.weighbridge.capture(frm, field, GWS_METHOD, {
+		check: (weight) => {
+			const loaded = flt(frm.doc.loaded_weight), empty = flt(frm.doc.empty_weight);
+			if (field === "empty_weight" && loaded && weight >= loaded) {
+				return __("Scale shows {0} kg, but Loaded Vehicle Weight is {1} kg. Is the vehicle unloaded?", [weight, loaded]);
+			}
+			if (field === "loaded_weight" && empty && weight <= empty) {
+				return __("Scale shows {0} kg, but Empty Vehicle Weight is {1} kg. Is the vehicle loaded?", [weight, empty]);
+			}
+		},
+	});
 }

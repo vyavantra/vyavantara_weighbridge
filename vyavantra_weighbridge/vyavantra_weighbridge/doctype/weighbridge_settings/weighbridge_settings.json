@@ -134,11 +134,9 @@
   {
    "fieldname": "indicator_service_url",
    "fieldtype": "Data",
-   "label": "Weighbridge Service URL",
-   "default": "http://127.0.0.1:8765/weight/stable",
+   "label": "Weighbridge Service URL (fallback)",
    "depends_on": "eval:doc.indicator_source=='Weighbridge Service'",
-   "mandatory_depends_on": "eval:doc.indicator_source=='Weighbridge Service'",
-   "description": "Stable-weight endpoint of the WeighbridgeService. 127.0.0.1 means the PC the browser runs on, so the ERP must be opened on the weighbridge PC"
+   "description": "Leave empty for the normal setup. http://127.0.0.1:8765/weight/stable is always tried first; this address is used only when the service does not answer there, e.g. another port or another PC"
   },
   {
    "fieldname": "indicator_service_timeout",

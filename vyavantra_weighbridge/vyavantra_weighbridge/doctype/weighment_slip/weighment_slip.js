@@ -23,6 +23,10 @@ frappe.ui.form.on("Weighment Slip", {
 		frm.page.add_menu_item(__("Select Weighbridge COM Port"), () => vyavantra.weighbridge.select_port());
 		format_computed_weights(frm);
 		if (frm.doc.docstatus === 0) {
+			// the Fetch Weight button in the Weights tab takes the next missing weighing; these two take a
+			// named one, so an operator can re-read just the loaded or just the empty vehicle
+			frm.add_custom_button(__("Loaded Vehicle Weight"), () => capture(frm, "gross_weight"), __("Capture"));
+			frm.add_custom_button(__("Empty Vehicle Weight"), () => capture(frm, "tare_weight"), __("Capture"));
 			if (frm.is_new()) {
 				show_cane_rates(frm);
 				set_shift(frm);

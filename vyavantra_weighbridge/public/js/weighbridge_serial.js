@@ -3,7 +3,8 @@
 // Weighbridge Settings > "Read weight from":
 //   Server               the server asks the indicator (HTTP URL or the server's own serial port)
 //   Browser Serial Port  this browser (Chrome / Edge, https or localhost) reads the COM port of the PC it runs on
-//   Weighbridge Service  this browser asks the WeighbridgeService running on the weighbridge PC (HTTP, stable weight)
+//   Weighbridge Service  this browser asks the WeighbridgeService of the weighbridge PC. 127.0.0.1 is tried first;
+//                        the URL in Weighbridge Settings is used only when that one does not answer
 //
 // vyavantra.weighbridge.read(server_method) resolves with the weight in Kg.
 
@@ -12,6 +13,8 @@ frappe.provide("vyavantra.weighbridge");
 (function () {
 	const CONFIG = "vyavantra_weighbridge.indicator.get_indicator_config";
 	const READ_TIMEOUT_MS = 8000;
+	// the service listens here on the weighbridge PC itself; 127.0.0.1 always means "the PC running this browser"
+	const DEFAULT_SERVICE_URL = "http://127.0.0.1:8765/weight/stable";
 
 	class WeighbridgeError extends Error {}
 
@@ -115,30 +118,44 @@ frappe.provide("vyavantra.weighbridge");
 
 	// WeighbridgeService answers { ok, weight } or { ok: false, error, live }; fetch does not throw on 408 / 503,
 	// so data.ok is always checked
+	async function ask_service(url, timeout_ms) {
+		const target = new URL(url);
+		target.searchParams.set("timeoutMs", timeout_ms);
+		const res = await fetch(target, { cache: "no-store" }); // throws only when the service is unreachable
+		return res.json();
+	}
+
+	// The service normally sits on this PC. The URL in Weighbridge Settings is the fallback, for a service
+	// that was moved to another port or machine; it is only tried when the default one does not answer.
 	async function read_service(config) {
-		if (!config.service_url) {
-			throw new WeighbridgeError(__("Weighbridge Service URL is not set in Weighbridge Settings."));
-		}
-		const url = new URL(config.service_url);
-		url.searchParams.set("timeoutMs", config.service_timeout_ms);
+		const urls = [DEFAULT_SERVICE_URL];
+		if (config.service_url && config.service_url !== DEFAULT_SERVICE_URL) urls.push(config.service_url);
+		const timeout_ms = config.service_timeout_ms || 15000;
+
 		frappe.dom.freeze(__("Waiting for stable weight..."));
 		try {
-			let data;
-			try {
-				const res = await fetch(url, { cache: "no-store" });
-				data = await res.json();
-			} catch (e) {
-				throw new WeighbridgeError(
-					__('Weighbridge service not reachable. Open this slip on the weighbridge PC and make sure "WeighbridgeService" is running.')
-				);
+			// a request that is simply unreachable moves on to the next address
+			for (const url of urls) {
+				let data;
+				try {
+					data = await ask_service(url, timeout_ms);
+				} catch (e) {
+					continue;
+				}
+				// the service answered: an unstable scale is its answer, not a reason to ask somewhere else
+				if (!data.ok) {
+					throw new WeighbridgeError(
+						frappe.utils.escape_html(data.error || "") +
+							(data.live != null ? `<br>${__("Current reading")}: ${flt(data.live)} kg` : "")
+					);
+				}
+				return flt(data.weight);
 			}
-			if (!data.ok) {
-				throw new WeighbridgeError(
-					frappe.utils.escape_html(data.error || "") +
-						(data.live != null ? `<br>${__("Current reading")}: ${flt(data.live)} kg` : "")
-				);
-			}
-			return flt(data.weight);
+			throw new WeighbridgeError(
+				__('Weighbridge service not reachable at {0}. Open this slip on the weighbridge PC and make sure "WeighbridgeService" is running.', [
+					urls.join(" " + __("or") + " "),
+				])
+			);
 		} finally {
 			frappe.dom.unfreeze();
 		}
