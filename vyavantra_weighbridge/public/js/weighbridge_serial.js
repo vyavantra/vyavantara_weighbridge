@@ -23,9 +23,31 @@ frappe.provide("vyavantra.weighbridge");
 		}
 	}
 
+	// The browser refuses to hand over a cross-origin response unless the service allows this exact ERP
+	// address. A no-cors probe still succeeds in that case (the answer is opaque but the request arrives),
+	// which separates "the service is not listening" from "the service is listening but rejects us".
+	async function diagnose_unreachable() {
+		try {
+			await fetch(SERVICE_URL, { cache: "no-store", mode: "no-cors" });
+		} catch (e) {
+			return new WeighbridgeError(
+				__('Open this slip on the weighbridge PC and make sure "WeighbridgeService" is running.'),
+				__("Weighbridge service not reachable"),
+				"red"
+			);
+		}
+		return new WeighbridgeError(
+			__("The service is running, but it does not accept requests from {0}.", [`<b>${frappe.utils.escape_html(window.location.origin)}</b>`]) +
+				"<br><br>" +
+				__("Add that address to AllowedOrigins in C:\\WeighbridgeService\\appsettings.json (no trailing slash) and restart the Weighbridge Service."),
+			__("Weighbridge service rejected this site"),
+			"red"
+		);
+	}
+
 	// The service answers { ok: true, weight } or { ok: false, error, live }. fetch does not throw on
-	// 408 (not stable) or 503 (COM port down), so data.ok is always checked; it throws only when nothing
-	// answers at all, which means the service is stopped or the ERP is open on a different PC.
+	// 408 (not stable) or 503 (COM port down), so data.ok is always checked; it throws only when the
+	// response never arrives: service stopped, ERP open on another PC, or this site not allowed.
 	async function read_service() {
 		frappe.dom.freeze(__("Waiting for stable weight..."));
 		try {
@@ -34,11 +56,7 @@ frappe.provide("vyavantra.weighbridge");
 				const res = await fetch(SERVICE_URL, { cache: "no-store" });
 				data = await res.json();
 			} catch (e) {
-				throw new WeighbridgeError(
-					__('Open this slip on the weighbridge PC and make sure "WeighbridgeService" is running.'),
-					__("Weighbridge service not reachable"),
-					"red"
-				);
+				throw await diagnose_unreachable();
 			}
 			if (!data.ok) {
 				throw new WeighbridgeError(
