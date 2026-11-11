@@ -95,7 +95,8 @@
    "fieldtype": "Int",
    "label": "Indicator Baud Rate",
    "default": "9600",
-   "description": "Same as set on the indicator"
+   "description": "Speed of the serial line, same as set on the indicator. Not used by the Weighbridge Service, which reads the COM port itself",
+   "depends_on": "eval:!doc.indicator_source || doc.indicator_source!='Weighbridge Service'"
   },
   {
    "fieldname": "sb_report_heading",
