@@ -2,7 +2,6 @@
 // For license information, please see license.txt
 
 const WS_PATH = "vyavantra_weighbridge.vyavantra_weighbridge.doctype.weighment_slip.weighment_slip.";
-const WS_METHOD = WS_PATH + "get_indicator_weight";
 
 // the Slip Details that identify the vehicle; without them a captured weight cannot be placed
 const REQUIRED_BEFORE_WEIGHT = ["farmer", "delivery_type", "vehicle"];
@@ -25,7 +24,6 @@ frappe.ui.form.on("Weighment Slip", {
 	},
 	refresh(frm) {
 		frm.page.wrapper.addClass("wbs-slip"); // scopes weighment_slip.css to this form only
-		frm.page.add_menu_item(__("Select Weighbridge COM Port"), () => vyavantra.weighbridge.select_port());
 		format_computed_weights(frm);
 		if (frm.doc.docstatus === 0) {
 			set_fetch_label(frm);
@@ -239,7 +237,7 @@ function set_fetch_label(frm) {
 }
 
 function capture(frm, field) {
-	return vyavantra.weighbridge.capture(frm, field, WS_METHOD, {
+	return vyavantra.weighbridge.capture(frm, field, {
 		time_field: WEIGHT_TIME_FIELD[field],
 		check: (weight) => {
 			const loaded = flt(frm.doc.gross_weight), empty = flt(frm.doc.tare_weight);

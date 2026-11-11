@@ -6,8 +6,6 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.utils import cint, flt, nowtime
 
-from vyavantra_weighbridge.indicator import read_indicator_weight
-
 
 class GeneralWeighmentSlip(Document):
 	"""Weighment of anything that is not cane: product, vehicle, party and the two weights."""
@@ -44,10 +42,3 @@ class GeneralWeighmentSlip(Document):
 			frappe.throw(_("Both Empty and Loaded Vehicle Weights must be taken before submitting"))
 		if flt(self.net_weight) <= 0:
 			frappe.throw(_("Net Weight must be greater than zero"))
-
-
-@frappe.whitelist()
-def get_indicator_weight():
-	"""Read the current weight (Kg) from the weighbridge indicator configured in Weighbridge Settings."""
-	frappe.has_permission("General Weighment Slip", "create", throw=True)
-	return read_indicator_weight()

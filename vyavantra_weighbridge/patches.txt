@@ -14,3 +14,4 @@ vyavantra_weighbridge.patches.v0_2.setup_weighbridge_requirements
 vyavantra_weighbridge.patches.v0_3.migrate_master_data
 vyavantra_weighbridge.patches.v0_5.cane_rates_by_delivery_type
 vyavantra_weighbridge.patches.v0_7.weight_percent_deduction
+vyavantra_weighbridge.patches.v1_0.drop_indicator_settings

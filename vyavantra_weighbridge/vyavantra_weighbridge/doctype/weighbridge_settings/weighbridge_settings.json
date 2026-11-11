@@ -10,18 +10,6 @@
   "cb_15",
   "cash_account",
   "bank_account",
-  "sb_weight_indicator",
-  "indicator_source",
-  "indicator_service_url",
-  "indicator_service_timeout",
-  "indicator_url",
-  "cb_16",
-  "indicator_serial_port",
-  "indicator_baud_rate",
-  "indicator_parity",
-  "indicator_data_bits",
-  "indicator_stop_bits",
-  "indicator_stable_readings",
   "sb_logo",
   "logo_height",
   "cb_logo",
@@ -68,37 +56,6 @@
    "options": "Account"
   },
   {
-   "fieldname": "sb_weight_indicator",
-   "fieldtype": "Section Break",
-   "label": "Weight Indicator"
-  },
-  {
-   "fieldname": "indicator_url",
-   "fieldtype": "Data",
-   "label": "Indicator HTTP URL",
-   "description": "URL returning the current weight as text/JSON (e.g. a serial-to-HTTP gateway)",
-   "depends_on": "eval:!doc.indicator_source || doc.indicator_source=='Server'"
-  },
-  {
-   "fieldname": "cb_16",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "indicator_serial_port",
-   "fieldtype": "Data",
-   "label": "Indicator Serial Port",
-   "description": "e.g. COM3 or /dev/ttyUSB0 (needs pyserial on the server)",
-   "depends_on": "eval:!doc.indicator_source || doc.indicator_source=='Server'"
-  },
-  {
-   "fieldname": "indicator_baud_rate",
-   "fieldtype": "Int",
-   "label": "Indicator Baud Rate",
-   "default": "9600",
-   "description": "Speed of the serial line, same as set on the indicator. Not used by the Weighbridge Service, which reads the COM port itself",
-   "depends_on": "eval:!doc.indicator_source || doc.indicator_source!='Weighbridge Service'"
-  },
-  {
    "fieldname": "sb_report_heading",
    "fieldtype": "Section Break",
    "label": "Report Heading"
@@ -122,61 +79,6 @@
    "fieldname": "report_address",
    "fieldtype": "Small Text",
    "label": "Address"
-  },
-  {
-   "fieldname": "indicator_source",
-   "fieldtype": "Select",
-   "label": "Read weight from",
-   "options": "Server\nBrowser Serial Port\nWeighbridge Service",
-   "default": "Server",
-   "description": "Server: the server reads the indicator (URL below or its own COM port). Browser Serial Port: the Chrome / Edge of the weighbridge PC reads its COM port. Weighbridge Service: the browser asks the WeighbridgeService running on the weighbridge PC"
-  },
-  {
-   "fieldname": "indicator_service_url",
-   "fieldtype": "Data",
-   "label": "Weighbridge Service URL (fallback)",
-   "depends_on": "eval:doc.indicator_source=='Weighbridge Service'",
-   "description": "Leave empty for the normal setup. http://127.0.0.1:8765/weight/stable is always tried first; this address is used only when the service does not answer there, e.g. another port or another PC"
-  },
-  {
-   "fieldname": "indicator_service_timeout",
-   "fieldtype": "Int",
-   "label": "Stable Weight Wait (ms)",
-   "default": "15000",
-   "depends_on": "eval:doc.indicator_source=='Weighbridge Service'",
-   "description": "How long the service may wait for the scale to settle before it gives up"
-  },
-  {
-   "fieldname": "indicator_parity",
-   "fieldtype": "Select",
-   "label": "Parity",
-   "options": "none\neven\nodd",
-   "default": "none",
-   "depends_on": "eval:doc.indicator_source=='Browser Serial Port'"
-  },
-  {
-   "fieldname": "indicator_data_bits",
-   "fieldtype": "Select",
-   "label": "Data Bits",
-   "options": "8\n7",
-   "default": "8",
-   "depends_on": "eval:doc.indicator_source=='Browser Serial Port'"
-  },
-  {
-   "fieldname": "indicator_stop_bits",
-   "fieldtype": "Select",
-   "label": "Stop Bits",
-   "options": "1\n2",
-   "default": "1",
-   "depends_on": "eval:doc.indicator_source=='Browser Serial Port'"
-  },
-  {
-   "fieldname": "indicator_stable_readings",
-   "fieldtype": "Int",
-   "label": "Stable Readings",
-   "default": "3",
-   "depends_on": "eval:doc.indicator_source=='Browser Serial Port'",
-   "description": "The weight is taken when the indicator sends this many identical readings in a row"
   },
   {
    "fieldname": "sb_logo",
@@ -204,7 +106,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-11-10 12:00:00.000000",
+ "modified": "2026-11-11 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Weighbridge Settings",

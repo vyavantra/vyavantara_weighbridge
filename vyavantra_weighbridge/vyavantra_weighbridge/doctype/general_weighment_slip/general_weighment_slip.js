@@ -1,15 +1,12 @@
 // Copyright (c) 2026, Vyavantra Tech Solution PVT. LTD and contributors
 // For license information, please see license.txt
 
-const GWS_METHOD = "vyavantra_weighbridge.vyavantra_weighbridge.doctype.general_weighment_slip.general_weighment_slip.get_indicator_weight";
-
 // the details that identify the load; without them a captured weight cannot be placed
 const GWS_REQUIRED_BEFORE_WEIGHT = ["product_name", "vehicle_no", "party_name"];
 const GWS_AUTO_SAVE_AFTER_FETCH = true;
 
 frappe.ui.form.on("General Weighment Slip", {
 	refresh(frm) {
-		frm.page.add_menu_item(__("Select Weighbridge COM Port"), () => vyavantra.weighbridge.select_port());
 		if (frm.doc.docstatus === 0) {
 			set_fetch_label(frm);
 			// Fetch Weight takes the next missing weighing; these two take a named one
@@ -98,7 +95,7 @@ function set_fetch_label(frm) {
 }
 
 function capture(frm, field) {
-	return vyavantra.weighbridge.capture(frm, field, GWS_METHOD, {
+	return vyavantra.weighbridge.capture(frm, field, {
 		check: (weight) => {
 			const loaded = flt(frm.doc.loaded_weight), empty = flt(frm.doc.empty_weight);
 			if (field === "empty_weight" && loaded && weight >= loaded) {

@@ -6,8 +6,6 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.utils import cint, flt, get_time, getdate, nowtime
 
-from vyavantra_weighbridge.indicator import read_indicator_weight
-
 BILL_LINKS = ("farmer_bill", "tractor_bill", "todani_bill", "agent_bill")
 
 
@@ -201,13 +199,6 @@ def route_query(doctype, txt, searchfield, start, page_len, filters):
 		if not txt or txt in r.route.lower()
 	]
 	return rows[cint(start) : cint(start) + cint(page_len)]
-
-
-@frappe.whitelist()
-def get_indicator_weight():
-	"""Read the current weight (Kg) from the weighbridge indicator configured in Weighbridge Settings."""
-	frappe.has_permission("Weighment Slip", "create", throw=True)
-	return read_indicator_weight()
 
 
 def get_shift_for_time(slip_time):
