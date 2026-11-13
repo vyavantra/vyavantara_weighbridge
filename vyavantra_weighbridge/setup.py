@@ -10,10 +10,11 @@ exported into the app (workspace/, number_card/, dashboard_chart/) and synced by
 import frappe
 
 ROLES = ("Weighbridge Manager", "Weighbridge User", "Slip Boy")
+# the three crushing shifts; the slip picks one from its time
 SHIFTS = (
-	("Shift 1", "04:00:00", "12:00:00"),
-	("Shift 2", "12:00:00", "20:00:00"),
-	("Shift 3", "20:00:00", "04:00:00"),
+	("1st Shift Morning", "04:00:00", "12:00:00"),
+	("2nd Shift Day", "12:00:00", "20:00:00"),
+	("3rd Shift Night", "20:00:00", "04:00:00"),
 )
 
 
@@ -33,6 +34,7 @@ def after_migrate_setup():
 	create_shifts()
 	ensure_bank_fields()
 	ensure_discount_fields()
+	seed_states()
 	seed_varieties()
 	seed_delivery_types()
 	set_default_print_formats()
@@ -74,6 +76,25 @@ def create_shifts():
 
 DELIVERY_TYPES = ("Farm Delivery", "Gate Cane", "Harvesting Machine")
 VARIETIES = ("86032", "265", "10001", "15012", "671", "9805", "8005", "419", "0265")
+# the masters carry a State so bills and cheques read right; everyone here is in Maharashtra, the rest
+# are seeded for the odd supplier from across a border
+STATES = (
+	"Maharashtra",
+	"Karnataka",
+	"Gujarat",
+	"Madhya Pradesh",
+	"Telangana",
+	"Andhra Pradesh",
+	"Goa",
+)
+
+
+def seed_states():
+	if not frappe.db.exists("DocType", "State Master"):
+		return
+	for state in STATES:
+		if not frappe.db.exists("State Master", state):
+			frappe.get_doc({"doctype": "State Master", "state_name": state}).insert(ignore_permissions=True)
 
 
 def ensure_bank_fields():

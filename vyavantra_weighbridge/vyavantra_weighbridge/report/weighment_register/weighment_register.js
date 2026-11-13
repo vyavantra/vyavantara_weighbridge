@@ -10,11 +10,11 @@ frappe.query_reports["Weighment Register"] = {
 		{ fieldname: "village", label: __("Village"), fieldtype: "Link", options: "Village Master" },
 		{ fieldname: "vehicle", label: __("Vehicle"), fieldtype: "Link", options: "Tractor Number" },
 		{ fieldname: "contractor", label: __("Contractor"), fieldtype: "Link", options: "Contractor Master" },
-		{ fieldname: "agent", label: __("Agent"), fieldtype: "Link", options: "Cane Agent" },
+		{ fieldname: "agent", label: __("Slip Boy"), fieldtype: "Link", options: "Cane Agent" },
 		{ fieldname: "delivery_type", label: __("Delivery Type"), fieldtype: "Link", options: "Delivery Type" },
 		{ fieldname: "slip_no", label: __("Slip / Serial No."), fieldtype: "Data" },
 		{ fieldname: "status", label: __("Status"), fieldtype: "Select", options: "Submitted\nCancelled\nDraft\nAll", default: "Submitted" },
 		{ fieldname: "group_by", label: __("Group By"), fieldtype: "Select", default: "None",
-			options: "None\nDate\nShift\nVillage\nCane Supplier\nVehicle\nDelivery Type\nCane Rate\nDeduction Reason\nTransport Contractor\nCutting Contractor\nAgent" },
+			options: "None\nDate\nShift\nVillage\nCane Supplier\nVehicle\nDelivery Type\nCane Rate\nDeduction Reason\nTransport Contractor\nCutting Contractor\nSlip Boy" },
 	],
 };

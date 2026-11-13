@@ -34,6 +34,14 @@ Set **Weighbridge Settings > Weighbridge API URL**. The scale endpoint must answ
 
 A non-stable, non-positive or unreachable reading is rejected and nothing is saved. An optional API token is sent as a Bearer token.
 
+### Brix Entry
+
+The submittable **Brix Entry** Desk DocType records Date, Time, Tractor Number, and four floating-point readings (Mill 01–04). Date and time default to current values but remain editable. Weighbridge User and Slip Boy can submit entries; Weighbridge Manager can cancel or amend. This does not alter Weighment Slip or its weight-capture settings.
+
+### Slip Boy Desk entry
+
+The submittable **Slip Boy Entry** Desk DocType replaces the `/slip-boy` Web Form. Select a Cane Supplier or enter a new farmer with village, bank details, and private Bank Passbook/Aadhaar Card image uploads. On Submit, it creates the farmer if needed and a linked draft Weighment Slip for the weighbridge operator. Cancel is available to managers while that linked slip remains a draft.
+
 ### Installation
 
 You can install this app using the [bench](https://github.com/frappe/bench) CLI:

@@ -17,7 +17,7 @@ GROUPS = {
 	"Deduction Reason": ("deduction_reason", "Reason", "Data"),
 	"Transport Contractor": ("transport_contractor", "Transport Contractor", "Link/Contractor Master"),
 	"Cutting Contractor": ("cutting_contractor", "Cutting Contractor", "Link/Contractor Master"),
-	"Agent": ("agent", "Agent", "Link/Cane Agent"),
+	"Slip Boy": ("agent", "Slip Boy", "Link/Cane Agent"),
 }
 FILTER_FIELDS = ("shift", "farmer", "village", "vehicle", "delivery_type", "agent")
 
@@ -54,13 +54,13 @@ def detail(condition, values):
 		{"label": _("Cane Supplier"), "fieldname": "farmer_name", "fieldtype": "Data", "width": 150},
 		{"label": _("Village"), "fieldname": "village", "fieldtype": "Link", "options": "Village Master", "width": 100},
 		{"label": _("Delivery"), "fieldname": "delivery_type", "fieldtype": "Data", "width": 110},
-		{"label": _("Loaded (Kg)"), "fieldname": "gross_weight", "fieldtype": "Float", "width": 100},
-		{"label": _("Empty (Kg)"), "fieldname": "tare_weight", "fieldtype": "Float", "width": 100},
-		{"label": _("Cane (Kg)"), "fieldname": "cane_weight", "fieldtype": "Float", "width": 100},
-		{"label": _("Binding (Kg)"), "fieldname": "mat_weight", "fieldtype": "Float", "width": 90},
+		{"label": _("Loaded (Kg)"), "fieldname": "gross_weight", "fieldtype": "Int", "width": 100},
+		{"label": _("Empty (Kg)"), "fieldname": "tare_weight", "fieldtype": "Int", "width": 100},
+		{"label": _("Cane (Kg)"), "fieldname": "cane_weight", "fieldtype": "Int", "width": 100},
+		{"label": _("Binding (Kg)"), "fieldname": "mat_weight", "fieldtype": "Int", "width": 90},
 		{"label": _("Other Ded. (%)"), "fieldname": "other_deduction_percent", "fieldtype": "Percent", "width": 90},
-		{"label": _("Other Ded. (Kg)"), "fieldname": "other_deduction", "fieldtype": "Float", "width": 100},
-		{"label": _("Net Weight (Kg)"), "fieldname": "net_cane_weight", "fieldtype": "Float", "width": 110},
+		{"label": _("Other Ded. (Kg)"), "fieldname": "other_deduction", "fieldtype": "Int", "width": 100},
+		{"label": _("Net Weight (Kg)"), "fieldname": "net_cane_weight", "fieldtype": "Int", "width": 110},
 		{"label": _("Rate / Ton"), "fieldname": "cane_rate", "fieldtype": "Currency", "width": 90},
 		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 110},
 		{"label": _("Deduction Reason"), "fieldname": "deduction_reason", "fieldtype": "Data", "width": 160},
@@ -78,7 +78,7 @@ def detail(condition, values):
 	if data:
 		total = {"name": _("Total"), "farmer_name": _("{0} trips").format(len(data))}
 		for k in ("gross_weight", "tare_weight", "cane_weight", "mat_weight", "other_deduction", "net_cane_weight", "amount"):
-			total[k] = flt(sum(flt(d.get(k)) for d in data), 2)
+			total[k] = flt(sum(flt(d.get(k)) for d in data), 2) if k == "amount" else int(sum(flt(d.get(k)) for d in data))
 		data.append(total)
 	return columns, data
 
@@ -94,16 +94,16 @@ def grouped(group, condition, values):
 	columns = [
 		col,
 		{"label": _("Trips"), "fieldname": "trips", "fieldtype": "Int", "width": 70},
-		{"label": _("Loaded (Kg)"), "fieldname": "gross", "fieldtype": "Float", "width": 110},
-		{"label": _("Empty (Kg)"), "fieldname": "tare", "fieldtype": "Float", "width": 110},
-		{"label": _("Deductions (Kg)"), "fieldname": "deductions", "fieldtype": "Float", "width": 120},
-		{"label": _("Net Weight (Kg)"), "fieldname": "net", "fieldtype": "Float", "width": 110},
+		{"label": _("Loaded (Kg)"), "fieldname": "gross", "fieldtype": "Int", "width": 110},
+		{"label": _("Empty (Kg)"), "fieldname": "tare", "fieldtype": "Int", "width": 110},
+		{"label": _("Deductions (Kg)"), "fieldname": "deductions", "fieldtype": "Int", "width": 120},
+		{"label": _("Net Weight (Kg)"), "fieldname": "net", "fieldtype": "Int", "width": 110},
 		{"label": _("Net (Ton)"), "fieldname": "net_ton", "fieldtype": "Float", "precision": 3, "width": 100},
 		{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 120},
 	]
 	data = frappe.db.sql(
-		f"""select `{field}` as grp, count(*) as trips, sum(gross_weight) as gross, sum(tare_weight) as tare,
-		sum(mat_weight + other_deduction) as deductions, sum(net_cane_weight) as net,
+		f"""select `{field}` as grp, count(*) as trips, cast(sum(gross_weight) as signed) as gross, cast(sum(tare_weight) as signed) as tare,
+		cast(sum(mat_weight + other_deduction) as signed) as deductions, cast(sum(net_cane_weight) as signed) as net,
 		round(sum(net_cane_weight) / 1000, 3) as net_ton,
 		round(sum(net_cane_weight / 1000 * cane_rate), 2) as amount
 		from `tabWeighment Slip` where {condition}{extra} group by `{field}` order by `{field}`""",
@@ -123,6 +123,7 @@ def grouped(group, condition, values):
 		total = {"grp": _("Total")}
 		for k in ("trips", "gross", "tare", "deductions", "net", "net_ton", "amount"):
 			total[k] = flt(sum(flt(d.get(k)) for d in data), 3)
-		total["trips"] = int(total["trips"])
+		for k in ("trips", "gross", "tare", "deductions", "net"):
+			total[k] = int(total[k])
 		data.append(total)
 	return columns, data, None, chart

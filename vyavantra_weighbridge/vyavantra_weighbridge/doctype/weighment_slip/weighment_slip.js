@@ -3,7 +3,7 @@
 
 const WS_PATH = "vyavantra_weighbridge.vyavantra_weighbridge.doctype.weighment_slip.weighment_slip.";
 
-// the Slip Details that identify the vehicle; without them a captured weight cannot be placed
+// the Field Slip details that identify the vehicle; without them a captured weight cannot be placed
 const REQUIRED_BEFORE_WEIGHT = ["farmer", "delivery_type", "vehicle"];
 // the slip is saved right after each weighing, so a reading is never lost
 const AUTO_SAVE_AFTER_FETCH = true;
@@ -25,8 +25,10 @@ frappe.ui.form.on("Weighment Slip", {
 	refresh(frm) {
 		frm.page.wrapper.addClass("wbs-slip"); // scopes weighment_slip.css to this form only
 		format_computed_weights(frm);
+		show_time_in_12_hour(frm);
 		if (frm.doc.docstatus === 0) {
 			set_fetch_label(frm);
+			if (!frm.is_new()) load_binding_percent(frm);
 			// Fetch Weight takes the next missing weighing; these two take a named one, so an operator
 			// can re-read just the loaded or just the empty vehicle
 			frm.add_custom_button(__("Loaded Vehicle Weight"), () => capture(frm, "gross_weight"), __("Capture"));
@@ -78,7 +80,10 @@ frappe.ui.form.on("Weighment Slip", {
 	},
 	delivery_type: show_cane_rates,
 	slip_date: show_cane_rates,
-	slip_time: set_shift,
+	slip_time(frm) {
+		set_shift(frm);
+		show_time_in_12_hour(frm);
+	},
 	after_save(frm) {
 		format_computed_weights(frm);
 		set_fetch_label(frm);
@@ -97,7 +102,6 @@ frappe.ui.form.on("Weighment Slip", {
 		calc(frm);
 		set_fetch_label(frm);
 	},
-	mat_weight: calc,
 	other_deduction_percent: calc,
 });
 
@@ -110,6 +114,16 @@ function set_shift(frm) {
 		args: { slip_time: frm.doc.slip_time },
 		callback: (r) => frm.set_value("shift", r.message || ""),
 	});
+}
+
+// The time is typed and stored on the 24 hour clock, which is what the shifts are set in. The same
+// time is spelled out underneath, so an operator reading 20:30 off the slip sees 8:30 PM as well.
+function show_time_in_12_hour(frm) {
+	const time = frm.doc.slip_time;
+	if (!time) return frm.set_df_property("slip_time", "description", "");
+
+	const spoken = moment(time, "HH:mm:ss").format("h:mm A");
+	frm.set_df_property("slip_time", "description", __("24 hour clock. {0} is {1}", [time.slice(0, 5), spoken]));
 }
 
 function clear_route(frm) {
@@ -136,6 +150,8 @@ function show_cane_rates(frm) {
 	if (frm.doc.docstatus !== 0) return;
 	if (!frm.doc.delivery_type) {
 		["cane_rate", "todani_rate", "farakt_rate"].forEach((field) => frm.set_value(field, 0));
+		frm.binding_percent = 0;
+		calc(frm);
 		return;
 	}
 	frappe.call({
@@ -147,6 +163,8 @@ function show_cane_rates(frm) {
 			frm.set_value("cane_rate", found ? rates.cane_rate : 0);
 			frm.set_value("todani_rate", found ? rates.todani_rate : 0);
 			frm.set_value("farakt_rate", found ? rates.farakt_rate : 0);
+			frm.binding_percent = found ? flt(rates.binding_deduction_percent) : 0;
+			calc(frm);
 			if (!found) {
 				frappe.show_alert({
 					message: __("No Cane Rate Master has a rate for {0} on {1}", [
@@ -160,19 +178,38 @@ function show_cane_rates(frm) {
 	});
 }
 
-// Same chain as WeighmentSlip.calculate_weights(); the server repeats it on save.
+// The Binding Deduction % belongs to the Cane Rate Master of the slip's date and delivery type. A saved draft
+// reads it again when it is opened, so editing its weights recalculates the binding the same way the server will.
+function load_binding_percent(frm) {
+	if (!frm.doc.delivery_type) return;
+	frappe.call({
+		method: WS_PATH + "get_cane_rates",
+		args: { slip_date: frm.doc.slip_date, delivery_type: frm.doc.delivery_type },
+		callback: (r) => (frm.binding_percent = flt((r.message || {}).binding_deduction_percent)),
+	});
+}
+
+// Whole kilograms, half rounded up (2.5 -> 3), exactly as round_kg() / percent_of_kg() in weighment_slip.py.
+// The value is cut to 12 significant digits first so binary float noise (2.4999999999999996) cannot flip a half.
+function kg(value) {
+	return Math.round(Number(flt(value).toPrecision(12)));
+}
+
+// Same chain as WeighmentSlip.calculate_weights(); the server repeats it on save and is the authority.
 // It runs whenever any input changes, so typing only the Loaded Vehicle Weight already fills everything below it.
 function calc(frm) {
 	if (frm.doc.docstatus !== 0) return;
-	const loaded = flt(frm.doc.gross_weight), empty = flt(frm.doc.tare_weight), binding = flt(frm.doc.mat_weight);
+	const loaded = kg(frm.doc.gross_weight), empty = kg(frm.doc.tare_weight);
 	const percent = Math.min(Math.max(flt(frm.doc.other_deduction_percent), 0), 100);
-	const cane = loaded ? flt(loaded - empty, 2) : 0;
-	const net_after_binding = flt(cane - binding, 2);
-	const deduction = flt((net_after_binding * percent) / 100, 2);
+	const cane = loaded ? loaded - empty : 0;
+	const binding = kg((cane * flt(frm.binding_percent)) / 100);
+	const net_after_binding = cane - binding;
+	const deduction = kg((net_after_binding * percent) / 100);
 	frm.set_value("cane_weight", cane);
+	frm.set_value("mat_weight", binding);
 	frm.set_value("net_after_binding", net_after_binding);
 	frm.set_value("other_deduction", deduction);
-	frm.set_value("net_cane_weight", flt(net_after_binding - deduction, 2));
+	frm.set_value("net_cane_weight", net_after_binding - deduction);
 	setTimeout(() => format_computed_weights(frm), 50);
 }
 
@@ -189,7 +226,7 @@ async function fetch_next_weight(frm) {
 	);
 	if (missing.length) {
 		return frappe.msgprint({
-			title: __("Fill Slip Details first"),
+			title: __("Fill Field Slip details first"),
 			indicator: "orange",
 			message: __("Please fill: {0}", [missing.join(", ")]),
 		});
@@ -239,6 +276,7 @@ function set_fetch_label(frm) {
 function capture(frm, field) {
 	return vyavantra.weighbridge.capture(frm, field, {
 		time_field: WEIGHT_TIME_FIELD[field],
+		transform: kg, // weights are whole kilograms
 		check: (weight) => {
 			const loaded = flt(frm.doc.gross_weight), empty = flt(frm.doc.tare_weight);
 			if (field === "tare_weight" && loaded && weight >= loaded) {
@@ -260,12 +298,12 @@ function capture(frm, field) {
 }
 
 // weights tab layout: public/css/weighment_slip.css
-const COMPUTED_WEIGHTS = ["cane_weight", "net_after_binding", "other_deduction", "net_cane_weight"];
+const COMPUTED_WEIGHTS = ["cane_weight", "mat_weight", "net_after_binding", "other_deduction", "net_cane_weight"];
 
-// computed weights are read-only, which Frappe prints as a bare "0"; show them with two decimals like the inputs
+// computed weights are read-only, which Frappe prints as a bare "0"; show them as whole kilograms with digit grouping
 function format_computed_weights(frm) {
 	COMPUTED_WEIGHTS.forEach((name) => {
 		const field = frm.fields_dict[name];
-		if (field) field.$wrapper.find(".control-value").text(format_number(flt(frm.doc[name]), null, 2));
+		if (field) field.$wrapper.find(".control-value").text(format_number(kg(frm.doc[name]), null, 0));
 	});
 }

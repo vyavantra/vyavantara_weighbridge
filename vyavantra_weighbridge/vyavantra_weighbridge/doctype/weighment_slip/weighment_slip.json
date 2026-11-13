@@ -6,11 +6,13 @@
  "engine": "InnoDB",
  "field_order": [
   "tab_slip",
-  "slip_date",
+  "field_slip_number",
   "serial_no",
   "cb_17",
-  "slip_time",
+  "slip_date",
   "column_break_apzx",
+  "slip_time",
+  "column_break_bspl",
   "shift",
   "member_information_section",
   "farmer",
@@ -26,21 +28,27 @@
   "cane_type",
   "cb_18",
   "variety",
-  "sb_applicable_rates_per_ton",
+  "column_break_mhoe",
   "delivery_type",
+  "sb_applicable_rates_per_ton",
   "cane_rate",
   "cb_21",
   "todani_rate",
   "farakt_rate",
   "sb_contractors_agent",
   "contractor_type",
-  "transport_contractor",
+  "trailer",
   "cb_19",
   "vehicle",
-  "vehicle_no",
-  "cutting_contractor",
-  "cb_20",
   "trolley_type",
+  "vehicle_no",
+  "cb_20",
+  "transport_contractor",
+  "trailer_2",
+  "column_break_aajk",
+  "cutting_contractor",
+  "trolley_type_2",
+  "column_break_sfwv",
   "agent",
   "sb_billing_status",
   "farmer_bill",
@@ -69,6 +77,12 @@
   "fetch_weight"
  ],
  "fields": [
+  {
+   "description": "Number written on the paper slip handed in by the field staff",
+   "fieldname": "field_slip_number",
+   "fieldtype": "Data",
+   "label": "Field Slip Number"
+  },
   {
    "default": "Today",
    "fieldname": "slip_date",
@@ -145,13 +159,13 @@
    "options": "Village Master"
   },
   {
+   "depends_on": "eval:doc.village",
    "description": "Only the routes defined in this village's master are listed",
    "fieldname": "route",
    "fieldtype": "Link",
    "in_standard_filter": 1,
    "label": "Village Route",
-   "options": "Route Master",
-   "depends_on": "eval:doc.village"
+   "options": "Route Master"
   },
   {
    "fieldname": "distance",
@@ -162,19 +176,20 @@
   {
    "fieldname": "transport_rate",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Route Rate (per Ton)",
    "read_only": 1
   },
   {
    "fieldname": "sb_cane_details",
    "fieldtype": "Section Break",
-   "label": "Cane Details"
+   "label": "Cane Details & Delivery Details"
   },
   {
    "fieldname": "cane_type",
    "fieldtype": "Select",
    "label": "Cane Type",
-   "options": "\nPlant Cane (लागणीचा ऊस)\nRatoon Cane (खोडवा ऊस)"
+   "options": "\nआडसाली\nपूर्वहंगामी\nसुरू\nखोडवा"
   },
   {
    "fieldname": "cb_18",
@@ -222,8 +237,8 @@
   {
    "fieldname": "trolley_type",
    "fieldtype": "Select",
-   "label": "Trolley Type",
-   "options": "पक्का ट्रेलर वरची वायर\nपक्का ट्रेलर मधली वायर\nपक्का ट्रेलर खालची वायर\nमागचा ट्रेलर वरची वायर\nमागचा ट्रेलर मधली वायर\nमागचा ट्रेलर खालची वायर\nपक्का ट्रेलर\nमागचा ट्रेलर"
+   "label": "Trolley Type 1",
+   "options": "\nवरची वायर\nमधली वायर\nखालची वायर\nफुल भरलेला"
   },
   {
    "fieldname": "cutting_contractor",
@@ -244,17 +259,19 @@
   {
    "fieldname": "agent",
    "fieldtype": "Link",
-   "label": "Agent Name",
+   "label": "Slip Boy",
    "options": "Cane Agent"
   },
   {
    "fieldname": "sb_applicable_rates_per_ton",
    "fieldtype": "Section Break",
-   "label": "Applicable Rates (per Ton)"
+   "hidden": 1,
+   "label": "Delivery Details"
   },
   {
    "fieldname": "cane_rate",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Cane Rate",
    "read_only": 1
   },
@@ -265,57 +282,57 @@
   {
    "fieldname": "todani_rate",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Todani Rate",
    "read_only": 1
   },
   {
    "fieldname": "farakt_rate",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Farakt Rate",
    "read_only": 1
   },
   {
+   "default": "0",
    "fieldname": "gross_weight",
-   "fieldtype": "Float",
-   "label": "Loaded Vehicle Weight",
-   "precision": "2",
-   "default": "0"
+   "fieldtype": "Int",
+   "label": "Loaded Vehicle Weight"
   },
   {
+   "default": "0",
    "fieldname": "tare_weight",
-   "fieldtype": "Float",
-   "label": "Empty Vehicle Weight",
-   "precision": "2",
-   "default": "0"
+   "fieldtype": "Int",
+   "label": "Empty Vehicle Weight"
   },
   {
    "fieldname": "gross_weight_time",
    "fieldtype": "Datetime",
    "label": "Loaded Vehicle Weight Time",
-   "read_only": 1,
-   "no_copy": 1
+   "no_copy": 1,
+   "read_only": 1
   },
   {
    "fieldname": "tare_weight_time",
    "fieldtype": "Datetime",
    "label": "Empty Vehicle Weight Time",
-   "read_only": 1,
-   "no_copy": 1
+   "no_copy": 1,
+   "read_only": 1
   },
   {
+   "default": "0",
    "fieldname": "cane_weight",
-   "fieldtype": "Float",
+   "fieldtype": "Int",
    "label": "Cane Weight",
-   "precision": "2",
-   "read_only": 1,
-   "default": "0"
+   "read_only": 1
   },
   {
+   "default": "0",
+   "description": "Calculated from the Binding Deduction % of the Cane Rate Master",
    "fieldname": "mat_weight",
-   "fieldtype": "Float",
+   "fieldtype": "Int",
    "label": "Binding Material Weight",
-   "precision": "2",
-   "default": "0"
+   "read_only": 1
   },
   {
    "fieldname": "deduction_reason",
@@ -324,13 +341,12 @@
   },
   {
    "bold": 1,
+   "default": "0",
    "fieldname": "net_cane_weight",
-   "fieldtype": "Float",
+   "fieldtype": "Int",
    "in_list_view": 1,
    "label": "Net Weight",
-   "precision": "2",
-   "read_only": 1,
-   "default": "0"
+   "read_only": 1
   },
   {
    "fieldname": "sb_billing_status",
@@ -429,7 +445,7 @@
   {
    "fieldname": "tab_slip",
    "fieldtype": "Tab Break",
-   "label": "Slip Details"
+   "label": "Field Slip"
   },
   {
    "fieldname": "tab_weights",
@@ -437,17 +453,16 @@
    "label": "Weights (Kg)"
   },
   {
+   "depends_on": "eval:doc.docstatus==0",
    "fieldname": "fetch_weight",
    "fieldtype": "Button",
-   "label": "Fetch Weight",
-   "depends_on": "eval:doc.docstatus==0"
+   "label": "Fetch Weight"
   },
   {
    "default": "0",
    "fieldname": "net_after_binding",
-   "fieldtype": "Float",
+   "fieldtype": "Int",
    "label": "Net Cane Weight",
-   "precision": "2",
    "read_only": 1
   },
   {
@@ -459,20 +474,57 @@
   {
    "default": "0",
    "fieldname": "other_deduction",
-   "fieldtype": "Float",
+   "fieldtype": "Int",
    "label": "Other Deduction (Kg)",
-   "precision": "2",
    "read_only": 1
   },
   {
    "fieldname": "column_break_fetch",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "The trailer of this vehicle that is being weighed",
+   "fieldname": "trailer",
+   "fieldtype": "Select",
+   "label": "Trailer 1",
+   "options": "\nTrailer 1\nTrailer 2"
+  },
+  {
+   "description": "Second trailer of the same vehicle, if the member's cane came on two",
+   "fieldname": "trailer_2",
+   "fieldtype": "Select",
+   "label": "Trailer 2",
+   "options": "\nTrailer 1\nTrailer 2"
+  },
+  {
+   "fieldname": "trolley_type_2",
+   "fieldtype": "Select",
+   "label": "Trolley Type 2",
+   "options": "\nवरची वायर\nमधली वायर\nखालची वायर\nफुल भरलेला",
+   "depends_on": "eval:doc.trailer_2",
+   "mandatory_depends_on": "eval:doc.trailer_2"
+  },
+  {
+   "fieldname": "column_break_bspl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_aajk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_sfwv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_mhoe",
    "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-11-10 12:00:00.000000",
+ "modified": "2026-11-13 17:30:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Weighment Slip",
@@ -534,9 +586,9 @@
   },
   {
    "create": 1,
+   "if_owner": 1,
    "read": 1,
-   "role": "Slip Boy",
-   "if_owner": 1
+   "role": "Slip Boy"
   }
  ],
  "row_format": "Dynamic",

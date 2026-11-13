@@ -1,0 +1,180 @@
+{
+ "actions": [],
+ "autoname": "naming_series:BRIX-.YYYY.-.#####",
+ "creation": "2026-11-13 12:00:00",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "company",
+  "mill_01",
+  "column_break_qlur",
+  "entry_date",
+  "mill_02",
+  "naming_series",
+  "column_break_btei",
+  "entry_time",
+  "mill_03",
+  "column_break_udcp",
+  "tractor_number",
+  "mill_04",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "default": "Today",
+   "fieldname": "entry_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Date",
+   "reqd": 1
+  },
+  {
+   "default": "Now",
+   "fieldname": "entry_time",
+   "fieldtype": "Time",
+   "in_list_view": 1,
+   "label": "Time",
+   "reqd": 1
+  },
+  {
+   "fieldname": "tractor_number",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Tractor Number",
+   "options": "Tractor Number",
+   "reqd": 1
+  },
+  {
+   "fieldname": "mill_01",
+   "fieldtype": "Float",
+   "label": "Mill 01",
+   "precision": "2"
+  },
+  {
+   "fieldname": "mill_02",
+   "fieldtype": "Float",
+   "label": "Mill 02",
+   "precision": "2"
+  },
+  {
+   "fieldname": "mill_03",
+   "fieldtype": "Float",
+   "label": "Mill 03",
+   "precision": "2"
+  },
+  {
+   "fieldname": "mill_04",
+   "fieldtype": "Float",
+   "label": "Mill 04",
+   "precision": "2"
+  },
+  {
+   "default": "BRIX-.YYYY.-.#####",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Naming Series",
+   "options": "BRIX-.YYYY.-.#####"
+  },
+  {
+   "default": "Rajdatt Agro Industries",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "column_break_qlur",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_btei",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_udcp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Brix Entry",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-11-13 17:28:58.779753",
+ "modified_by": "Administrator",
+ "module": "Vyavantra Weighbridge",
+ "name": "Brix Entry",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Weighbridge Manager",
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Weighbridge User",
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "if_owner": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Slip Boy",
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User"
+  }
+ ],
+ "row_format": "Dynamic",
+ "search_fields": "tractor_number",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

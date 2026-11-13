@@ -11,6 +11,8 @@ class CaneRateMaster(Document):
 	def validate(self):
 		if self.effective_to and getdate(self.effective_to) < getdate(self.effective_from):
 			frappe.throw(_("Effective To cannot be before Effective From"))
+		if not 0 <= flt(self.binding_deduction_percent) <= 100:
+			frappe.throw(_("Binding Deduction % must be between 0 and 100"))
 		if not self.rates:
 			frappe.throw(_("Add the rate of at least one Delivery Type"))
 		seen = set()

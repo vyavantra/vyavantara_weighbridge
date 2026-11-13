@@ -1,0 +1,1 @@
+# Slip Boy Entry doctype.

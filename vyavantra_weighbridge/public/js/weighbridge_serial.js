@@ -74,6 +74,7 @@ frappe.provide("vyavantra.weighbridge");
 
 	// Fetch Weight handler: puts the reading into `field`, explains a failure to the operator.
 	// options (optional):
+	//   transform(weight)  converts the reading before it is checked and stored, e.g. rounds it to whole kilograms
 	//   check(weight)  returns a message to refuse the reading (the field is left unchanged), or nothing to accept it
 	//   time_field     Datetime field that gets the capture time
 	//   after(weight)  runs once the weight and its time are in the form, e.g. to save the slip
@@ -81,7 +82,8 @@ frappe.provide("vyavantra.weighbridge");
 		options = options || {};
 		const label = frm.fields_dict[field] ? __(frm.fields_dict[field].df.label) : field;
 		try {
-			const weight = await read_service();
+			let weight = await read_service();
+			if (options.transform) weight = options.transform(weight);
 
 			const refusal = options.check && options.check(weight);
 			if (refusal) {

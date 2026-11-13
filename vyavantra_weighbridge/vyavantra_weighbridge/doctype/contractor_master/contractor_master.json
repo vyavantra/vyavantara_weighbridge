@@ -11,6 +11,10 @@
   "cb_7",
   "phone",
   "disabled",
+  "village",
+  "taluka",
+  "district",
+  "state",
   "address",
   "sb_tractors",
   "tractors",
@@ -79,7 +83,9 @@
    "fieldname": "address",
    "fieldtype": "Small Text",
    "label": "Address",
-   "allow_in_quick_entry": 1
+   "allow_in_quick_entry": 1,
+   "read_only": 1,
+   "description": "Built from Village, Taluka, District and State"
   },
   {
    "fieldname": "sb_tractors",
@@ -140,11 +146,37 @@
    "label": "IFSC Code",
    "length": 11,
    "description": "11 characters, e.g. SBIN0001234"
+  },
+  {
+   "fieldname": "village",
+   "fieldtype": "Link",
+   "label": "Village",
+   "options": "Village Master"
+  },
+  {
+   "fieldname": "taluka",
+   "fieldtype": "Link",
+   "label": "Taluka",
+   "options": "Taluka Master"
+  },
+  {
+   "fieldname": "district",
+   "fieldtype": "Link",
+   "label": "District",
+   "options": "District Master"
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Link",
+   "label": "State",
+   "options": "State Master",
+   "default": "Maharashtra",
+   "in_standard_filter": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-11-09 12:00:00.000000",
+ "modified": "2026-11-12 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Contractor Master",

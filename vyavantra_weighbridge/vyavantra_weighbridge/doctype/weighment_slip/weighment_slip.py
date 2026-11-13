@@ -1,12 +1,25 @@
 # Copyright (c) 2026, Vyavantra Tech Solution PVT. LTD and contributors
 # For license information, please see license.txt
 
+from decimal import ROUND_HALF_UP, Decimal
+
 import frappe
 from frappe import _
 from frappe.model.document import Document
 from frappe.utils import cint, flt, get_time, getdate, nowtime
 
 BILL_LINKS = ("farmer_bill", "tractor_bill", "todani_bill", "agent_bill")
+
+
+def round_kg(value):
+	"""Whole kilograms, half rounded up (2.5 -> 3). Decimal keeps 1.005-style floats from rounding the wrong way.
+	The client mirrors this in weighment_slip.js (`kg()`); both must give the same figure."""
+	return int(Decimal(repr(flt(value))).quantize(Decimal(1), rounding=ROUND_HALF_UP))
+
+
+def percent_of_kg(kg, percent):
+	"""`percent` % of `kg` as whole kilograms, half rounded up."""
+	return int((Decimal(repr(flt(kg))) * Decimal(repr(flt(percent))) / 100).quantize(Decimal(1), rounding=ROUND_HALF_UP))
 
 
 class WeighmentSlip(Document):
@@ -29,9 +42,17 @@ class WeighmentSlip(Document):
 			self.set_route_details()
 			self.fetch_rates()
 		self.validate_contractors()
+		self.validate_trailers()
 		self.calculate_weights()
 		if self.amended_from and not self.correction_reason:
 			frappe.throw(_("Please enter the reason for the re-weighing / correction"))
+
+	def validate_trailers(self):
+		"""The member's cane can arrive on two trailers behind one tractor, but not twice on the same one."""
+		if self.trailer_2 and self.trailer_2 == self.trailer:
+			frappe.throw(_("Trailer 2 cannot be the same as Trailer 1"))
+		if self.trailer_2 and not self.trailer:
+			frappe.throw(_("Please fill Trailer 1 before Trailer 2"))
 
 	# --- defaults ---------------------------------------------------------------------
 	def set_vehicle_defaults(self):
@@ -71,6 +92,8 @@ class WeighmentSlip(Document):
 		self.cane_rate = rates["cane_rate"]
 		self.todani_rate = rates["todani_rate"]
 		self.farakt_rate = rates["farakt_rate"]
+		# the same master decides the binding deduction; calculate_weights() reads it from here
+		self.flags.binding_deduction_percent = rates["binding_deduction_percent"]
 
 	def validate_contractors(self):
 		for field, allowed in (
@@ -86,24 +109,42 @@ class WeighmentSlip(Document):
 					)
 
 	def calculate_weights(self):
-		"""Cane Weight = Loaded - Empty. Net Cane Weight = Cane Weight - Binding Material.
-		Other Deduction (Kg) = Other Deduction % of the Net Cane Weight. Net Weight = Net Cane Weight - Other Deduction,
-		the quantity that is billed. Every figure is recalculated here, whatever the client sent."""
-		loaded, empty, binding = flt(self.gross_weight), flt(self.tare_weight), flt(self.mat_weight)
+		"""Every weight is whole kilograms. Cane Weight = Loaded - Empty.
+		Binding Material = Binding Deduction % (Cane Rate Master) of the Cane Weight, so 1% takes 10 Kg off a ton.
+		Net Cane Weight = Cane Weight - Binding Material. Other Deduction (Kg) = Other Deduction % of the Net Cane Weight.
+		Net Weight = Net Cane Weight - Other Deduction, the quantity that is billed.
+		Each percentage is rounded half-up to a whole Kg at the figure itself, so the chain always adds up.
+		Every figure is recalculated here, whatever the client sent; the binding of a slip that is no longer a draft
+		is kept as it was saved."""
 		percent = flt(self.other_deduction_percent)
-		if loaded < 0 or empty < 0 or binding < 0:
+		if flt(self.gross_weight) < 0 or flt(self.tare_weight) < 0:
 			frappe.throw(_("Weights cannot be negative"))
 		if not 0 <= percent <= 100:
 			frappe.throw(_("Other Deduction % must be between 0 and 100"))
+		loaded, empty = round_kg(self.gross_weight), round_kg(self.tare_weight)
 		if loaded and empty and loaded <= empty:
 			frappe.throw(_("Loaded Vehicle Weight must be greater than Empty Vehicle Weight"))
+		self.gross_weight, self.tare_weight = loaded, empty
 		# the formula always applies: with the empty weight still 0 the figures simply follow the loaded weight
-		self.cane_weight = flt(loaded - empty, 2) if loaded else 0
-		if binding > self.cane_weight:
+		self.cane_weight = loaded - empty if loaded else 0
+		if self.docstatus == 0:
+			self.mat_weight = percent_of_kg(self.cane_weight, self.get_binding_percent())
+		else:
+			# submitting keeps the binding the draft was saved with; the client cannot change it
+			saved = self.get_doc_before_save()
+			self.mat_weight = round_kg(saved.mat_weight if saved else self.mat_weight)
+		if not 0 <= self.mat_weight <= self.cane_weight:
 			frappe.throw(_("Binding Material Weight cannot be more than the Cane Weight"))
-		self.net_after_binding = flt(self.cane_weight - binding, 2)
-		self.other_deduction = flt(self.net_after_binding * percent / 100, 2)
-		self.net_cane_weight = flt(self.net_after_binding - self.other_deduction, 2)
+		self.net_after_binding = self.cane_weight - self.mat_weight
+		self.other_deduction = percent_of_kg(self.net_after_binding, percent)
+		self.net_cane_weight = self.net_after_binding - self.other_deduction
+
+	def get_binding_percent(self):
+		"""Binding Deduction % of the Cane Rate Master that applies to this slip (set while the rates are fetched)."""
+		if "binding_deduction_percent" not in self.flags:
+			rates = get_rate_master_rates(self.slip_date, self.delivery_type)
+			self.flags.binding_deduction_percent = rates["binding_deduction_percent"] if rates else 0
+		return flt(self.flags.binding_deduction_percent)
 
 	# --- submit / cancel --------------------------------------------------------------
 	def before_submit(self):
@@ -140,12 +181,12 @@ def get_village_route_rows(village):
 
 
 def get_rate_master_rates(slip_date, delivery_type):
-	"""Cane / Todani / Farak rate of `delivery_type` in the Cane Rate Master whose Effective From - To range
-	contains `slip_date`. None when no such master has a row for that Delivery Type."""
+	"""Cane / Todani / Farak rate of `delivery_type` and the Binding Deduction % in the Cane Rate Master whose
+	Effective From - To range contains `slip_date`. None when no such master has a row for that Delivery Type."""
 	if not (slip_date and delivery_type):
 		return None
 	row = frappe.db.sql(
-		"""select r.cane_rate, r.todani_rate, r.farak_rate
+		"""select r.cane_rate, r.todani_rate, r.farak_rate, m.binding_deduction_percent
 		from `tabCane Rate Master` m join `tabCane Rate Delivery Type` r
 			on r.parent = m.name and r.parenttype = 'Cane Rate Master'
 		where m.disabled = 0 and r.delivery_type = %(t)s
@@ -160,12 +201,13 @@ def get_rate_master_rates(slip_date, delivery_type):
 		"cane_rate": flt(row[0].cane_rate),
 		"todani_rate": flt(row[0].todani_rate),
 		"farakt_rate": flt(row[0].farak_rate),
+		"binding_deduction_percent": flt(row[0].binding_deduction_percent),
 	}
 
 
 @frappe.whitelist()
 def get_cane_rates(slip_date=None, delivery_type=None):
-	"""Rates shown on the slip as soon as the Delivery Type / date is chosen. {} when the master has no rate for them."""
+	"""Rates and Binding Deduction % the slip uses as soon as the Delivery Type / date is chosen. {} when the master has no rate for them."""
 	frappe.has_permission("Weighment Slip", "read", throw=True)
 	return get_rate_master_rates(slip_date, delivery_type) or {}
 
