@@ -32,6 +32,7 @@ def after_migrate_setup():
 	ensure_roles()
 	create_shifts()
 	ensure_bank_fields()
+	ensure_discount_fields()
 	seed_varieties()
 	seed_delivery_types()
 	set_default_print_formats()
@@ -84,6 +85,54 @@ def ensure_bank_fields():
 		 "in_list_view": 1},
 		{"fieldname": "bank_address", "fieldtype": "Small Text", "label": "Address", "insert_after": "ifsc_code"},
 	]}, ignore_validate=True)
+
+
+# Line discount the way a factory reads a bill: Qty and Rate stay exactly as typed, the discount only
+# lowers the line Amount. ERPNext's own Discount (%) / Discount Amount work the other way round, they
+# recompute Rate from Price List Rate, which hides the rate the buyer agreed on.
+DISCOUNT_FIELDS = [
+	{
+		"fieldname": "vw_discount_type",
+		"fieldtype": "Select",
+		"label": "Discount Type",
+		"options": "\nPercentage\nAmount",
+		"insert_after": "rate",
+		"in_list_view": 1,
+		"columns": 1,
+		"translatable": 0,
+	},
+	{
+		"fieldname": "vw_discount_value",
+		"fieldtype": "Float",
+		"label": "Discount",
+		"insert_after": "vw_discount_type",
+		"depends_on": "eval:doc.vw_discount_type",
+		"mandatory_depends_on": "eval:doc.vw_discount_type",
+		"in_list_view": 1,
+		"columns": 1,
+		"description": "Percentage of the line, or a flat amount off the line",
+	},
+	{
+		"fieldname": "vw_discount_amount",
+		"fieldtype": "Currency",
+		"label": "Discount Amount",
+		"insert_after": "vw_discount_value",
+		"depends_on": "eval:doc.vw_discount_type",
+		"read_only": 1,
+		"no_copy": 1,
+		"description": "What the discount took off this line",
+	},
+]
+
+
+def ensure_discount_fields():
+	"""Discount Type / Discount on the invoice item rows of both Sales and Purchase Invoice."""
+	from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
+
+	create_custom_fields(
+		{dt: DISCOUNT_FIELDS for dt in ("Sales Invoice Item", "Purchase Invoice Item")},
+		ignore_validate=True,
+	)
 
 
 def seed_varieties():

@@ -160,6 +160,13 @@ doc_events = {
 for _dt in ("Cane Supplier", "Contractor Master"):
 	doc_events[_dt]["validate"] = [doc_events[_dt]["validate"], "vyavantra_weighbridge.utils.validate_ifsc"]
 
+# Row discount on invoices lowers the line Amount and leaves Qty and Rate as typed; the subclasses are
+# the stock invoices with that one step added (vyavantra_weighbridge/line_discount.py).
+override_doctype_class = {
+	"Purchase Invoice": "vyavantra_weighbridge.line_discount.LineDiscountPurchaseInvoice",
+	"Sales Invoice": "vyavantra_weighbridge.line_discount.LineDiscountSalesInvoice",
+}
+
 # logo size of the top bar comes from Weighbridge Settings
 boot_session = "vyavantra_weighbridge.utils.boot_logo_size"
 
