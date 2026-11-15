@@ -24,3 +24,5 @@ vyavantra_weighbridge.patches.v1_1.trolley_type_pudhcha
 vyavantra_weighbridge.patches.v1_1.split_trailer_from_trolley
 vyavantra_weighbridge.patches.v1_1.backfill_supplier_place
 vyavantra_weighbridge.patches.v1_1.remove_slip_boy_web_form
+vyavantra_weighbridge.patches.v1_1.migrate_farmer_bill_slips
+vyavantra_weighbridge.patches.v1_1.backfill_farmer_bill_summary

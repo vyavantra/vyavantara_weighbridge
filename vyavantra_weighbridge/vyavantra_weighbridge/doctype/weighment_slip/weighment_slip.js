@@ -24,15 +24,22 @@ frappe.ui.form.on("Weighment Slip", {
 	},
 	refresh(frm) {
 		frm.page.wrapper.addClass("wbs-slip"); // scopes weighment_slip.css to this form only
+
+		// ── Desktop-App Layout: show both tabs side-by-side ──
+		show_side_by_side_layout(frm);
+		inject_card_headers(frm);
+
 		format_computed_weights(frm);
-		show_time_in_12_hour(frm);
+		// clear any cached 12-hour helper text (we no longer show it)
+		frm.set_df_property("slip_time", "description", "");
 		if (frm.doc.docstatus === 0) {
 			set_fetch_label(frm);
 			if (!frm.is_new()) load_binding_percent(frm);
-			// Fetch Weight takes the next missing weighing; these two take a named one, so an operator
-			// can re-read just the loaded or just the empty vehicle
-			frm.add_custom_button(__("Loaded Vehicle Weight"), () => capture(frm, "gross_weight"), __("Capture"));
-			frm.add_custom_button(__("Empty Vehicle Weight"), () => capture(frm, "tare_weight"), __("Capture"));
+			// Direct toolbar buttons — blue primary style (.wbs-fetch-btn); each has a replace-confirmation
+			const $load_btn = frm.add_custom_button(__("Fetch Loaded Weight"), () => capture_with_confirm(frm, "gross_weight", __("Loaded Vehicle Weight")));
+			$load_btn.addClass("wbs-fetch-btn");
+			const $empty_btn = frm.add_custom_button(__("Fetch Unloaded Weight"), () => capture_with_confirm(frm, "tare_weight", __("Unloaded Vehicle Weight")));
+			$empty_btn.addClass("wbs-fetch-btn");
 			if (frm.is_new()) {
 				show_cane_rates(frm);
 				set_shift(frm);
@@ -82,7 +89,6 @@ frappe.ui.form.on("Weighment Slip", {
 	slip_date: show_cane_rates,
 	slip_time(frm) {
 		set_shift(frm);
-		show_time_in_12_hour(frm);
 	},
 	after_save(frm) {
 		format_computed_weights(frm);
@@ -116,16 +122,6 @@ function set_shift(frm) {
 	});
 }
 
-// The time is typed and stored on the 24 hour clock, which is what the shifts are set in. The same
-// time is spelled out underneath, so an operator reading 20:30 off the slip sees 8:30 PM as well.
-function show_time_in_12_hour(frm) {
-	const time = frm.doc.slip_time;
-	if (!time) return frm.set_df_property("slip_time", "description", "");
-
-	const spoken = moment(time, "HH:mm:ss").format("h:mm A");
-	frm.set_df_property("slip_time", "description", __("24 hour clock. {0} is {1}", [time.slice(0, 5), spoken]));
-}
-
 function clear_route(frm) {
 	if (frm.doc.route) frm.set_value("route", "");
 	frm.set_value("distance", 0);
@@ -150,7 +146,7 @@ function show_cane_rates(frm) {
 	if (frm.doc.docstatus !== 0) return;
 	if (!frm.doc.delivery_type) {
 		["cane_rate", "todani_rate", "farakt_rate"].forEach((field) => frm.set_value(field, 0));
-		frm.binding_percent = 0;
+		frm.set_value("binding_deduction_percent", 0);
 		calc(frm);
 		return;
 	}
@@ -163,7 +159,7 @@ function show_cane_rates(frm) {
 			frm.set_value("cane_rate", found ? rates.cane_rate : 0);
 			frm.set_value("todani_rate", found ? rates.todani_rate : 0);
 			frm.set_value("farakt_rate", found ? rates.farakt_rate : 0);
-			frm.binding_percent = found ? flt(rates.binding_deduction_percent) : 0;
+			frm.set_value("binding_deduction_percent", found ? flt(rates.binding_deduction_percent) : 0);
 			calc(frm);
 			if (!found) {
 				frappe.show_alert({
@@ -178,14 +174,16 @@ function show_cane_rates(frm) {
 	});
 }
 
-// The Binding Deduction % belongs to the Cane Rate Master of the slip's date and delivery type. A saved draft
-// reads it again when it is opened, so editing its weights recalculates the binding the same way the server will.
+// Recheck the master when an existing draft opens: its percent must follow this slip date and delivery type.
 function load_binding_percent(frm) {
 	if (!frm.doc.delivery_type) return;
 	frappe.call({
 		method: WS_PATH + "get_cane_rates",
 		args: { slip_date: frm.doc.slip_date, delivery_type: frm.doc.delivery_type },
-		callback: (r) => (frm.binding_percent = flt((r.message || {}).binding_deduction_percent)),
+		callback: (r) => {
+			frm.set_value("binding_deduction_percent", flt((r.message || {}).binding_deduction_percent));
+			calc(frm);
+		},
 	});
 }
 
@@ -202,7 +200,7 @@ function calc(frm) {
 	const loaded = kg(frm.doc.gross_weight), empty = kg(frm.doc.tare_weight);
 	const percent = Math.min(Math.max(flt(frm.doc.other_deduction_percent), 0), 100);
 	const cane = loaded ? loaded - empty : 0;
-	const binding = kg((cane * flt(frm.binding_percent)) / 100);
+	const binding = kg((cane * flt(frm.doc.binding_deduction_percent)) / 100);
 	const net_after_binding = cane - binding;
 	const deduction = kg((net_after_binding * percent) / 100);
 	frm.set_value("cane_weight", cane);
@@ -297,13 +295,93 @@ function capture(frm, field) {
 	});
 }
 
-// weights tab layout: public/css/weighment_slip.css
+// weights tab layout: public/scss/_weighment_slip.scss
 const COMPUTED_WEIGHTS = ["cane_weight", "mat_weight", "net_after_binding", "other_deduction", "net_cane_weight"];
 
 // computed weights are read-only, which Frappe prints as a bare "0"; show them as whole kilograms with digit grouping
 function format_computed_weights(frm) {
 	COMPUTED_WEIGHTS.forEach((name) => {
 		const field = frm.fields_dict[name];
-		if (field) field.$wrapper.find(".control-value").text(format_number(kg(frm.doc[name]), null, 0));
+		if (field) field.$wrapper.find(".control-value").text(format_number(kg(frm.doc[name]), null, 0) + " Kg");
+	});
+}
+
+// ─── Desktop-App Layout Helpers ───────────────────────────────────────────────
+
+/** Force both doctype tabs (Field Slip & Weighbridge) visible at the same time. */
+function show_side_by_side_layout(frm) {
+	// Frappe renders Tab Break fields as separate .tab-pane panels and only shows the active one.
+	// We override that: make every panel visible so CSS grid can place them side-by-side.
+	const $panes = frm.$wrapper.find(".form-tab-content .tab-pane");
+	$panes.addClass("show active").css({ display: "block", opacity: 1 });
+}
+
+/** Inject styled card headers into each tab panel (only once). */
+function inject_card_headers(frm) {
+	const map = {
+		tab_slip:    { icon: "📋", title: __("Weighment Slip Details") },
+		tab_weights: { icon: "⚖️", title: __("Weight Measurement") },
+	};
+	for (const [fieldname, cfg] of Object.entries(map)) {
+		const $pane = frm.$wrapper.find(`[id$="${fieldname}"]`);
+		if (!$pane.length || $pane.find(".wbs-card-header").length) continue;
+		$pane.prepend(
+			`<div class="wbs-card-header">
+				<span class="wbs-icon">${cfg.icon}</span> ${cfg.title}
+			</div>`
+		);
+	}
+}
+
+/**
+ * Capture a weight, but first ask for confirmation when a value is already recorded.
+ * "Fetch Loaded Weight" and "Fetch Unloaded Weight" toolbar buttons use this.
+ */
+async function capture_with_confirm(frm, field, label) {
+	if (frm.doc.docstatus !== 0) return;
+
+	// Require the identifying fields before accepting any weight
+	const missing = REQUIRED_BEFORE_WEIGHT.filter((f) => frm.fields_dict[f] && !frm.doc[f]).map((f) =>
+		__(frm.fields_dict[f].df.label)
+	);
+	if (missing.length) {
+		return frappe.msgprint({
+			title: __("Fill Field Slip details first"),
+			indicator: "orange",
+			message: __("Please fill: {0}", [missing.join(", ")]),
+		});
+	}
+
+	// If a weight is already recorded, confirm before overwriting
+	if (flt(frm.doc[field])) {
+		const replace = await confirm_weight_replace(label, frm.doc[field]);
+		if (!replace) return;
+	}
+
+	await capture(frm, field);
+}
+
+/** Show a confirmation dialog when the operator tries to overwrite an existing weight reading. */
+function confirm_weight_replace(label, existing_kg) {
+	return new Promise((resolve) => {
+		const existing_fmt = format_number(existing_kg, null, 0);
+		const d = new frappe.ui.Dialog({
+			title: __("Replace Existing Weight?"),
+			fields: [
+				{
+					fieldtype: "HTML",
+					options: `<div style="padding:6px 0 10px;color:#344054;font-size:13px;line-height:1.6;">
+						<p><b>${label}</b> ${__("is already recorded as")} <b>${existing_fmt} Kg</b>.</p>
+						<p>${__("Do you want to fetch a new reading from the scale and replace the current value?")}</p>
+					</div>`,
+				},
+			],
+			primary_action_label: __("Yes, Replace"),
+			primary_action() { resolve(true); d.hide(); },
+			secondary_action_label: __("Cancel"),
+			secondary_action() { d.hide(); resolve(false); },
+		});
+		d.onhide = () => resolve(false); // pressing × is treated as Cancel
+		d.show();
 	});
 }

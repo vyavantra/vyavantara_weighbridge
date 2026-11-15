@@ -1,0 +1,113 @@
+/* Brix Entry – card UI in the Weighment Slip theme, laid out phone-first.
+   Scoped by the .wbs-brix class that brix_entry.js puts on the page wrapper. */
+
+.wbs-brix .layout-main-section {
+	background: #e9eef6;
+}
+.wbs-brix .form-page {
+	background: #ffffff;
+	border-radius: 14px;
+	border: 1.5px solid #d0d9e8;
+	box-shadow: 0 2px 10px rgba(60, 80, 130, 0.07);
+	overflow: hidden;
+	max-width: 860px;
+	margin: 6px auto 12px;
+	padding-bottom: 10px;
+}
+.wbs-brix .page-head {
+	background: #ffffff;
+	border-bottom: 1.5px solid #d0d9e8;
+}
+
+.wbs-brix .form-section {
+	padding: 10px 16px 4px !important;
+	border: none !important;
+}
+.wbs-brix .form-section .section-body {
+	padding: 0 !important;
+}
+.wbs-brix .form-column {
+	padding: 0 8px !important;
+}
+.wbs-brix .section-head {
+	font-size: 13px;
+	font-weight: 700;
+	color: #3b5bdb;
+	border-bottom: 1.5px solid #e5e9f0;
+	padding: 6px 8px;
+	margin: 0 0 10px;
+}
+.wbs-brix .section-head .collapse-indicator {
+	display: none;
+}
+
+.wbs-brix .control-label {
+	font-size: 13px !important;
+	font-weight: 600 !important;
+	color: #344054 !important;
+	margin-bottom: 4px !important;
+}
+.wbs-brix .form-group {
+	margin-bottom: 12px !important;
+}
+
+/* 16px text stops phone browsers zooming in on focus; 44px is a comfortable tap target */
+.wbs-brix .form-page input.form-control,
+.wbs-brix .form-page select.form-control,
+.wbs-brix .form-page .like-disabled-input {
+	height: 44px !important;
+	font-size: 16px !important;
+	padding: 8px 12px !important;
+	border-radius: 9px !important;
+	border: 1px solid #d0d9e8 !important;
+}
+.wbs-brix .form-page .like-disabled-input {
+	background: #f5f7fa !important;
+	line-height: 26px !important;
+}
+
+$brix-mills: '.wbs-brix .form-section[data-fieldname="section_mills"]';
+
+#{$brix-mills} input.form-control,
+#{$brix-mills} .like-disabled-input {
+	height: 54px !important;
+	font-size: 22px !important;
+	font-weight: 700 !important;
+	text-align: center !important;
+	background: #f0f4ff !important;
+	border: 1.5px solid #c5cfe0 !important;
+	color: #1a1a2e;
+}
+#{$brix-mills} .like-disabled-input {
+	line-height: 36px !important;
+}
+#{$brix-mills} .control-label {
+	display: block;
+	text-align: center;
+}
+
+@media (max-width: 767px) {
+	.wbs-brix .form-page {
+		margin: 4px 0 10px;
+		border-radius: 12px;
+	}
+	.wbs-brix .form-section {
+		padding: 10px 8px 2px !important;
+	}
+
+	/* phone: Company and Tractor Number full width, Date and Time side by side */
+	.wbs-brix .form-section[data-fieldname="section_entry"] .section-body,
+	#{$brix-mills} .section-body {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+	}
+	.wbs-brix .form-section .section-body > .form-column {
+		width: auto;
+		max-width: none;
+		min-width: 0;
+	}
+	.wbs-brix .form-section[data-fieldname="section_entry"] .section-body > .form-column:nth-child(1),
+	.wbs-brix .form-section[data-fieldname="section_entry"] .section-body > .form-column:nth-child(4) {
+		grid-column: 1 / -1;
+	}
+}

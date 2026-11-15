@@ -42,6 +42,18 @@ The submittable **Brix Entry** Desk DocType records Date, Time, Tractor Number, 
 
 The submittable **Slip Boy Entry** Desk DocType replaces the `/slip-boy` Web Form. Select a Cane Supplier or enter a new farmer with village, bank details, and private Bank Passbook/Aadhaar Card image uploads. On Submit, it creates the farmer if needed and a linked draft Weighment Slip for the weighbridge operator. Cancel is available to managers while that linked slip remains a draft.
 
+### Effective binding and legacy codes
+
+For a draft Weighment Slip, the effective Cane Rate Master is selected by Slip Date within Effective From–To and Delivery Type. The applied Binding Deduction (%) is displayed read-only on the Weights tab. Binding Material Weight is rounded to whole kilograms from Cane Weight × that percentage, then deducted from Cane Weight. A submitted slip retains the rate and binding with which it was submitted. Cane Supplier and Contractor Master each have an optional Old Farmer Code / Old Contractor Code field for previous-system references; their current naming stays unchanged.
+
+### Weighment Slip navigation
+
+Submitted slips are listed at `/app/weighment-slip/view/list?docstatus=1`. An older browser breadcrumb may still point to `/app/weighbridge-(वजनकाटा)`, which is no longer a Workspace. The Desk bundle redirects that legacy URL to the Weighment Slip list and clears the stale per-browser breadcrumb preference.
+
+### Farmer Bill approval and payment
+
+Fetch submitted, unbilled slips for the farmer and date range. Each Farmer Bill Slip displays cane kg, binding kg, net-after-binding kg, other deduction %/kg, final net kg, tonnes, and its cane rate from the Cane Rate Master effective on that slip's date and delivery type. The line amount is final net tonnes × rate; Total Weight Deductions (Amount) is informational because those kilograms are already excluded from the payable amount. Draft bills are approved by submitting them (Accounts Manager, Weighbridge Manager, or System Manager); the approved bill is Unpaid until approved Weighbridge Payments cover it, then becomes Paid. Existing submitted bills retain their original booked rate, quantity, and amount during migration.
+
 ### Installation
 
 You can install this app using the [bench](https://github.com/frappe/bench) CLI:

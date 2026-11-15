@@ -6,6 +6,7 @@
  "field_order": [
   "sb_contractor_info",
   "contractor_no",
+  "old_contractor_code",
   "contractor_name",
   "contractor_type",
   "cb_7",
@@ -43,6 +44,13 @@
    "read_only": 1,
    "no_copy": 1,
    "description": "Generated automatically"
+  },
+  {
+   "fieldname": "old_contractor_code",
+   "fieldtype": "Data",
+   "label": "Old Contractor Code",
+   "in_list_view": 1,
+   "description": "Reference from the previous system; does not change the Contractor No."
   },
   {
    "fieldname": "contractor_name",

@@ -1,30 +1,397 @@
-/* Weighment Slip > "Weights (Kg)" tab: small bold fields one below the other, Fetch Weight on the right.
-   Scoped by the .wbs-slip class that weighment_slip.js puts on the page while the form is open. */
+/* ─────────────────────────────────────────────────────────────────────────────
+   Weighment Slip & General Weighment Slip – Desktop-App UI
+   Scoped by the .wbs-slip class that each form's JS puts on the page wrapper.
+   ───────────────────────────────────────────────────────────────────────────── */
 
-.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname] {
-	max-width: 220px;
-	margin-bottom: 8px;
+/* ┌──────────────────────────────────────────────────────────────────────────┐
+   │  1.  PAGE BACKGROUND                                                    │
+   └──────────────────────────────────────────────────────────────────────────┘ */
+.wbs-slip .layout-main-section {
+	background: #e9eef6;
+	min-height: 100vh;
 }
-.wbs-slip #weighment-slip-tab_weights .form-group { margin-bottom: 0; }
-.wbs-slip #weighment-slip-tab_weights .form-section { padding-top: 8px; padding-bottom: 0; }
-.wbs-slip #weighment-slip-tab_weights .control-label,
-.wbs-slip #weighment-slip-tab_weights input.form-control,
-.wbs-slip #weighment-slip-tab_weights textarea.form-control,
-.wbs-slip #weighment-slip-tab_weights .like-disabled-input,
-.wbs-slip #weighment-slip-tab_weights .control-value {
+
+/* ┌──────────────────────────────────────────────────────────────────────────┐
+   │  2.  HIDE DOCTYPE-LEVEL TABS (Field Slip / Weighbridge)                 │
+   │      Both panels are shown side-by-side by JS; the tab bar is redundant │
+   └──────────────────────────────────────────────────────────────────────────┘ */
+.wbs-slip .form-tabs-list {
+	display: none !important;
+}
+
+/* ┌──────────────────────────────────────────────────────────────────────────┐
+   │  3.  SIDE-BY-SIDE CARD LAYOUT                                           │
+   └──────────────────────────────────────────────────────────────────────────┘ */
+.wbs-slip .form-tab-content.tab-content {
+	display: grid !important;
+	grid-template-columns: 72fr 28fr;
+	gap: 18px;
+	padding: 6px 2px 12px;
+	align-items: start;
+}
+
+/* force every tab-pane visible (JS adds .active; CSS makes sure) */
+.wbs-slip .tab-pane {
+	display: block !important;
+	opacity: 1 !important;
+	background: #ffffff;
+	border-radius: 14px;
+	box-shadow: 0 2px 10px rgba(60, 80, 130, 0.07);
+	border: 1.5px solid #d0d9e8;
+	overflow: hidden;
+	padding: 0 0 10px;
+}
+
+/* ┌──────────────────────────────────────────────────────────────────────────┐
+   │  4.  CARD HEADERS (injected by JS)                                      │
+   └──────────────────────────────────────────────────────────────────────────┘ */
+.wbs-card-header {
+	background: linear-gradient(135deg, #3b5bdb 0%, #4c6ef5 100%);
+	color: #ffffff;
+	font-size: 15px;
 	font-weight: 700;
+	padding: 10px 18px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	letter-spacing: 0.3px;
+	margin-bottom: 2px;
 }
-.wbs-slip #weighment-slip-tab_weights .control-value.bold { font-weight: 700 !important; }
-.wbs-slip #weighment-slip-tab_weights input.form-control,
-.wbs-slip #weighment-slip-tab_weights .like-disabled-input { text-align: right; }
-.wbs-slip #weighment-slip-tab_weights textarea.form-control {
-	height: 54px !important;
-	min-height: 54px;
+.wbs-card-header .wbs-icon {
+	font-size: 17px;
 }
-.wbs-slip #weighment-slip-tab_weights .help-box { display: none; }
 
-/* Fetch Weight: right column, right aligned */
-.wbs-slip #weighment-slip-tab_weights .frappe-control[data-fieldname="fetch_weight"] {
+/* ┌──────────────────────────────────────────────────────────────────────────┐
+   │  5.  GLOBAL: BOLD LABELS & SPACIOUS LAYOUT (both tabs)                  │
+   └──────────────────────────────────────────────────────────────────────────┘ */
+.wbs-slip .control-label {
+	font-weight: 600 !important;
+	font-size: 10.5px !important;
+	color: #3a4560 !important;
+	margin-bottom: 3px !important;
+	text-transform: uppercase;
+	letter-spacing: 0.2px;
+	white-space: nowrap !important;
+	display: block !important;
+}
+.wbs-slip .form-group {
+	margin-bottom: 8px !important;
+}
+.wbs-slip .form-section {
+	padding: 8px 16px 6px !important;
+}
+.wbs-slip .form-section .section-body {
+	padding: 0 !important;
+}
+.wbs-slip .form-column {
+	padding: 0 8px !important;
+}
+
+/* section-head labels inside cards */
+.wbs-slip .section-head {
+	font-size: 12px;
+	font-weight: 700;
+	color: #3b5bdb;
+	border-bottom: 1.5px solid #e5e9f0;
+	padding: 8px 4px 5px;
+	margin: 6px 0 4px;
+	text-transform: uppercase;
+	letter-spacing: 0.4px;
+}
+.wbs-slip .section-head .collapse-indicator { display: none; }
+
+/* input controls — slightly taller for better touch / readability */
+.wbs-slip input.form-control,
+.wbs-slip select.form-control,
+.wbs-slip textarea.form-control,
+.wbs-slip .like-disabled-input {
+	border-radius: 7px !important;
+	font-size: 13px !important;
+	padding: 5px 10px !important;
+	height: 32px !important;
+	border-color: #d0d9e8 !important;
+}
+.wbs-slip textarea.form-control {
+	height: 56px !important;
+	min-height: 56px !important;
+}
+.wbs-slip .like-disabled-input {
+	background: #f5f7fa !important;
+	line-height: 22px !important;
+}
+.wbs-slip .link-btn { top: 2px; }
+
+/* hide all description / help-box text; Slip Time no longer shows the 12-hour helper */
+.wbs-slip .help-box {
+	display: none !important;
+}
+
+/* ┌──────────────────────────────────────────────────────────────────────────┐
+   │  6.  WEIGHTS TAB – ONE ROW PER FIELD: LABEL LEFT, VALUE RIGHT           │
+   └──────────────────────────────────────────────────────────────────────────┘ */
+$weight-tab: '.wbs-slip [id$="-tab_weights"]';
+
+/* remove the section-head inside weights tab (card header takes its place) */
+#{$weight-tab} .section-head { display: none; }
+
+#{$weight-tab} .frappe-control[data-fieldname] {
 	max-width: none;
-	text-align: right;
+	margin-bottom: 0;
+}
+#{$weight-tab} .form-section {
+	padding: 4px 16px 0 !important;
+}
+
+#{$weight-tab} .form-group {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 10px;
+	padding: 6px 0;
+	border-bottom: 1px solid #f0f2f5;
+	margin-bottom: 0 !important;
+}
+
+/* Frappe wraps the label in .clearfix; it is the left cell of the row */
+#{$weight-tab} .clearfix {
+	display: block !important;
+	flex: 0 0 58%;
+	min-width: 0;
+}
+#{$weight-tab} .control-label {
+	display: block !important;
+	text-transform: none !important;
+	font-size: 11.5px !important;
+	font-weight: 600 !important;
+	color: #344054 !important;
+	letter-spacing: 0;
+	margin: 0 !important;
+	padding: 0 !important;
+	line-height: 1.4;
+	white-space: nowrap !important;
+}
+
+/* the unit is shown beside the label without renaming the DocType fields */
+@each $field in gross_weight, tare_weight, cane_weight, mat_weight, net_after_binding, net_cane_weight,
+	loaded_weight, empty_weight, net_weight {
+	#{$weight-tab} .frappe-control[data-fieldname="#{$field}"] .control-label::after {
+		content: " (Kg)";
+	}
+}
+
+/* right cell. Frappe keeps both the input and the read-only value box in every field and
+   shows one of them with an inline display style, so no rule here may set display on them:
+   forcing it shows both boxes at once. */
+#{$weight-tab} .control-input-wrapper {
+	flex: 1 1 0;
+	min-width: 0;
+}
+#{$weight-tab} input.form-control {
+	width: 100%;
+	text-align: right !important;
+	font-weight: 700 !important;
+	font-size: 14px !important;
+	height: 32px !important;
+	background: #f0f4ff !important;
+	border: 1.5px solid #c5cfe0 !important;
+}
+#{$weight-tab} .like-disabled-input {
+	width: 100%;
+	text-align: right !important;
+	font-weight: 700 !important;
+	font-size: 14px !important;
+	color: #1a1a2e;
+	background: #f3f5f9 !important;
+	border: 1px solid #e8ecf2 !important;
+	height: 32px !important;
+	line-height: 20px !important;
+	padding: 5px 10px !important;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+#{$weight-tab} .frappe-control[data-fieldname="gross_weight_time"],
+#{$weight-tab} .frappe-control[data-fieldname="tare_weight_time"] {
+	display: none !important;
+}
+
+/* single-column layout: hide the second Frappe column (fetch button column) */
+#{$weight-tab} .section-body > .form-column:not(:first-child) {
+	display: none;
+}
+#{$weight-tab} .section-body > .form-column:first-child {
+	flex: 0 0 100%;
+	max-width: 100%;
+}
+
+/* the reason is free text: its label stays above a full-width textarea */
+#{$weight-tab} .frappe-control[data-fieldname="deduction_reason"] .form-group {
+	flex-direction: column;
+	align-items: stretch;
+	gap: 4px;
+	border-bottom: none;
+}
+#{$weight-tab} .frappe-control[data-fieldname="deduction_reason"] .clearfix {
+	flex: none;
+}
+#{$weight-tab} .frappe-control[data-fieldname="deduction_reason"] .like-disabled-input {
+	text-align: left !important;
+	font-weight: 400 !important;
+	font-size: 12.5px !important;
+	height: auto !important;
+	min-height: 32px;
+	white-space: normal;
+}
+
+/* ┌──────────────────────────────────────────────────────────────────────────┐
+   │  7.  NET WEIGHT (FINAL) – GREEN HIGHLIGHT                               │
+   └──────────────────────────────────────────────────────────────────────────┘ */
+#{$weight-tab} .frappe-control[data-fieldname="net_cane_weight"] .form-group,
+#{$weight-tab} .frappe-control[data-fieldname="net_weight"] .form-group {
+	background: linear-gradient(135deg, #e6f9ee 0%, #d1f5e0 100%);
+	border-radius: 10px;
+	padding: 8px 10px !important;
+	margin: 8px 0 !important;
+	border: 1.5px solid #6bcf8e !important;
+}
+#{$weight-tab} .frappe-control[data-fieldname="net_cane_weight"] .control-label,
+#{$weight-tab} .frappe-control[data-fieldname="net_weight"] .control-label {
+	font-size: 12px !important;
+	font-weight: 700 !important;
+	color: #0d7a3e !important;
+}
+#{$weight-tab} .frappe-control[data-fieldname="net_cane_weight"] .like-disabled-input,
+#{$weight-tab} .frappe-control[data-fieldname="net_weight"] .like-disabled-input {
+	font-size: 20px !important;
+	font-weight: 800 !important;
+	color: #0d7a3e !important;
+	background: #b6f2cf !important;
+	border: none !important;
+	border-radius: 8px !important;
+	height: 38px !important;
+	line-height: 38px !important;
+	padding: 0 12px !important;
+}
+
+/* ┌──────────────────────────────────────────────────────────────────────────┐
+   │  8.  WEIGHT-CAPTURE BUTTONS                                             │
+   │      Inline capture buttons are replaced by toolbar buttons; ensure no  │
+   │      residual ones appear and keep the fetch_weight doctype field hidden │
+   └──────────────────────────────────────────────────────────────────────────┘ */
+
+/* Safety: hide any residual inline capture buttons (now handled by toolbar) */
+.wbs-inline-capture-btn {
+	display: none !important;
+}
+
+/* hide the fetch_weight Button field (operator uses the toolbar buttons) */
+#{$weight-tab} .frappe-control[data-fieldname="fetch_weight"] {
+	display: none !important;
+}
+
+/* deduction reason textarea – inherits vertical layout; override text styles only */
+#{$weight-tab} .frappe-control[data-fieldname="deduction_reason"] textarea.form-control {
+	height: 60px !important;
+	min-height: 60px !important;
+	text-align: left !important;
+	font-weight: 400 !important;
+	font-size: 12.5px !important;
+	line-height: 1.5;
+}
+
+/* ┌──────────────────────────────────────────────────────────────────────────┐
+   │  9.  FIELD SLIP TAB – STABLE LABELS & ALIGNED LAYOUT                   │
+   └──────────────────────────────────────────────────────────────────────────┘ */
+$slip-tab: '.wbs-slip [id$="-tab_slip"]';
+
+/* remove first section head (redundant with card header) */
+#{$slip-tab} .form-section:first-child .section-head { display: none; }
+
+/* prevent a tall column from stretching its neighbours and shifting their labels */
+#{$slip-tab} .row,
+#{$slip-tab} .form-row {
+	align-items: flex-start !important;
+}
+
+/* explicit column layout so labels are always above their input, never beside */
+#{$slip-tab} .frappe-control .form-group {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+}
+
+/* single-line label: global nowrap keeps it on one line; min-height reserves the slot */
+#{$slip-tab} .frappe-control .control-label {
+	min-height: 16px;
+	line-height: 16px;
+}
+
+/* ┌──────────────────────────────────────────────────────────────────────────┐
+   │  10. RESPONSIVE FALLBACK                                                │
+   └──────────────────────────────────────────────────────────────────────────┘ */
+@media (max-width: 1100px) {
+	.wbs-slip .form-tab-content.tab-content {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* ┌──────────────────────────────────────────────────────────────────────────┐
+   │  11. FRAPPE PAGE HEADER & FORM TOOLBAR TWEAKS                           │
+   └──────────────────────────────────────────────────────────────────────────┘ */
+.wbs-slip .page-head {
+	background: #ffffff;
+	border-bottom: 1.5px solid #d0d9e8;
+}
+
+/* ┌──────────────────────────────────────────────────────────────────────────┐
+   │  12. FETCH WEIGHT TOOLBAR BUTTONS – BLUE PRIMARY STYLE                 │
+   └──────────────────────────────────────────────────────────────────────────┘ */
+.wbs-slip .wbs-fetch-btn.btn {
+	background: linear-gradient(135deg, #3b5bdb 0%, #4c6ef5 100%) !important;
+	color: #ffffff !important;
+	border: 1.5px solid #3b5bdb !important;
+	border-radius: 7px !important;
+	font-size: 12.5px !important;
+	font-weight: 600 !important;
+	padding: 0 16px !important;
+	height: 32px !important;
+	line-height: 30px !important;
+	letter-spacing: 0.2px;
+	box-shadow: 0 1px 4px rgba(59, 91, 219, 0.25);
+	transition: all 0.15s ease;
+}
+.wbs-slip .wbs-fetch-btn.btn:hover,
+.wbs-slip .wbs-fetch-btn.btn:focus {
+	background: linear-gradient(135deg, #2f4bbf 0%, #3b5bdb 100%) !important;
+	border-color: #2f4bbf !important;
+	box-shadow: 0 2px 8px rgba(59, 91, 219, 0.4);
+	color: #ffffff !important;
+}
+
+/* ┌──────────────────────────────────────────────────────────────────────────┐
+   │  13. MEMBER INFORMATION – FIVE EQUAL COLUMNS ACROSS THE CARD            │
+   └──────────────────────────────────────────────────────────────────────────┘ */
+$member-section: '.wbs-slip .form-section[data-fieldname="member_information_section"]';
+
+/* the sixth column holds only the hidden Route Rate; it reserved a blank slot after Distance */
+#{$member-section} .form-column[data-fieldname="column_break_lpgj"] {
+	display: none !important;
+}
+#{$member-section} .section-body {
+	display: flex;
+	flex-wrap: nowrap;
+}
+#{$member-section} .section-body > .form-column {
+	flex: 1 1 0;
+	width: auto;
+	max-width: none;
+	min-width: 0;
+}
+@media (max-width: 767px) {
+	#{$member-section} .section-body {
+		flex-wrap: wrap;
+	}
+	#{$member-section} .section-body > .form-column {
+		flex: 1 1 100%;
+	}
 }

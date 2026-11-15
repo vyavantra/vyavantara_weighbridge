@@ -92,8 +92,8 @@ class WeighmentSlip(Document):
 		self.cane_rate = rates["cane_rate"]
 		self.todani_rate = rates["todani_rate"]
 		self.farakt_rate = rates["farakt_rate"]
-		# the same master decides the binding deduction; calculate_weights() reads it from here
-		self.flags.binding_deduction_percent = rates["binding_deduction_percent"]
+		# The same effective-dated master supplies the displayed percent and the calculated deduction.
+		self.binding_deduction_percent = rates["binding_deduction_percent"]
 
 	def validate_contractors(self):
 		for field, allowed in (
@@ -128,10 +128,13 @@ class WeighmentSlip(Document):
 		# the formula always applies: with the empty weight still 0 the figures simply follow the loaded weight
 		self.cane_weight = loaded - empty if loaded else 0
 		if self.docstatus == 0:
-			self.mat_weight = percent_of_kg(self.cane_weight, self.get_binding_percent())
+			self.binding_deduction_percent = self.get_binding_percent()
+			self.mat_weight = percent_of_kg(self.cane_weight, self.binding_deduction_percent)
 		else:
-			# submitting keeps the binding the draft was saved with; the client cannot change it
+			# Submitted slips retain the percent and binding from the original draft, even if the
+			# effective master is edited later.
 			saved = self.get_doc_before_save()
+			self.binding_deduction_percent = flt(saved.binding_deduction_percent if saved else self.binding_deduction_percent)
 			self.mat_weight = round_kg(saved.mat_weight if saved else self.mat_weight)
 		if not 0 <= self.mat_weight <= self.cane_weight:
 			frappe.throw(_("Binding Material Weight cannot be more than the Cane Weight"))

@@ -5,21 +5,60 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "section_entry",
   "company",
-  "mill_01",
+  "naming_series",
+  "amended_from",
   "column_break_qlur",
   "entry_date",
-  "mill_02",
-  "naming_series",
   "column_break_btei",
   "entry_time",
-  "mill_03",
   "column_break_udcp",
   "tractor_number",
-  "mill_04",
-  "amended_from"
+  "section_mills",
+  "mill_01",
+  "column_break_mill_2",
+  "mill_02",
+  "column_break_mill_3",
+  "mill_03",
+  "column_break_mill_4",
+  "mill_04"
  ],
  "fields": [
+  {
+   "fieldname": "section_entry",
+   "fieldtype": "Section Break",
+   "label": "Entry Details"
+  },
+  {
+   "default": "Rajdatt Agro Industries",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "default": "BRIX-.YYYY.-.#####",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Naming Series",
+   "options": "BRIX-.YYYY.-.#####"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Brix Entry",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_qlur",
+   "fieldtype": "Column Break"
+  },
   {
    "default": "Today",
    "fieldname": "entry_date",
@@ -30,12 +69,20 @@
    "reqd": 1
   },
   {
+   "fieldname": "column_break_btei",
+   "fieldtype": "Column Break"
+  },
+  {
    "default": "Now",
    "fieldname": "entry_time",
    "fieldtype": "Time",
    "in_list_view": 1,
    "label": "Time",
    "reqd": 1
+  },
+  {
+   "fieldname": "column_break_udcp",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "tractor_number",
@@ -47,10 +94,19 @@
    "reqd": 1
   },
   {
+   "fieldname": "section_mills",
+   "fieldtype": "Section Break",
+   "label": "Mill Brix Readings"
+  },
+  {
    "fieldname": "mill_01",
    "fieldtype": "Float",
    "label": "Mill 01",
    "precision": "2"
+  },
+  {
+   "fieldname": "column_break_mill_2",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "mill_02",
@@ -59,59 +115,30 @@
    "precision": "2"
   },
   {
+   "fieldname": "column_break_mill_3",
+   "fieldtype": "Column Break"
+  },
+  {
    "fieldname": "mill_03",
    "fieldtype": "Float",
    "label": "Mill 03",
    "precision": "2"
   },
   {
+   "fieldname": "column_break_mill_4",
+   "fieldtype": "Column Break"
+  },
+  {
    "fieldname": "mill_04",
    "fieldtype": "Float",
    "label": "Mill 04",
    "precision": "2"
-  },
-  {
-   "default": "BRIX-.YYYY.-.#####",
-   "fieldname": "naming_series",
-   "fieldtype": "Select",
-   "hidden": 1,
-   "label": "Naming Series",
-   "options": "BRIX-.YYYY.-.#####"
-  },
-  {
-   "default": "Rajdatt Agro Industries",
-   "fieldname": "company",
-   "fieldtype": "Link",
-   "label": "Company",
-   "options": "Company"
-  },
-  {
-   "fieldname": "column_break_qlur",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_btei",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_udcp",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Brix Entry",
-   "print_hide": 1,
-   "read_only": 1,
-   "search_index": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-11-13 17:28:58.779753",
+ "modified": "2026-11-15 10:40:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Brix Entry",

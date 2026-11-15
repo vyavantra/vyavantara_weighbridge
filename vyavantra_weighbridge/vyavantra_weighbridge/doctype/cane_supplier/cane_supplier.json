@@ -6,6 +6,7 @@
  "engine": "InnoDB",
  "field_order": [
   "cane_supplier_no",
+  "old_farmer_code",
   "farmer_name",
   "taluka",
   "cb_3",
@@ -34,6 +35,13 @@
    "label": "Cane Supplier No.",
    "no_copy": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "old_farmer_code",
+   "fieldtype": "Data",
+   "label": "Old Farmer Code",
+   "in_list_view": 1,
+   "description": "Reference from the previous system; does not change the Cane Supplier number"
   },
   {
    "fieldname": "farmer_name",

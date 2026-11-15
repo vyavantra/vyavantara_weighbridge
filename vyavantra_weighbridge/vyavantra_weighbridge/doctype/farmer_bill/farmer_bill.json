@@ -6,34 +6,35 @@
  "engine": "InnoDB",
  "field_order": [
   "bill_date",
-  "from_date",
-  "to_date",
   "cb_25",
   "farmer",
+  "column_break_ntob",
   "farmer_name",
+  "column_break_rtwl",
   "village",
+  "column_break_bmyg",
+  "village_name",
+  "dates_section",
+  "from_date",
+  "column_break_lndb",
+  "to_date",
+  "column_break_trlm",
   "sb_weighment_slips",
   "slips",
   "sb_amounts",
+  "total_cane_weight",
   "total_quantity",
-  "total_amount",
-  "sb_deductions",
-  "cash_discount",
-  "wade",
-  "cb_26",
-  "other_deduction",
-  "deduction_remarks",
-  "sb_net",
+  "total_net_weight",
   "total_deductions",
-  "cb_27",
   "net_payable",
-  "sb_payment_summary",
   "paid_amount",
   "outstanding_amount",
-  "cb_24",
   "payment_status",
+  "approval_status",
   "naming_series",
-  "amended_from"
+  "amended_from",
+  "column_break_poyn",
+  "total_amount"
  ],
  "fields": [
   {
@@ -82,8 +83,9 @@
    "fetch_from": "farmer.village",
    "fieldname": "village",
    "fieldtype": "Link",
-   "label": "Village",
-   "options": "Village Master"
+   "label": "Village Code",
+   "options": "Village Master",
+   "read_only": 1
   },
   {
    "fieldname": "sb_weighment_slips",
@@ -94,7 +96,7 @@
    "fieldname": "slips",
    "fieldtype": "Table",
    "label": "Weighment Slips",
-   "options": "Weighbridge Bill Slip",
+   "options": "Farmer Bill Slip",
    "reqd": 1
   },
   {
@@ -112,69 +114,29 @@
   {
    "fieldname": "total_amount",
    "fieldtype": "Currency",
-   "label": "Gross Bill Amount",
+   "label": "Total Amount",
    "read_only": 1
-  },
-  {
-   "fieldname": "sb_deductions",
-   "fieldtype": "Section Break",
-   "label": "Deductions"
-  },
-  {
-   "fieldname": "cash_discount",
-   "fieldtype": "Currency",
-   "label": "Cash Discount"
-  },
-  {
-   "fieldname": "wade",
-   "fieldtype": "Currency",
-   "label": "Wade"
-  },
-  {
-   "fieldname": "cb_26",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "other_deduction",
-   "fieldtype": "Currency",
-   "label": "Other Deduction"
-  },
-  {
-   "fieldname": "deduction_remarks",
-   "fieldtype": "Small Text",
-   "label": "Deduction Remarks"
-  },
-  {
-   "fieldname": "sb_net",
-   "fieldtype": "Section Break",
-   "label": "Net"
   },
   {
    "fieldname": "total_deductions",
    "fieldtype": "Currency",
-   "label": "Total Deductions",
+   "hidden": 1,
+   "label": "Total Weight Deductions (Amount)",
    "read_only": 1
-  },
-  {
-   "fieldname": "cb_27",
-   "fieldtype": "Column Break"
   },
   {
    "bold": 1,
    "fieldname": "net_payable",
    "fieldtype": "Currency",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Net Payable Amount",
    "read_only": 1
   },
   {
-   "fieldname": "sb_payment_summary",
-   "fieldtype": "Section Break",
-   "label": "Payment Summary"
-  },
-  {
    "fieldname": "paid_amount",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Paid Amount",
    "no_copy": 1,
    "read_only": 1
@@ -182,24 +144,22 @@
   {
    "fieldname": "outstanding_amount",
    "fieldtype": "Currency",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Outstanding Amount",
    "no_copy": 1,
    "read_only": 1
   },
   {
-   "fieldname": "cb_24",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "Unpaid",
+   "default": "Draft",
    "fieldname": "payment_status",
    "fieldtype": "Select",
+   "hidden": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Payment Status",
+   "label": "Status",
    "no_copy": 1,
-   "options": "Unpaid\nPartly Paid\nPaid",
+   "options": "Draft\nUnpaid\nPaid",
    "read_only": 1
   },
   {
@@ -219,12 +179,72 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "total_cane_weight",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Total Cane Weight (Kg)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_net_weight",
+   "fieldtype": "Int",
+   "label": "Total Net Weight (Kg)",
+   "read_only": 1
+  },
+  {
+   "default": "Draft",
+   "fieldname": "approval_status",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "Approval",
+   "no_copy": 1,
+   "options": "Draft\nApproved",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_ntob",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_poyn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "village.village_name",
+   "fieldname": "village_name",
+   "fieldtype": "Data",
+   "label": "Village Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_rtwl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_bmyg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "dates_section",
+   "fieldtype": "Section Break",
+   "label": "Dates"
+  },
+  {
+   "fieldname": "column_break_lndb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_trlm",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-10-31 16:50:42.145855",
+ "modified": "2026-11-14 20:29:43.454696",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Farmer Bill",
