@@ -84,7 +84,7 @@ class FarmerBill(SlipBill):
 			return
 		slip = frappe.db.get_value(
 			"Weighment Slip", row.slip,
-			["slip_date", "delivery_type", "vehicle_no", "village", "cane_weight", "mat_weight",
+			["slip_date", "delivery_type", "vehicle_no", "village", "route", "cane_weight", "mat_weight",
 			 "net_after_binding", "other_deduction_percent", "other_deduction", "net_cane_weight"],
 			as_dict=True,
 		)
@@ -94,7 +94,9 @@ class FarmerBill(SlipBill):
 		row.delivery_type = slip.delivery_type
 		row.vehicle = slip.vehicle_no
 		row.village = slip.village
+		row.route = slip.route
 		row.cane_weight = slip.cane_weight
+		row.gross_quantity = flt(flt(slip.cane_weight) / 1000, 3)
 		row.mat_weight = slip.mat_weight
 		row.net_after_binding = slip.net_after_binding
 		row.other_deduction_percent = slip.other_deduction_percent

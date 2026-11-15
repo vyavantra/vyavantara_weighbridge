@@ -44,7 +44,7 @@ The submittable **Slip Boy Entry** Desk DocType replaces the `/slip-boy` Web For
 
 ### Effective binding and legacy codes
 
-For a draft Weighment Slip, the effective Cane Rate Master is selected by Slip Date within Effective From–To and Delivery Type. The applied Binding Deduction (%) is displayed read-only on the Weights tab. Binding Material Weight is rounded to whole kilograms from Cane Weight × that percentage, then deducted from Cane Weight. A submitted slip retains the rate and binding with which it was submitted. Cane Supplier and Contractor Master each have an optional Old Farmer Code / Old Contractor Code field for previous-system references; their current naming stays unchanged.
+For a draft Weighment Slip, the effective Cane Rate Master is selected by Slip Date within Effective From–To and Delivery Type. The applied Binding Deduction (%) is stored on the slip but not shown on the form. Binding Material Weight is rounded to whole kilograms from Cane Weight × that percentage, then deducted from Cane Weight. A submitted slip retains the rate and binding with which it was submitted. Cane Supplier and Contractor Master each have an optional Old Farmer Code / Old Contractor Code field for previous-system references; their current naming stays unchanged.
 
 ### Weighment Slip navigation
 
