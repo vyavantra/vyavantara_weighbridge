@@ -10,6 +10,7 @@
   "cb_15",
   "cash_account",
   "bank_account",
+  "cane_purchase_account",
   "sb_logo",
   "logo_height",
   "cb_logo",
@@ -102,11 +103,18 @@
    "label": "Logo Width (px)",
    "default": "0",
    "description": "0 = automatic (keeps the shape of the logo). Otherwise 20 to 400"
+  },
+  {
+   "fieldname": "cane_purchase_account",
+   "fieldtype": "Link",
+   "label": "Cane Purchase Account",
+   "options": "Account",
+   "description": "Expense account of the cane a Farmer Bill pays for; the payment itself goes from the Bank Account above to the farmer"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-11-11 12:00:00.000000",
+ "modified": "2026-11-16 13:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Weighbridge Settings",

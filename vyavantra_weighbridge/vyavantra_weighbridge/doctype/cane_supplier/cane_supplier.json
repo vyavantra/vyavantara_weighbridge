@@ -12,6 +12,7 @@
   "cb_3",
   "phone",
   "disabled",
+  "supplier",
   "village",
   "district",
   "state",
@@ -153,11 +154,19 @@
    "options": "State Master",
    "default": "Maharashtra",
    "in_standard_filter": 1
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier (Accounts)",
+   "options": "Supplier",
+   "no_copy": 1,
+   "description": "Party used in the Payment Entry of this farmer's bills. Created automatically at the first payment when left empty."
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-11-13 14:00:00.000000",
+ "modified": "2026-11-16 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Cane Supplier",

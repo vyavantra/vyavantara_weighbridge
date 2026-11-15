@@ -38,6 +38,7 @@ def after_migrate_setup():
 	seed_varieties()
 	seed_delivery_types()
 	set_default_print_formats()
+	ensure_farmer_bill_workflow()
 	frappe.db.commit()
 
 
@@ -170,3 +171,53 @@ def seed_delivery_types():
 	for d in DELIVERY_TYPES:
 		if not frappe.db.exists("Delivery Type", d):
 			frappe.get_doc({"doctype": "Delivery Type", "delivery_type_name": d}).insert(ignore_permissions=True)
+
+
+FARMER_BILL_WORKFLOW = "Farmer Bill Payment"
+MANAGERS = ("Accounts Manager", "Weighbridge Manager", "System Manager")
+
+
+def ensure_farmer_bill_workflow():
+	"""Draft -> Unpaid (approved) -> Paid (Payment Entry booked). Made once; later edits in the Desk are kept."""
+	if not frappe.db.exists("DocType", "Farmer Bill") or not frappe.get_meta("Farmer Bill").has_field("workflow_status"):
+		return
+	for state, style in (("Draft", ""), ("Unpaid", "Warning"), ("Paid", "Success"), ("Cancelled", "Danger")):
+		if not frappe.db.exists("Workflow State", state):
+			frappe.get_doc({"doctype": "Workflow State", "workflow_state_name": state, "style": style}).insert(
+				ignore_permissions=True
+			)
+	for action in ("Approve", "Pay", "Cancel Payment", "Cancel"):
+		if not frappe.db.exists("Workflow Action Master", action):
+			frappe.get_doc({"doctype": "Workflow Action Master", "workflow_action_name": action}).insert(
+				ignore_permissions=True
+			)
+	if frappe.db.exists("Workflow", FARMER_BILL_WORKFLOW):
+		return
+
+	def transitions(state, action, next_state, roles):
+		return [
+			{"state": state, "action": action, "next_state": next_state, "allowed": role, "allow_self_approval": 1}
+			for role in roles
+		]
+
+	frappe.get_doc({
+		"doctype": "Workflow",
+		"workflow_name": FARMER_BILL_WORKFLOW,
+		"document_type": "Farmer Bill",
+		"workflow_state_field": "workflow_status",
+		"is_active": 1,
+		"send_email_alert": 0,
+		"states": [
+			# Unpaid stays editable so the bank reference can be typed in; only those two fields are open after approval
+			{"state": "Draft", "doc_status": "0", "allow_edit": "All"},
+			{"state": "Unpaid", "doc_status": "1", "allow_edit": "All"},
+			{"state": "Paid", "doc_status": "1", "allow_edit": "System Manager"},
+			{"state": "Cancelled", "doc_status": "2", "allow_edit": "System Manager"},
+		],
+		"transitions": (
+			transitions("Draft", "Approve", "Unpaid", MANAGERS)
+			+ transitions("Unpaid", "Pay", "Paid", (*MANAGERS, "Accounts User"))
+			+ transitions("Unpaid", "Cancel", "Cancelled", MANAGERS)
+			+ transitions("Paid", "Cancel Payment", "Unpaid", MANAGERS)
+		),
+	}).insert(ignore_permissions=True)

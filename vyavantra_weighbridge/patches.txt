@@ -28,3 +28,4 @@ vyavantra_weighbridge.patches.v1_1.migrate_farmer_bill_slips
 vyavantra_weighbridge.patches.v1_1.backfill_farmer_bill_summary
 vyavantra_weighbridge.patches.v1_1.backfill_farmer_bill_slip_route
 vyavantra_weighbridge.patches.v1_1.backfill_farmer_bill_slip_gross_quantity
+vyavantra_weighbridge.patches.v1_1.farmer_bill_workflow_status

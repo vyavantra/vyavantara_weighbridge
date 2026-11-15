@@ -12,10 +12,12 @@ frappe.ui.form.on("Farmer Bill", {
 				frm.call("fetch_slips").then(() => frm.refresh_fields());
 			}).addClass("btn-primary");
 		}
-		if (frm.doc.docstatus === 1 && flt(frm.doc.outstanding_amount) > 0) {
-			frm.add_custom_button(__("Make Payment"), () => {
-				frappe.new_doc("Weighbridge Payment", { bill_doctype: "Farmer Bill", bill: frm.doc.name });
-			}).addClass("btn-primary");
+		// the workflow carries the bill from here: Actions > Pay books the Payment Entry
+		if (frm.doc.workflow_status === "Unpaid" && !(frm.doc.reference_no && frm.doc.reference_date)) {
+			frm.set_intro(
+				__("After the bank confirms the payment, enter the Reference No and Reference Date, save, and choose Actions > Pay."),
+				"blue"
+			);
 		}
 	},
 	from_date: clear_slips,

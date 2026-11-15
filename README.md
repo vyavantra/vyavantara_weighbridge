@@ -54,6 +54,10 @@ Submitted slips are listed at `/app/weighment-slip/view/list?docstatus=1`. An ol
 
 Fetch submitted, unbilled slips for the farmer and date range. Each Farmer Bill Slip displays cane kg, binding kg, net-after-binding kg, other deduction %/kg, final net kg, tonnes, and its cane rate from the Cane Rate Master effective on that slip's date and delivery type. The line amount is final net tonnes × rate; Total Weight Deductions (Amount) is informational because those kilograms are already excluded from the payable amount. Draft bills are approved by submitting them (Accounts Manager, Weighbridge Manager, or System Manager); the approved bill is Unpaid until approved Weighbridge Payments cover it, then becomes Paid. Existing submitted bills retain their original booked rate, quantity, and amount during migration.
 
+### Farmer Bill workflow and payment
+
+A Farmer Bill moves through the **Farmer Bill Payment** workflow: Draft, then **Approve** to Unpaid, then **Pay** to Paid. The bill total is rounded to whole rupees; Round Off shows the difference from the sum of the rows. Once the bank confirms the payment, enter Reference No and Reference Date on the Unpaid bill (Dates section), save, and choose Actions > Pay. Pay books two documents dated the Reference Date in the Company of Weighbridge Settings: a Journal Entry from the Cane Purchase Account to the farmer's payable account, and a Payment Entry from the Bank Account to the farmer that settles it. ERPNext does not allow a party on an expense account, so the bank cannot pay the purchase account in one entry. The farmer is the Supplier linked on the Cane Supplier (Supplier (Accounts)); it is created in the Cane Supplier group at the first payment. **Cancel Payment** (managers) cancels both documents and returns the bill to Unpaid; an Unpaid bill can be cancelled.
+
 ### Installation
 
 You can install this app using the [bench](https://github.com/frappe/bench) CLI:
