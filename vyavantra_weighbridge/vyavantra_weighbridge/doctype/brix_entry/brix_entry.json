@@ -13,6 +13,7 @@
   "entry_date",
   "column_break_btei",
   "entry_time",
+  "entry_time_12",
   "column_break_udcp",
   "tractor_number",
   "section_mills",
@@ -76,9 +77,16 @@
    "default": "Now",
    "fieldname": "entry_time",
    "fieldtype": "Time",
-   "in_list_view": 1,
+   "hidden": 1,
    "label": "Time",
    "reqd": 1
+  },
+  {
+   "fieldname": "entry_time_12",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Time",
+   "no_copy": 1
   },
   {
    "fieldname": "column_break_udcp",
@@ -138,7 +146,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-11-15 10:40:00.000000",
+ "modified": "2026-11-16 15:34:33.981119",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Brix Entry",

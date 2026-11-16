@@ -54,7 +54,8 @@
    "fieldname": "bank_account",
    "fieldtype": "Link",
    "label": "Bank Account",
-   "options": "Account"
+   "options": "Account",
+   "description": "Paid From of a new bill; it can be changed on each bill"
   },
   {
    "fieldname": "sb_report_heading",
@@ -109,12 +110,12 @@
    "fieldtype": "Link",
    "label": "Cane Purchase Account",
    "options": "Account",
-   "description": "Expense account of the cane a Farmer Bill pays for; the payment itself goes from the Bank Account above to the farmer"
+   "description": "Paid To of a new Farmer Bill; it can be changed on each bill"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-11-16 13:00:00.000000",
+ "modified": "2026-11-16 19:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Weighbridge Settings",

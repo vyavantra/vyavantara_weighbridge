@@ -38,7 +38,7 @@ def after_migrate_setup():
 	seed_varieties()
 	seed_delivery_types()
 	set_default_print_formats()
-	ensure_farmer_bill_workflow()
+	ensure_bill_workflows()
 	frappe.db.commit()
 
 
@@ -46,7 +46,9 @@ def after_migrate_setup():
 # applied as a Property Setter, which is what Customize Form creates.
 DEFAULT_PRINT_FORMATS = (
 	("Weighment Slip", "Weighment Slip Print"),
-	("General Weighment Slip", "General Weighment Slip Print"),
+	("Other Weight", "General Weighment Slip Print"),
+	("Diesel Issue Entry", "Diesel Issue Slip"),
+	("Tractor Contractor Bill", "Tractor Contractor Bill Print"),
 )
 
 
@@ -173,26 +175,29 @@ def seed_delivery_types():
 			frappe.get_doc({"doctype": "Delivery Type", "delivery_type_name": d}).insert(ignore_permissions=True)
 
 
-FARMER_BILL_WORKFLOW = "Farmer Bill Payment"
+# Bills that are paid through a workflow: saved as Unpaid, Pay submits the bill and books the payment.
+BILL_WORKFLOWS = {
+	"Farmer Bill Payment": "Farmer Bill",
+	"Tractor Contractor Bill Payment": "Tractor Contractor Bill",
+}
 MANAGERS = ("Accounts Manager", "Weighbridge Manager", "System Manager")
 
 
-def ensure_farmer_bill_workflow():
-	"""Draft -> Unpaid (approved) -> Paid (Payment Entry booked). Made once; later edits in the Desk are kept."""
-	if not frappe.db.exists("DocType", "Farmer Bill") or not frappe.get_meta("Farmer Bill").has_field("workflow_status"):
-		return
-	for state, style in (("Draft", ""), ("Unpaid", "Warning"), ("Paid", "Success"), ("Cancelled", "Danger")):
+def ensure_bill_workflows():
+	"""Unpaid (saved) -> Pay -> Paid (submitted, payment booked) -> Cancel -> Cancelled (payment cancelled).
+
+	The definition lives here: every migrate puts the workflows back to it.
+	"""
+	for state, style in (("Unpaid", "Warning"), ("Paid", "Success"), ("Cancelled", "Danger")):
 		if not frappe.db.exists("Workflow State", state):
 			frappe.get_doc({"doctype": "Workflow State", "workflow_state_name": state, "style": style}).insert(
 				ignore_permissions=True
 			)
-	for action in ("Approve", "Pay", "Cancel Payment", "Cancel"):
+	for action in ("Pay", "Cancel"):
 		if not frappe.db.exists("Workflow Action Master", action):
 			frappe.get_doc({"doctype": "Workflow Action Master", "workflow_action_name": action}).insert(
 				ignore_permissions=True
 			)
-	if frappe.db.exists("Workflow", FARMER_BILL_WORKFLOW):
-		return
 
 	def transitions(state, action, next_state, roles):
 		return [
@@ -200,24 +205,24 @@ def ensure_farmer_bill_workflow():
 			for role in roles
 		]
 
-	frappe.get_doc({
-		"doctype": "Workflow",
-		"workflow_name": FARMER_BILL_WORKFLOW,
-		"document_type": "Farmer Bill",
-		"workflow_state_field": "workflow_status",
-		"is_active": 1,
-		"send_email_alert": 0,
-		"states": [
-			# Unpaid stays editable so the bank reference can be typed in; only those two fields are open after approval
-			{"state": "Draft", "doc_status": "0", "allow_edit": "All"},
-			{"state": "Unpaid", "doc_status": "1", "allow_edit": "All"},
+	for name, doctype in BILL_WORKFLOWS.items():
+		if not frappe.db.exists("DocType", doctype) or not frappe.get_meta(doctype).has_field("workflow_status"):
+			continue
+		workflow = frappe.get_doc("Workflow", name) if frappe.db.exists("Workflow", name) else frappe.new_doc("Workflow")
+		workflow.update({
+			"workflow_name": name,
+			"document_type": doctype,
+			"workflow_state_field": "workflow_status",
+			"is_active": 1,
+			"send_email_alert": 0,
+		})
+		workflow.set("states", [
+			{"state": "Unpaid", "doc_status": "0", "allow_edit": "All"},
 			{"state": "Paid", "doc_status": "1", "allow_edit": "System Manager"},
 			{"state": "Cancelled", "doc_status": "2", "allow_edit": "System Manager"},
-		],
-		"transitions": (
-			transitions("Draft", "Approve", "Unpaid", MANAGERS)
-			+ transitions("Unpaid", "Pay", "Paid", (*MANAGERS, "Accounts User"))
-			+ transitions("Unpaid", "Cancel", "Cancelled", MANAGERS)
-			+ transitions("Paid", "Cancel Payment", "Unpaid", MANAGERS)
-		),
-	}).insert(ignore_permissions=True)
+		])
+		workflow.set("transitions", (
+			transitions("Unpaid", "Pay", "Paid", (*MANAGERS, "Accounts User"))
+			+ transitions("Paid", "Cancel", "Cancelled", MANAGERS)
+		))
+		workflow.save(ignore_permissions=True)

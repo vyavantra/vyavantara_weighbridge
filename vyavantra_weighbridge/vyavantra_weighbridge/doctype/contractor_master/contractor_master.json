@@ -12,6 +12,7 @@
   "cb_7",
   "phone",
   "disabled",
+  "supplier",
   "village",
   "taluka",
   "district",
@@ -20,9 +21,11 @@
   "sb_tractors",
   "tractors",
   "sb_advance_deposit",
+  "total_advance_given",
   "advance_balance",
   "cb_8",
   "deposit_balance",
+  "total_commission",
   "sb_bank",
   "bank",
   "cb_9",
@@ -64,12 +67,12 @@
    "fieldname": "contractor_type",
    "fieldtype": "Select",
    "label": "Contractor Type",
-   "options": "Tractor\nCutting Contractor\nBoth",
+   "options": "Tractor Contractor\nCutting Contractor\nTractor / Cutting Contractor",
    "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
    "allow_in_quick_entry": 1,
-   "description": "Both: the same contractor does the tractor transport and the cutting (todani)"
+   "description": "Tractor / Cutting Contractor: the same contractor does the tractor transport and the cutting (todani)"
   },
   {
    "fieldname": "cb_7",
@@ -113,10 +116,17 @@
    "label": "Advance & Deposit"
   },
   {
+   "fieldname": "total_advance_given",
+   "fieldtype": "Currency",
+   "label": "Total Advance Given",
+   "description": "Total advance ever given to this contractor. Enter manually when advance is given; never auto-modified by bills."
+  },
+  {
    "fieldname": "advance_balance",
    "fieldtype": "Currency",
-   "label": "Advance Balance",
-   "description": "Outstanding advance given (reduced by bill deductions)"
+   "label": "Advance Recovered",
+   "read_only": 1,
+   "description": "Total advance recovered so far from bill deductions (auto-updated). Outstanding = Total Advance Given - Advance Recovered."
   },
   {
    "fieldname": "cb_8",
@@ -127,6 +137,13 @@
    "fieldtype": "Currency",
    "label": "Deposit Balance",
    "description": "Deposit held (reduced by bill deductions)"
+  },
+  {
+   "fieldname": "total_commission",
+   "fieldtype": "Currency",
+   "label": "Total Commission",
+   "read_only": 1,
+   "description": "Cumulative commission earned across all paid bills (auto-updated)"
   },
   {
    "fieldname": "sb_bank",
@@ -180,11 +197,19 @@
    "options": "State Master",
    "default": "Maharashtra",
    "in_standard_filter": 1
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier (Accounts)",
+   "options": "Supplier",
+   "no_copy": 1,
+   "description": "Party used in the Payment Entry of this contractor's bills. Created automatically at the first payment when left empty."
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-11-12 12:00:00.000000",
+ "modified": "2026-11-17 14:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Contractor Master",

@@ -327,7 +327,17 @@ $slip-tab: '.wbs-slip [id$="-tab_slip"]';
 }
 
 /* ┌──────────────────────────────────────────────────────────────────────────┐
-   │  10. RESPONSIVE FALLBACK                                                │
+   │  10. GAT NUMBER – BOLD LABEL                                            │
+   └──────────────────────────────────────────────────────────────────────────┘ */
+.wbs-slip .frappe-control[data-fieldname="gat_no"] .control-label {
+	font-size: 13px !important;
+	font-weight: 800 !important;
+	color: #1a1a2e !important;
+	text-transform: none !important;
+}
+
+/* ┌──────────────────────────────────────────────────────────────────────────┐
+   │  11. RESPONSIVE FALLBACK                                                │
    └──────────────────────────────────────────────────────────────────────────┘ */
 @media (max-width: 1100px) {
 	.wbs-slip .form-tab-content.tab-content {

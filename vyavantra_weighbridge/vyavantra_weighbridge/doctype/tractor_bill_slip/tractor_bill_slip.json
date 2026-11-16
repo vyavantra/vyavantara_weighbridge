@@ -1,0 +1,150 @@
+{
+ "actions": [],
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "istable": 1,
+ "editable_grid": 1,
+ "links": [],
+ "modified": "2026-11-17 11:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Vyavantra Weighbridge",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "ASC",
+ "states": [],
+ "name": "Tractor Bill Slip",
+ "creation": "2026-11-16 17:00:00.000000",
+ "fields": [
+  {
+   "fieldname": "slip",
+   "fieldtype": "Link",
+   "label": "Weighment Slip",
+   "options": "Weighment Slip",
+   "in_list_view": 1,
+   "columns": 2,
+   "read_only": 1
+  },
+  {
+   "fieldname": "slip_date",
+   "fieldtype": "Date",
+   "label": "Date",
+   "in_list_view": 1,
+   "columns": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "vehicle",
+   "fieldtype": "Data",
+   "label": "Vehicle",
+   "read_only": 1
+  },
+  {
+   "fieldname": "village",
+   "fieldtype": "Data",
+   "label": "Village",
+   "read_only": 1
+  },
+  {
+   "fieldname": "route",
+   "fieldtype": "Link",
+   "label": "Route",
+   "options": "Route Master",
+   "in_list_view": 1,
+   "columns": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "distance",
+   "fieldtype": "Float",
+   "label": "Distance (Km)",
+   "in_list_view": 1,
+   "columns": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "delivery_type",
+   "fieldtype": "Link",
+   "label": "Delivery Type",
+   "options": "Delivery Type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "net_weight",
+   "fieldtype": "Int",
+   "label": "Net Cane Weight (Kg)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Float",
+   "label": "Net Cane Weight (Ton)",
+   "precision": "3",
+   "in_list_view": 1,
+   "columns": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "label": "Todani Rate (per Ton)",
+   "in_list_view": 1,
+   "columns": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount",
+   "in_list_view": 1,
+   "columns": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "diesel_issue_entry",
+   "fieldtype": "Link",
+   "label": "Diesel Issue Entry",
+   "options": "Diesel Issue Entry",
+   "in_list_view": 1,
+   "columns": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "diesel_qty",
+   "fieldtype": "Float",
+   "label": "Diesel Qty (Litre)",
+   "in_list_view": 1,
+   "columns": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "diesel_rate",
+   "fieldtype": "Currency",
+   "label": "Diesel Rate (Per Litre)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "diesel_amount",
+   "fieldtype": "Currency",
+   "label": "Diesel Amount",
+   "read_only": 1
+  }
+ ],
+ "field_order": [
+  "slip",
+  "slip_date",
+  "vehicle",
+  "village",
+  "route",
+  "distance",
+  "delivery_type",
+  "net_weight",
+  "quantity",
+  "rate",
+  "amount",
+  "diesel_issue_entry",
+  "diesel_qty",
+  "diesel_rate",
+  "diesel_amount"
+ ]
+}

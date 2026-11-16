@@ -5,7 +5,7 @@
 const GWS_REQUIRED_BEFORE_WEIGHT = ["product_name", "vehicle_no", "party_name"];
 const GWS_AUTO_SAVE_AFTER_FETCH = true;
 
-frappe.ui.form.on("General Weighment Slip", {
+frappe.ui.form.on("Other Weight", {
 	refresh(frm) {
 		frm.page.wrapper.addClass("wbs-slip"); // scopes weighment_slip.css to this form only
 
@@ -17,10 +17,10 @@ frappe.ui.form.on("General Weighment Slip", {
 		if (frm.doc.docstatus === 0) {
 			set_fetch_label(frm);
 			// each button reads its own weighing and asks before replacing one already taken
-			frm.add_custom_button(__("Fetch Loaded Weight"), () =>
+			frm.add_custom_button(__("Load"), () =>
 				capture_with_confirm(frm, "loaded_weight", __("Loaded Vehicle Weight"))
 			).addClass("wbs-fetch-btn");
-			frm.add_custom_button(__("Fetch Unloaded Weight"), () =>
+			frm.add_custom_button(__("Unload"), () =>
 				capture_with_confirm(frm, "empty_weight", __("Unloaded Vehicle Weight"))
 			).addClass("wbs-fetch-btn");
 		}

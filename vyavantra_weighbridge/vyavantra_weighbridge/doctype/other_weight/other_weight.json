@@ -207,7 +207,7 @@
    "fieldtype": "Link",
    "label": "Amended From",
    "no_copy": 1,
-   "options": "General Weighment Slip",
+   "options": "Other Weight",
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
@@ -237,10 +237,10 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-11-15 08:15:00.000000",
+ "modified": "2026-11-17 15:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
- "name": "General Weighment Slip",
+ "name": "Other Weight",
  "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [

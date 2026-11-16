@@ -7,14 +7,14 @@ from frappe.model.document import Document
 from frappe.utils import cint, flt, nowtime
 
 
-class GeneralWeighmentSlip(Document):
+class OtherWeight(Document):
 	"""Weighment of anything that is not cane: product, vehicle, party and the two weights."""
 
 	def before_insert(self):
 		self.serial_no = (
 			cint(
 				frappe.db.sql(
-					"select max(serial_no) from `tabGeneral Weighment Slip` where slip_date = %s", self.slip_date
+					"select max(serial_no) from `tabOther Weight` where slip_date = %s", self.slip_date
 				)[0][0]
 			)
 			+ 1

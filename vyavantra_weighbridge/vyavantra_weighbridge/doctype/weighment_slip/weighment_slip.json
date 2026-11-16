@@ -8,6 +8,7 @@
   "tab_slip",
   "field_slip_number",
   "serial_no",
+  "disel_pavati_no",
   "cb_17",
   "slip_date",
   "column_break_apzx",
@@ -28,11 +29,13 @@
   "column_break_lpgj",
   "transport_rate",
   "sb_cane_details",
-  "cane_type",
-  "cb_18",
-  "variety",
-  "column_break_mhoe",
   "delivery_type",
+  "cb_18",
+  "cane_type",
+  "column_break_mhoe",
+  "variety",
+  "column_break_pzyu",
+  "gat_no",
   "sb_applicable_rates_per_ton",
   "cane_rate",
   "cb_21",
@@ -48,9 +51,9 @@
   "vehicle_no",
   "cb_20",
   "trailer",
-  "trailer_2",
-  "column_break_aajk",
   "trolley_type",
+  "column_break_aajk",
+  "trailer_2",
   "trolley_type_2",
   "sb_billing_status",
   "farmer_bill",
@@ -72,9 +75,9 @@
   "binding_deduction_percent",
   "mat_weight",
   "net_after_binding",
-  "net_cane_weight",
   "other_deduction_percent",
   "other_deduction",
+  "net_cane_weight",
   "deduction_reason",
   "column_break_fetch",
   "fetch_weight"
@@ -190,7 +193,7 @@
    "fieldname": "cane_type",
    "fieldtype": "Select",
    "label": "Cane Type",
-   "options": "\nआडसाली\nपूर्वहंगामी\nसुरू\nखोडवा"
+   "options": "\n\u0906\u0921\u0938\u093e\u0932\u0940\n\u092a\u0942\u0930\u094d\u0935\u0939\u0902\u0917\u093e\u092e\u0940\n\u0938\u0941\u0930\u0942\n\u0916\u094b\u0921\u0935\u093e"
   },
   {
    "fieldname": "cb_18",
@@ -237,7 +240,7 @@
    "fieldname": "trolley_type",
    "fieldtype": "Select",
    "label": "Trolley Type 1",
-   "options": "\nवरची वायर\nमधली वायर\nखालची वायर\nपूर्ण"
+   "options": "\n\u0935\u0930\u091a\u0940 \u0935\u093e\u092f\u0930\n\u092e\u0927\u0932\u0940 \u0935\u093e\u092f\u0930\n\u0916\u093e\u0932\u091a\u0940 \u0935\u093e\u092f\u0930\n\u092a\u0942\u0930\u094d\u0923"
   },
   {
    "fieldname": "cutting_contractor",
@@ -331,10 +334,10 @@
    "description": "Effective Cane Rate Master for the Slip Date and Delivery Type",
    "fieldname": "binding_deduction_percent",
    "fieldtype": "Percent",
+   "hidden": 1,
    "label": "Binding Deduction (%)",
    "no_copy": 1,
-   "read_only": 1,
-   "hidden": 1
+   "read_only": 1
   },
   {
    "default": "0",
@@ -451,7 +454,7 @@
    "fieldname": "contractor_type",
    "fieldtype": "Select",
    "label": "Contractor Type",
-   "options": "Tractor\nCutting Contractor\nBoth"
+   "options": "Tractor Contractor\nCutting Contractor\nTractor / Cutting Contractor"
   },
   {
    "fieldname": "tab_slip",
@@ -509,7 +512,7 @@
    "fieldname": "trolley_type_2",
    "fieldtype": "Select",
    "label": "Trolley Type 2",
-   "options": "\nवरची वायर\nमधली वायर\nखालची वायर\nफुल भरलेला"
+   "options": "\n\u0935\u0930\u091a\u0940 \u0935\u093e\u092f\u0930\n\u092e\u0927\u0932\u0940 \u0935\u093e\u092f\u0930\n\u0916\u093e\u0932\u091a\u0940 \u0935\u093e\u092f\u0930\n\u092b\u0941\u0932 \u092d\u0930\u0932\u0947\u0932\u093e"
   },
   {
    "fieldname": "column_break_bspl",
@@ -534,13 +537,27 @@
   {
    "fieldname": "column_break_lpgj",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "disel_pavati_no",
+   "fieldtype": "Data",
+   "label": "Disel Pavati No"
+  },
+  {
+   "fieldname": "column_break_pzyu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "gat_no",
+   "fieldtype": "Data",
+   "label": "\u0917\u091f \u0928\u0902\u092c\u0930"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-11-15 17:10:00.000000",
+ "modified": "2026-11-16 15:41:59.545149",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Weighment Slip",

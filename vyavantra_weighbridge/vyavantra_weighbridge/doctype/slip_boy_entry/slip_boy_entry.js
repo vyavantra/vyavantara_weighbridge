@@ -7,8 +7,8 @@ frappe.ui.form.on("Slip Boy Entry", {
 		frm.set_query("farmer", () => ({ filters: { disabled: 0 } }));
 		frm.set_query("delivery_type", () => ({ filters: { disabled: 0 } }));
 		frm.set_query("agent", () => ({ filters: { disabled: 0 } }));
-		frm.set_query("transport_contractor", () => ({ filters: { contractor_type: ["in", ["Tractor", "Both"]], disabled: 0 } }));
-		frm.set_query("cutting_contractor", () => ({ filters: { contractor_type: ["in", ["Cutting Contractor", "Both"]], disabled: 0 } }));
+		frm.set_query("transport_contractor", () => ({ filters: { contractor_type: ["in", ["Tractor Contractor", "Tractor / Cutting Contractor"]], disabled: 0 } }));
+		frm.set_query("cutting_contractor", () => ({ filters: { contractor_type: ["in", ["Cutting Contractor", "Tractor / Cutting Contractor"]], disabled: 0 } }));
 		frm.set_query("route", () => ({ query: SBE_WS + "route_query", filters: { village: frm.doc.village || "" } }));
 	},
 	refresh(frm) {

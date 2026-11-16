@@ -5,6 +5,10 @@ frappe.ui.form.on("Farmer Bill", {
 	setup(frm) {
 		// the slips come only from "Fetch Weighment Slips" (by farmer and dates); rows can be removed but not added by hand
 		frm.get_field("slips").grid.cannot_add_rows = true;
+		vyavantra.weighbridge.bill_payment.setup(frm);
+	},
+	company(frm) {
+		vyavantra.weighbridge.bill_payment.company(frm);
 	},
 	refresh(frm) {
 		if (frm.doc.docstatus === 0) {
@@ -12,13 +16,7 @@ frappe.ui.form.on("Farmer Bill", {
 				frm.call("fetch_slips").then(() => frm.refresh_fields());
 			}).addClass("btn-primary");
 		}
-		// the workflow carries the bill from here: Actions > Pay books the Payment Entry
-		if (frm.doc.workflow_status === "Unpaid" && !(frm.doc.reference_no && frm.doc.reference_date)) {
-			frm.set_intro(
-				__("After the bank confirms the payment, enter the Reference No and Reference Date, save, and choose Actions > Pay."),
-				"blue"
-			);
-		}
+		vyavantra.weighbridge.bill_payment.refresh(frm);
 	},
 	from_date: clear_slips,
 	to_date: clear_slips,

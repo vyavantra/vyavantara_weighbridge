@@ -11,8 +11,8 @@ const AUTO_SAVE_AFTER_FETCH = true;
 frappe.ui.form.on("Weighment Slip", {
 	setup(frm) {
 		// each contractor field lists only the contractors of its own type
-		frm.set_query("transport_contractor", () => ({ filters: { contractor_type: ["in", ["Tractor", "Both"]], disabled: 0 } }));
-		frm.set_query("cutting_contractor", () => ({ filters: { contractor_type: ["in", ["Cutting Contractor", "Both"]], disabled: 0 } }));
+		frm.set_query("transport_contractor", () => ({ filters: { contractor_type: ["in", ["Tractor Contractor", "Tractor / Cutting Contractor"]], disabled: 0 } }));
+		frm.set_query("cutting_contractor", () => ({ filters: { contractor_type: ["in", ["Cutting Contractor", "Tractor / Cutting Contractor"]], disabled: 0 } }));
 		frm.set_query("farmer", () => ({ filters: { disabled: 0 } }));
 		frm.set_query("agent", () => ({ filters: { disabled: 0 } }));
 		frm.set_query("delivery_type", () => ({ filters: { disabled: 0 } }));
@@ -36,9 +36,9 @@ frappe.ui.form.on("Weighment Slip", {
 			set_fetch_label(frm);
 			if (!frm.is_new()) load_binding_percent(frm);
 			// Direct toolbar buttons — blue primary style (.wbs-fetch-btn); each has a replace-confirmation
-			const $load_btn = frm.add_custom_button(__("Fetch Loaded Weight"), () => capture_with_confirm(frm, "gross_weight", __("Loaded Vehicle Weight")));
+			const $load_btn = frm.add_custom_button(__("Load"), () => capture_with_confirm(frm, "gross_weight", __("Loaded Vehicle Weight")));
 			$load_btn.addClass("wbs-fetch-btn");
-			const $empty_btn = frm.add_custom_button(__("Fetch Unloaded Weight"), () => capture_with_confirm(frm, "tare_weight", __("Unloaded Vehicle Weight")));
+			const $empty_btn = frm.add_custom_button(__("Unload"), () => capture_with_confirm(frm, "tare_weight", __("Unloaded Vehicle Weight")));
 			$empty_btn.addClass("wbs-fetch-btn");
 			if (frm.is_new()) {
 				show_cane_rates(frm);
@@ -47,6 +47,7 @@ frappe.ui.form.on("Weighment Slip", {
 		}
 		if (frm.doc.docstatus === 1) {
 			frm.add_custom_button(__("Print Slip"), () => frm.print_doc());
+			show_diesel_pavti_buttons(frm);
 		}
 	},
 	vehicle(frm) {
@@ -54,6 +55,33 @@ frappe.ui.form.on("Weighment Slip", {
 		// the Tractor contractor that owns this tractor number, if it has exactly one
 		frappe.call({ method: WS_PATH + "get_tractor_contractor", args: { tractor: frm.doc.vehicle } }).then((r) => {
 			if (r.message) frm.set_value("transport_contractor", r.message);
+		});
+	},
+	transport_contractor(frm) {
+		if (!frm.doc.transport_contractor || frm.doc.vehicle) return;
+		// auto-fill vehicle from contractor's tractor list (only when vehicle not already set)
+		frappe.db.get_list("Contractor Tractor", {
+			filters: { parent: frm.doc.transport_contractor },
+			fields: ["tractor_number"],
+			limit: 10,
+		}).then((rows) => {
+			if (rows.length === 1) {
+				frm.set_value("vehicle", rows[0].tractor_number);
+			} else if (rows.length > 1) {
+				const d = new frappe.ui.Dialog({
+					title: __("Select Tractor"),
+					fields: [{
+						fieldname: "tractor_number", fieldtype: "Select", label: __("Tractor Number"),
+						options: rows.map((r) => r.tractor_number).join("\n"), reqd: 1,
+					}],
+					primary_action_label: __("Select"),
+					primary_action(vals) {
+						frm.set_value("vehicle", vals.tractor_number);
+						d.hide();
+					},
+				});
+				d.show();
+			}
 		});
 	},
 	farmer(frm) {
@@ -384,4 +412,74 @@ function confirm_weight_replace(label, existing_kg) {
 		d.onhide = () => resolve(false); // pressing × is treated as Cancel
 		d.show();
 	});
+}
+
+
+// ─── Diesel Issue Pavti ───────────────────────────────────────────────────────
+
+const DIESEL_PATH = "vyavantra_weighbridge.vyavantra_weighbridge.doctype.diesel_issue_entry.diesel_issue_entry.";
+
+// one diesel pavti per slip: offer to create it, or to open and print the one that exists
+function show_diesel_pavti_buttons(frm) {
+	frappe.call({ method: DIESEL_PATH + "get_for_weighment_slip", args: { weighment_slip: frm.doc.name } }).then((r) => {
+		const entry = r.message;
+		if (!entry) {
+			frm.add_custom_button(__("Create Diesel Issue Pavti"), () => create_diesel_pavti(frm));
+			return;
+		}
+		frm.add_custom_button(
+			__("Diesel Pavti {0} ({1} L)", [entry.name, entry.disel_qty]),
+			() => frappe.set_route("Form", "Diesel Issue Entry", entry.name)
+		);
+		frm.add_custom_button(__("Print Diesel Pavti"), () => print_diesel_pavti(entry.name));
+	});
+}
+
+function print_diesel_pavti(name) {
+	frappe.set_route("print", "Diesel Issue Entry", name);
+}
+
+function create_diesel_pavti(frm) {
+	// the slip's own contractor and tractor are fixed; a slip without them has them chosen here
+	const d = new frappe.ui.Dialog({
+		title: __("Create Diesel Issue Pavti"),
+		fields: [
+			{ fieldname: "issue_date", fieldtype: "Date", label: __("Issue Date"), default: frm.doc.slip_date, read_only: 1 },
+			{
+				fieldname: "transport_contractor", fieldtype: "Link", options: "Contractor Master",
+				label: __("Diesel Receiver Name (Transport Contractor)"), reqd: 1,
+				default: frm.doc.transport_contractor, read_only: frm.doc.transport_contractor ? 1 : 0,
+				get_query: () => ({ filters: { contractor_type: ["in", ["Tractor Contractor", "Tractor / Cutting Contractor"]], disabled: 0 } }),
+			},
+			{
+				fieldname: "tractor_number", fieldtype: "Link", options: "Tractor Number", label: __("Tractor Number"), reqd: 1,
+				default: frm.doc.vehicle, read_only: frm.doc.vehicle ? 1 : 0,
+			},
+			{ fieldname: "petrol_pump", fieldtype: "Link", options: "Petrol Pump", label: __("Petrol Pump Name"), reqd: 1 },
+			{ fieldname: "diesel_qty", fieldtype: "Float", label: __("Diesel Qty (Litre)"), reqd: 1 },
+		],
+		primary_action_label: __("Create"),
+		primary_action(values) {
+			if (flt(values.diesel_qty) <= 0) return frappe.msgprint(__("Diesel Qty must be greater than zero"));
+			d.disable_primary_action();
+			frappe
+				.call({
+					method: DIESEL_PATH + "create_from_weighment_slip",
+					args: {
+						weighment_slip: frm.doc.name, petrol_pump: values.petrol_pump, diesel_qty: values.diesel_qty,
+						transport_contractor: values.transport_contractor, tractor_number: values.tractor_number,
+					},
+				})
+				.then((r) => {
+					d.hide();
+					frm.reload_doc();
+					frappe.confirm(
+						__("Diesel Pavti {0} is created. Print it now?", [r.message]),
+						() => print_diesel_pavti(r.message)
+					);
+				})
+				.catch(() => d.enable_primary_action());
+		},
+	});
+	d.show();
 }
