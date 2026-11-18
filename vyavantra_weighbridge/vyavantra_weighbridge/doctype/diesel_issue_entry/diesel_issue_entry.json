@@ -16,7 +16,6 @@
   "column_break_wtim",
   "petrol_pump_name",
   "tractor_number",
-  "transport_contractor",
   "weighment_slip",
   "tractor_bill",
   "naming_series"
@@ -44,8 +43,11 @@
   {
    "fieldname": "disel_receiver_name",
    "fieldtype": "Link",
-   "label": "Disel Receiver Name",
-   "options": "Diesel Receiver"
+   "label": "Transport Contractor",
+   "options": "Contractor Master",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "reqd": 1
   },
   {
    "fieldname": "disel_qty",
@@ -84,14 +86,6 @@
    "in_standard_filter": 1,
    "label": "Tractor Number",
    "options": "Tractor Number"
-  },
-  {
-   "fieldname": "transport_contractor",
-   "fieldtype": "Link",
-   "label": "Transport Contractor",
-   "options": "Contractor Master",
-   "in_standard_filter": 1,
-   "description": "The contractor whose Tractor Contractor Bill recovers this diesel"
   },
   {
    "fieldname": "weighment_slip",
@@ -146,7 +140,7 @@
  ],
  "row_format": "Dynamic",
  "rows_threshold_for_grid_search": 20,
- "search_fields": "disel_receiver_name,petrol_pump_name",
+ "search_fields": "disel_receiver_name,tractor_number",
  "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",

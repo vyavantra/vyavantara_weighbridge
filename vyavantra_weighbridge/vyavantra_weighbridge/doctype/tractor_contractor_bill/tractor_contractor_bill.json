@@ -28,6 +28,7 @@
   "advance_deduction",
   "deposit_deduction",
   "total_diesel_qty",
+  "other_diesel_qty",
   "diesel_rate",
   "other_deduction",
   "deduction_remarks",
@@ -39,11 +40,6 @@
   "total_deductions",
   "net_payable",
   "farakt_amount",
-  "sb_amounts",
-  "sb_net",
-  "cb_28",
-  "cb_29",
-  "cb_30",
   "sb_payment_summary",
   "paid_amount",
   "outstanding_amount",
@@ -105,46 +101,45 @@
    "read_only": 1
   },
   {
+   "depends_on": "eval:!doc.__islocal && doc.docstatus==0",
    "fieldname": "sb_payment",
    "fieldtype": "Section Break",
-   "label": "Payment",
-   "depends_on": "eval:!doc.__islocal && doc.docstatus==0"
+   "label": "Payment"
   },
   {
    "fieldname": "company",
    "fieldtype": "Link",
    "label": "Company",
-   "options": "Company",
-   "no_copy": 0
+   "options": "Company"
   },
   {
    "fieldname": "cb_payment_1",
    "fieldtype": "Column Break"
   },
   {
+   "description": "Bank or cash account the payment leaves from",
    "fieldname": "paid_from",
    "fieldtype": "Link",
    "label": "Paid From (Bank Account)",
-   "options": "Account",
-   "description": "Bank or cash account the payment leaves from"
+   "options": "Account"
   },
   {
+   "description": "Account the bill amount is booked to",
    "fieldname": "paid_to",
    "fieldtype": "Link",
    "label": "Paid To (Account)",
-   "options": "Account",
-   "description": "Account the bill amount is booked to"
+   "options": "Account"
   },
   {
    "fieldname": "cb_payment_2",
    "fieldtype": "Column Break"
   },
   {
+   "description": "Bank reference (UTR / cheque number) of the payment",
    "fieldname": "reference_no",
    "fieldtype": "Data",
    "label": "Reference No",
-   "no_copy": 1,
-   "description": "Bank reference (UTR / cheque number) of the payment"
+   "no_copy": 1
   },
   {
    "fieldname": "reference_date",
@@ -170,33 +165,33 @@
    "label": "Recovery"
   },
   {
+   "description": "Total advance ever given to this contractor",
    "fieldname": "total_advance_given",
    "fieldtype": "Currency",
-   "label": "Total Advance Given (एकूण ॲडव्हान्स)",
-   "read_only": 1,
+   "label": "Total Advance Given (\u090f\u0915\u0942\u0923 \u0972\u0921\u0935\u094d\u0939\u093e\u0928\u094d\u0938)",
    "no_copy": 1,
-   "description": "Total advance ever given to this contractor"
+   "read_only": 1
   },
   {
+   "description": "Total Advance Given - Advance Recovered so far",
    "fieldname": "outstanding_advance",
    "fieldtype": "Currency",
-   "label": "Outstanding Advance (थकित ॲडव्हान्स)",
-   "read_only": 1,
+   "label": "Outstanding Advance (\u0925\u0915\u093f\u0924 \u0972\u0921\u0935\u094d\u0939\u093e\u0928\u094d\u0938)",
    "no_copy": 1,
-   "description": "Total Advance Given - Advance Recovered so far"
+   "read_only": 1
   },
   {
+   "description": "Recovered from this bill and taken off the contractor's Outstanding Advance when the bill is paid",
    "fieldname": "advance_deduction",
    "fieldtype": "Currency",
-   "label": "Advance Deduction (ॲडव्हान्स)",
-   "description": "Recovered from this bill and taken off the contractor's Outstanding Advance when the bill is paid"
+   "label": "Advance Deduction (\u0972\u0921\u0935\u094d\u0939\u093e\u0928\u094d\u0938)"
   },
   {
+   "description": "10% of Total Amount",
    "fieldname": "deposit_deduction",
    "fieldtype": "Currency",
-   "label": "Deposit (डिपॉझिट)",
-   "read_only": 1,
-   "description": "10% of Total Amount"
+   "label": "Deposit (\u0921\u093f\u092a\u0949\u091d\u093f\u091f)",
+   "read_only": 1
   },
   {
    "fieldname": "total_diesel_qty",
@@ -205,18 +200,24 @@
    "read_only": 1
   },
   {
+   "description": "Extra diesel not tied to any weighment slip — added to Total Diesel Qty",
+   "fieldname": "other_diesel_qty",
+   "fieldtype": "Float",
+   "label": "Extra Diesel (Litre)"
+  },
+  {
+   "description": "Rate on each diesel issue's own date; empty when this bill has diesel at more than one rate",
    "fieldname": "diesel_rate",
    "fieldtype": "Currency",
    "label": "Diesel Rate (Per Litre)",
-   "read_only": 1,
-   "description": "Rate on each diesel issue's own date; empty when this bill has diesel at more than one rate"
+   "read_only": 1
   },
   {
+   "description": "Total Diesel Qty x Diesel Rate",
    "fieldname": "other_deduction",
    "fieldtype": "Currency",
-   "label": "Diesel (डिझेल)",
-   "read_only": 1,
-   "description": "Total Diesel Qty x Diesel Rate"
+   "label": "Diesel (\u0921\u093f\u091d\u0947\u0932)",
+   "read_only": 1
   },
   {
    "fieldname": "deduction_remarks",
@@ -237,7 +238,7 @@
   {
    "fieldname": "total_amount",
    "fieldtype": "Currency",
-   "label": "Total Amount (एकूण रक्कम)",
+   "label": "Total Amount (\u090f\u0915\u0942\u0923 \u0930\u0915\u094d\u0915\u092e)",
    "read_only": 1
   },
   {
@@ -246,58 +247,34 @@
    "label": "Commission (%)"
   },
   {
+   "description": "Commission (%) of Total Amount \u2014 shown for reference only, not deducted from Net Payable; added to contractor's Total Commission in master",
    "fieldname": "commission",
    "fieldtype": "Currency",
-   "label": "Commission (कमिशन)",
-   "read_only": 1,
-   "description": "Commission (%) of Total Amount — shown for reference only, not deducted from Net Payable; added to contractor's Total Commission in master"
+   "label": "Commission (\u0915\u092e\u093f\u0936\u0928)",
+   "read_only": 1
   },
   {
+   "description": "Deposit + Diesel",
    "fieldname": "total_deductions",
    "fieldtype": "Currency",
-   "label": "Total Recovery (एकूण वसुली)",
-   "read_only": 1,
-   "description": "Deposit + Diesel"
+   "label": "Total Recovery (\u090f\u0915\u0942\u0923 \u0935\u0938\u0941\u0932\u0940)",
+   "read_only": 1
   },
   {
    "bold": 1,
+   "description": "Total Amount - Total Recovery",
    "fieldname": "net_payable",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Final Payable Amount (एकूण अदा रक्कम)",
-   "read_only": 1,
-   "description": "Total Amount - Total Recovery"
+   "label": "Final Payable Amount (\u090f\u0915\u0942\u0923 \u0905\u0926\u093e \u0930\u0915\u094d\u0915\u092e)",
+   "read_only": 1
   },
   {
    "fieldname": "farakt_amount",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Farakt Amount",
-   "read_only": 1,
-   "hidden": 1
-  },
-  {
-   "fieldname": "sb_amounts",
-   "fieldtype": "Section Break",
-   "label": "Amounts",
-   "hidden": 1
-  },
-  {
-   "fieldname": "sb_net",
-   "fieldtype": "Section Break",
-   "label": "Net",
-   "hidden": 1
-  },
-  {
-   "fieldname": "cb_28",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "cb_29",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "cb_30",
-   "fieldtype": "Column Break"
+   "read_only": 1
   },
   {
    "fieldname": "sb_payment_summary",
@@ -335,36 +312,36 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.journal_entry",
    "fieldname": "journal_entry",
    "fieldtype": "Link",
    "label": "Purchase Journal Entry",
-   "options": "Journal Entry",
-   "read_only": 1,
    "no_copy": 1,
-   "allow_on_submit": 1,
-   "depends_on": "eval:doc.journal_entry"
+   "options": "Journal Entry",
+   "read_only": 1
   },
   {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.payment_entry",
    "fieldname": "payment_entry",
    "fieldtype": "Link",
    "label": "Payment Entry",
-   "options": "Payment Entry",
-   "read_only": 1,
    "no_copy": 1,
-   "allow_on_submit": 1,
-   "depends_on": "eval:doc.payment_entry"
+   "options": "Payment Entry",
+   "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "workflow_status",
    "fieldtype": "Link",
-   "label": "Status",
-   "options": "Workflow State",
    "hidden": 1,
-   "read_only": 1,
-   "no_copy": 1,
-   "allow_on_submit": 1,
    "in_list_view": 1,
-   "in_standard_filter": 1
+   "in_standard_filter": 1,
+   "label": "Status",
+   "no_copy": 1,
+   "options": "Workflow State",
+   "read_only": 1
   },
   {
    "default": "TCB-.YYYY.-.#####",
@@ -388,7 +365,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-11-17 13:30:00.000000",
+ "modified": "2026-11-18 22:18:04.300015",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Tractor Contractor Bill",

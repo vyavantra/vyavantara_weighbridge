@@ -15,9 +15,9 @@ class DieselIssueEntry(Document):
 			frappe.throw(_("Diesel Qty must be greater than zero"))
 		if self.weighment_slip:
 			self.set_from_weighment_slip()
-		elif not self.transport_contractor:
+		elif not self.disel_receiver_name:
 			# diesel issued on its own is recovered from the contractor who owns the tractor
-			self.transport_contractor = get_tractor_contractor(self.tractor_number)
+			self.disel_receiver_name = get_tractor_contractor(self.tractor_number)
 
 	def set_from_weighment_slip(self):
 		slip = frappe.db.get_value(
@@ -32,27 +32,14 @@ class DieselIssueEntry(Document):
 		if other:
 			frappe.throw(_("Diesel Issue Entry {0} already exists for Weighment Slip {1}").format(other, self.weighment_slip))
 		# what the slip records is fixed; a slip without a contractor or tractor leaves them as entered here
-		self.transport_contractor = slip.transport_contractor or self.transport_contractor
+		self.disel_receiver_name = slip.transport_contractor or self.disel_receiver_name
 		self.tractor_number = slip.vehicle or self.tractor_number
-		if not self.transport_contractor:
+		if not self.disel_receiver_name:
 			frappe.throw(_("Choose the Transport Contractor the diesel is issued to"))
 
 	def on_cancel(self):
 		if self.tractor_bill:
 			frappe.throw(_("This diesel is billed in {0}. Cancel that bill first.").format(self.tractor_bill))
-
-
-def get_or_create_receiver(contractor):
-	"""The Diesel Receiver of a transport contractor: the receiver carrying the contractor's name."""
-	name = (frappe.db.get_value("Contractor Master", contractor, "contractor_name") or "").strip()
-	if not name:
-		return None
-	receiver = frappe.db.get_value("Diesel Receiver", {"disel_receiver_name": name})
-	if not receiver:
-		receiver = frappe.get_doc({"doctype": "Diesel Receiver", "disel_receiver_name": name}).insert(
-			ignore_permissions=True
-		).name
-	return receiver
 
 
 @frappe.whitelist()
@@ -67,7 +54,7 @@ def get_for_weighment_slip(weighment_slip):
 
 @frappe.whitelist()
 def create_from_weighment_slip(weighment_slip, petrol_pump, diesel_qty, transport_contractor=None, tractor_number=None):
-	"""Issue diesel against a submitted weighment slip: date, receiver and tractor come from the slip.
+	"""Issue diesel against a submitted weighment slip: date and tractor come from the slip.
 	`transport_contractor` and `tractor_number` are used only where the slip itself has none."""
 	slip = frappe.get_doc("Weighment Slip", weighment_slip)
 	slip.check_permission("read")
@@ -79,12 +66,11 @@ def create_from_weighment_slip(weighment_slip, petrol_pump, diesel_qty, transpor
 	entry = frappe.get_doc({
 		"doctype": "Diesel Issue Entry",
 		"issue_date": slip.slip_date,
-		"disel_receiver_name": get_or_create_receiver(contractor),
+		"disel_receiver_name": contractor,
 		"tractor_number": slip.vehicle or tractor_number,
 		"petrol_pump_name": petrol_pump,
 		"disel_qty": flt(diesel_qty),
 		"weighment_slip": slip.name,
-		"transport_contractor": contractor,
 	})
 	entry.insert()
 	entry.submit()

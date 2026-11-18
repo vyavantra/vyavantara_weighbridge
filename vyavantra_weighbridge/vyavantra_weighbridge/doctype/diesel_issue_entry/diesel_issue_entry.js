@@ -5,7 +5,7 @@ const DIESEL_PAVTI_FORMAT = "Diesel Issue Slip";
 
 frappe.ui.form.on("Diesel Issue Entry", {
 	setup(frm) {
-		frm.set_query("transport_contractor", () => ({ filters: { contractor_type: ["in", ["Tractor Contractor", "Tractor / Cutting Contractor"]], disabled: 0 } }));
+		frm.set_query("disel_receiver_name", () => ({ filters: { contractor_type: ["in", ["Tractor Contractor", "Tractor / Cutting Contractor"]], disabled: 0 } }));
 	},
 	refresh(frm) {
 		if (!frm.is_new() && frm.doc.docstatus < 2) {
@@ -22,7 +22,7 @@ frappe.ui.form.on("Diesel Issue Entry", {
 			method: "vyavantra_weighbridge.vyavantra_weighbridge.doctype.weighment_slip.weighment_slip.get_tractor_contractor",
 			args: { tractor: frm.doc.tractor_number },
 		}).then((r) => {
-			if (r.message) frm.set_value("transport_contractor", r.message);
+			if (r.message) frm.set_value("disel_receiver_name", r.message);
 		});
 	},
 });

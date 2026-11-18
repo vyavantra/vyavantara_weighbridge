@@ -72,7 +72,7 @@ class TractorContractorBill(SlipBill):
 		diesel = [
 			d for d in frappe.get_all(
 				"Diesel Issue Entry",
-				filters={"docstatus": 1, "transport_contractor": self.contractor, "issue_date": period,
+				filters={"docstatus": 1, "disel_receiver_name": self.contractor, "issue_date": period,
 				         "tractor_bill": ["is", "not set"]},
 				fields=["name", "issue_date", "weighment_slip"], order_by="issue_date, name",
 			)
@@ -121,10 +121,10 @@ class TractorContractorBill(SlipBill):
 		# the one diesel issue made against this slip, unless another bill already recovered it
 		diesel = frappe.db.get_value(
 			"Diesel Issue Entry", {"weighment_slip": row.slip, "docstatus": 1},
-			["name", "disel_qty", "tractor_bill", "transport_contractor", "issue_date"],
+			["name", "disel_qty", "tractor_bill", "disel_receiver_name", "issue_date"],
 			as_dict=True,
 		)
-		if diesel and diesel.tractor_bill in (None, "", self.name) and diesel.transport_contractor == self.contractor:
+		if diesel and diesel.tractor_bill in (None, "", self.name) and diesel.disel_receiver_name == self.contractor:
 			row.diesel_issue_entry, row.diesel_qty = diesel.name, flt(diesel.disel_qty)
 			self.set_diesel_amount(row, diesel.issue_date)
 		else:
@@ -166,6 +166,13 @@ class TractorContractorBill(SlipBill):
 		self.other_deduction = flt(self.other_deduction, 2)
 		# one rate to show only when every litre on the bill was issued at the same rate
 		self.diesel_rate = diesel_rates.pop() if len(diesel_rates) == 1 else 0
+		# extra diesel qty entered manually (not tied to a weighment slip)
+		if flt(self.other_diesel_qty) > 0:
+			extra_rate = get_diesel_rate(self.to_date or self.bill_date)
+			self.total_diesel_qty = flt(self.total_diesel_qty + flt(self.other_diesel_qty), 3)
+			self.other_deduction = flt(self.other_deduction + flt(self.other_diesel_qty) * extra_rate, 2)
+			if not self.diesel_rate:
+				self.diesel_rate = extra_rate
 		self.farakt_amount = 0
 		master_adv = frappe.db.get_value(
 			"Contractor Master", self.contractor, ["total_advance_given", "advance_balance"], as_dict=True
@@ -200,19 +207,22 @@ class TractorContractorBill(SlipBill):
 		self.check_balances()
 		seen = set()
 		for row in self.slips:
-			for doctype, name in (("Weighment Slip", row.slip), ("Diesel Issue Entry", row.diesel_issue_entry)):
+			for doctype, name, cfield in (
+					("Weighment Slip", row.slip, "transport_contractor"),
+					("Diesel Issue Entry", row.diesel_issue_entry, "disel_receiver_name"),
+				):
 				if not name:
 					continue
 				if (doctype, name) in seen:
 					frappe.throw(_("Row {0}: {1} {2} is on this bill twice").format(row.idx, _(doctype), name))
 				seen.add((doctype, name))
-				doc = frappe.db.get_value(doctype, name, ["docstatus", "tractor_bill", "transport_contractor"], as_dict=True)
+				doc = frappe.db.get_value(doctype, name, ["docstatus", "tractor_bill", cfield], as_dict=True)
 				if not doc or doc.docstatus != 1:
 					frappe.throw(_("Row {0}: {1} {2} is not submitted").format(row.idx, _(doctype), name))
 				if doc.tractor_bill and doc.tractor_bill != self.name:
 					frappe.throw(_("Row {0}: {1} {2} is already billed in {3}").format(
 						row.idx, _(doctype), name, doc.tractor_bill))
-				if doc.transport_contractor != self.contractor:
+				if doc.get(cfield) != self.contractor:
 					frappe.throw(_("Row {0}: {1} {2} belongs to another contractor").format(row.idx, _(doctype), name))
 		self.validate_payment_details()
 
