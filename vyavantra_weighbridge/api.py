@@ -70,3 +70,100 @@ def marathi_search_link(
 		if results:
 			return results
 	return results
+
+
+@frappe.whitelist()
+def import_master_data(payload):
+	"""One-off live-site import helper for the historical Village/Contractor/Cane Supplier data.
+
+	Exists only because the autoincrement IDs these doctypes carry (matching the old paper
+	register's VILLNO/MEMNO/contractor codes) can only be forced with `insert(set_name=...)`,
+	a Python-only kwarg with no REST equivalent — frappe.client.insert always assigns the next
+	sequence value instead. Running the insert here, server-side, is what makes exact IDs
+	possible over the API. Safe to re-run: anything that already exists by that id is skipped,
+	not overwritten.
+	"""
+	frappe.only_for("System Manager")
+	if isinstance(payload, str):
+		payload = frappe.parse_json(payload)
+
+	report = {"created": [], "skipped": [], "errors": []}
+
+	def add(doctype, name, doc_fields, child_table=None, child_rows=None):
+		name = str(name)
+		if frappe.db.exists(doctype, name):
+			report["skipped"].append([doctype, name])
+			return
+		try:
+			fields = dict(doc_fields)
+			fields["doctype"] = doctype
+			if child_table is not None:
+				fields[child_table] = child_rows or []
+			frappe.get_doc(fields).insert(ignore_permissions=True, set_name=name)
+			report["created"].append([doctype, name])
+		except Exception as e:
+			report["errors"].append([doctype, name, str(e)])
+
+	for district_name in payload.get("districts", []):
+		if frappe.db.exists("District Master", district_name):
+			report["skipped"].append(["District Master", district_name])
+			continue
+		try:
+			frappe.get_doc({
+				"doctype": "District Master", "district_name": district_name, "state": "Maharashtra",
+			}).insert(ignore_permissions=True)
+			report["created"].append(["District Master", district_name])
+		except Exception as e:
+			report["errors"].append(["District Master", district_name, str(e)])
+
+	for t in payload.get("talukas", []):
+		if frappe.db.exists("Taluka Master", t["name"]):
+			report["skipped"].append(["Taluka Master", t["name"]])
+			continue
+		try:
+			frappe.get_doc({
+				"doctype": "Taluka Master", "taluka_name": t["name"], "district": t["district"],
+			}).insert(ignore_permissions=True)
+			report["created"].append(["Taluka Master", t["name"]])
+		except Exception as e:
+			report["errors"].append(["Taluka Master", t["name"], str(e)])
+
+	routes_by_village = {}
+	for r in payload.get("routes", []):
+		routes_by_village.setdefault(str(r["parent"]), []).append(r)
+
+	for v in payload.get("villages", []):
+		rows = [
+			{"route": r["route"], "distance_km": r.get("distance_km") or 0, "transport_rate": r.get("transport_rate") or 0}
+			for r in routes_by_village.get(str(v["name"]), [])
+		]
+		add("Village Master", v["name"], {
+			"village_name": v["village_name"], "taluka": v["taluka"], "district": v["district"],
+		}, child_table="routes", child_rows=rows)
+
+	for t in payload.get("tractor_numbers", []):
+		add("Tractor Number", t["name"], {"tractor_number": t["tractor_number"]})
+
+	tractors_by_contractor = {}
+	for ct in payload.get("contractor_tractors", []):
+		tractors_by_contractor.setdefault(str(ct["parent"]), []).append(ct["tractor_number"])
+
+	for c in payload.get("contractors", []):
+		rows = [{"tractor_number": tn} for tn in tractors_by_contractor.get(str(c["name"]), [])]
+		add("Contractor Master", c["name"], {
+			"contractor_name": c["contractor_name"], "contractor_type": c["contractor_type"],
+			"old_contractor_code": c.get("old_contractor_code"), "village": c.get("village"),
+			"phone": c.get("phone"), "disabled": c.get("disabled") or 0,
+			"bank": c.get("bank"), "bank_account_no": c.get("bank_account_no"), "ifsc_code": c.get("ifsc_code"),
+		}, child_table="tractors", child_rows=rows)
+
+	for cs in payload.get("cane_suppliers", []):
+		add("Cane Supplier", cs["name"], {
+			"farmer_name": cs["farmer_name"], "village": cs.get("village"),
+			"phone": cs.get("phone"), "address": cs.get("address"), "disabled": cs.get("disabled") or 0,
+			"bank": cs.get("bank"), "bank_account_no": cs.get("bank_account_no"),
+			"ifsc_code": cs.get("ifsc_code"), "aadhaar_number": cs.get("aadhaar_number"),
+		})
+
+	frappe.db.commit()
+	return report
