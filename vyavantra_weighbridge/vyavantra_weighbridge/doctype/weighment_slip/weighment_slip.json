@@ -512,7 +512,7 @@
    "fieldname": "trolley_type_2",
    "fieldtype": "Select",
    "label": "Trolley Type 2",
-   "options": "\n\u0935\u0930\u091a\u0940 \u0935\u093e\u092f\u0930\n\u092e\u0927\u0932\u0940 \u0935\u093e\u092f\u0930\n\u0916\u093e\u0932\u091a\u0940 \u0935\u093e\u092f\u0930\n\u092b\u0941\u0932 \u092d\u0930\u0932\u0947\u0932\u093e"
+   "options": "\n\u0935\u0930\u091a\u0940 \u0935\u093e\u092f\u0930\n\u092e\u0927\u0932\u0940 \u0935\u093e\u092f\u0930\n\u0916\u093e\u0932\u091a\u0940 \u0935\u093e\u092f\u0930\n\u092a\u0942\u0930\u094d\u0923"
   },
   {
    "fieldname": "column_break_bspl",
@@ -557,7 +557,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-11-16 15:41:59.545149",
+ "modified": "2026-11-18 22:04:53.292740",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Weighment Slip",

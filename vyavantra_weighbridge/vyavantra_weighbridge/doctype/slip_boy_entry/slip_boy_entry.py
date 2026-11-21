@@ -52,6 +52,8 @@ class SlipBoyEntry(Document):
 			"slip_date": getdate(self.slip_date),
 			"slip_time": nowtime(),
 			"field_slip_number": self.field_slip_number,
+			"disel_pavati_no": self.disel_pavati_no,
+			"gat_no": self.gat_no,
 			"farmer": self.farmer,
 			"route": self.route,
 			"delivery_type": self.delivery_type,

@@ -1,35 +1,41 @@
 {
  "actions": [],
- "creation": "2026-10-31 15:00:00.000000",
+ "autoname": "autoincrement",
+ "creation": "2026-10-31 15:00:00",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "sb_contractor_info",
+  "contractor_name",
+  "village",
+  "state",
   "contractor_no",
   "old_contractor_code",
-  "contractor_name",
-  "contractor_type",
   "cb_7",
+  "contractor_type",
+  "taluka",
+  "address",
+  "column_break_nvlf",
   "phone",
+  "district",
+  "column_break_lkhe",
   "disabled",
   "supplier",
-  "village",
-  "taluka",
-  "district",
-  "state",
-  "address",
   "sb_tractors",
   "tractors",
   "sb_advance_deposit",
   "total_advance_given",
-  "advance_balance",
   "cb_8",
   "deposit_balance",
+  "column_break_hufl",
+  "advance_balance",
+  "column_break_rdkh",
   "total_commission",
   "sb_bank",
   "bank",
   "cb_9",
   "bank_account_no",
+  "column_break_dfot",
   "ifsc_code"
  ],
  "fields": [
@@ -39,64 +45,63 @@
    "label": "Contractor Information"
   },
   {
+   "description": "Generated automatically",
    "fieldname": "contractor_no",
    "fieldtype": "Data",
-   "label": "Contractor No.",
-   "reqd": 0,
+   "hidden": 1,
    "in_list_view": 1,
-   "read_only": 1,
+   "label": "Contractor No.",
    "no_copy": 1,
-   "description": "Generated automatically"
+   "read_only": 1
   },
   {
+   "description": "Reference from the previous system; does not change the Contractor No.",
    "fieldname": "old_contractor_code",
    "fieldtype": "Data",
-   "label": "Old Contractor Code",
    "in_list_view": 1,
-   "description": "Reference from the previous system; does not change the Contractor No."
+   "label": "Old Contractor Code"
   },
   {
+   "allow_in_quick_entry": 1,
    "fieldname": "contractor_name",
    "fieldtype": "Data",
-   "label": "Contractor Name",
-   "reqd": 1,
    "in_list_view": 1,
-   "allow_in_quick_entry": 1
+   "label": "Contractor Name",
+   "reqd": 1
   },
   {
+   "allow_in_quick_entry": 1,
    "fieldname": "contractor_type",
    "fieldtype": "Select",
-   "label": "Contractor Type",
-   "options": "Tractor Contractor\nCutting Contractor\nTractor / Cutting Contractor",
-   "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "allow_in_quick_entry": 1,
-   "description": "Tractor / Cutting Contractor: the same contractor does the tractor transport and the cutting (todani)"
+   "label": "Contractor Type",
+   "options": "Tractor Contractor\nCutting Contractor\nTractor / Cutting Contractor",
+   "reqd": 1
   },
   {
    "fieldname": "cb_7",
    "fieldtype": "Column Break"
   },
   {
+   "allow_in_quick_entry": 1,
    "fieldname": "phone",
    "fieldtype": "Data",
    "label": "Phone",
-   "allow_in_quick_entry": 1,
    "options": "Phone"
   },
   {
+   "default": "0",
    "fieldname": "disabled",
    "fieldtype": "Check",
    "label": "Disabled"
   },
   {
+   "allow_in_quick_entry": 1,
    "fieldname": "address",
    "fieldtype": "Small Text",
    "label": "Address",
-   "allow_in_quick_entry": 1,
-   "read_only": 1,
-   "description": "Built from Village, Taluka, District and State"
+   "read_only": 1
   },
   {
    "fieldname": "sb_tractors",
@@ -104,11 +109,11 @@
    "label": "Tractor Numbers"
   },
   {
+   "description": "Pick the numbers from the Tractor Number master. The number of rows is the number of tractors this contractor has.",
    "fieldname": "tractors",
    "fieldtype": "Table",
    "label": "Tractors of this Contractor",
-   "options": "Contractor Tractor",
-   "description": "Pick the numbers from the Tractor Number master. The number of rows is the number of tractors this contractor has."
+   "options": "Contractor Tractor"
   },
   {
    "fieldname": "sb_advance_deposit",
@@ -116,34 +121,34 @@
    "label": "Advance & Deposit"
   },
   {
+   "description": "Total advance ever given to this contractor. Enter manually when advance is given; never auto-modified by bills.",
    "fieldname": "total_advance_given",
    "fieldtype": "Currency",
-   "label": "Total Advance Given",
-   "description": "Total advance ever given to this contractor. Enter manually when advance is given; never auto-modified by bills."
+   "label": "Total Advance Given"
   },
   {
+   "description": "Total advance recovered so far from bill deductions (auto-updated). Outstanding = Total Advance Given - Advance Recovered.",
    "fieldname": "advance_balance",
    "fieldtype": "Currency",
    "label": "Advance Recovered",
-   "read_only": 1,
-   "description": "Total advance recovered so far from bill deductions (auto-updated). Outstanding = Total Advance Given - Advance Recovered."
+   "read_only": 1
   },
   {
    "fieldname": "cb_8",
    "fieldtype": "Column Break"
   },
   {
+   "description": "Deposit held (reduced by bill deductions)",
    "fieldname": "deposit_balance",
    "fieldtype": "Currency",
-   "label": "Deposit Balance",
-   "description": "Deposit held (reduced by bill deductions)"
+   "label": "Deposit Balance"
   },
   {
+   "description": "Cumulative commission earned across all paid bills (auto-updated)",
    "fieldname": "total_commission",
    "fieldtype": "Currency",
    "label": "Total Commission",
-   "read_only": 1,
-   "description": "Cumulative commission earned across all paid bills (auto-updated)"
+   "read_only": 1
   },
   {
    "fieldname": "sb_bank",
@@ -166,11 +171,11 @@
    "label": "Bank Account No."
   },
   {
+   "description": "11 characters, e.g. SBIN0001234",
    "fieldname": "ifsc_code",
    "fieldtype": "Data",
    "label": "IFSC Code",
-   "length": 11,
-   "description": "11 characters, e.g. SBIN0001234"
+   "length": 11
   },
   {
    "fieldname": "village",
@@ -191,74 +196,95 @@
    "options": "District Master"
   },
   {
+   "default": "Maharashtra",
    "fieldname": "state",
    "fieldtype": "Link",
+   "in_standard_filter": 1,
    "label": "State",
-   "options": "State Master",
-   "default": "Maharashtra",
-   "in_standard_filter": 1
+   "options": "State Master"
   },
   {
+   "description": "Party used in the Payment Entry of this contractor's bills. Created automatically at the first payment when left empty.",
    "fieldname": "supplier",
    "fieldtype": "Link",
    "label": "Supplier (Accounts)",
-   "options": "Supplier",
    "no_copy": 1,
-   "description": "Party used in the Payment Entry of this contractor's bills. Created automatically at the first payment when left empty."
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "column_break_nvlf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_lkhe",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_hufl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_rdkh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_dfot",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-11-17 14:00:00.000000",
+ "modified": "2026-11-19 20:20:57.613135",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Contractor Master",
+ "naming_rule": "Autoincrement",
  "owner": "Administrator",
  "permissions": [
   {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
    "role": "System Manager",
-   "read": 1,
-   "create": 1,
-   "write": 1,
-   "delete": 1,
-   "export": 1,
-   "print": 1,
-   "email": 1,
-   "report": 1,
-   "share": 1
+   "share": 1,
+   "write": 1
   },
   {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
    "role": "Weighbridge Manager",
-   "read": 1,
-   "create": 1,
-   "write": 1,
-   "delete": 1,
-   "export": 1,
-   "print": 1,
-   "email": 1,
-   "report": 1,
-   "share": 1
+   "share": 1,
+   "write": 1
   },
   {
+   "create": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
    "role": "Weighbridge User",
-   "read": 1,
-   "create": 1,
-   "write": 1,
-   "print": 1,
-   "report": 1
+   "write": 1
   },
   {
-   "role": "Accounts Manager",
-   "read": 1,
-   "report": 1,
    "export": 1,
-   "print": 1
-  },
-  {
-   "role": "Accounts User",
+   "print": 1,
    "read": 1,
    "report": 1,
-   "print": 1
+   "role": "Accounts Manager"
+  },
+  {
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User"
   },
   {
    "create": 1,
@@ -269,14 +295,13 @@
    "write": 1
   }
  ],
+ "quick_entry": 1,
+ "row_format": "Dynamic",
+ "search_fields": "contractor_name,contractor_type",
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1,
- "autoname": "Contractor-.###",
- "naming_rule": "Expression (old style)",
  "title_field": "contractor_name",
- "show_title_field_in_link": 1,
- "search_fields": "contractor_name,contractor_type",
- "quick_entry": 1
+ "track_changes": 1
 }

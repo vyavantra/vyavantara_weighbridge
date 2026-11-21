@@ -60,19 +60,16 @@ frappe.ui.form.on("Weighment Slip", {
 	transport_contractor(frm) {
 		if (!frm.doc.transport_contractor || frm.doc.vehicle) return;
 		// auto-fill vehicle from contractor's tractor list (only when vehicle not already set)
-		frappe.db.get_list("Contractor Tractor", {
-			filters: { parent: frm.doc.transport_contractor },
-			fields: ["tractor_number"],
-			limit: 10,
-		}).then((rows) => {
-			if (rows.length === 1) {
-				frm.set_value("vehicle", rows[0].tractor_number);
-			} else if (rows.length > 1) {
+		frappe.call({ method: WS_PATH + "get_contractor_tractors", args: { contractor: frm.doc.transport_contractor } }).then((r) => {
+			const tractors = r.message || [];
+			if (tractors.length === 1) {
+				frm.set_value("vehicle", tractors[0]);
+			} else if (tractors.length > 1) {
 				const d = new frappe.ui.Dialog({
 					title: __("Select Tractor"),
 					fields: [{
 						fieldname: "tractor_number", fieldtype: "Select", label: __("Tractor Number"),
-						options: rows.map((r) => r.tractor_number).join("\n"), reqd: 1,
+						options: tractors.join("\n"), reqd: 1,
 					}],
 					primary_action_label: __("Select"),
 					primary_action(vals) {

@@ -1,0 +1,132 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Mobile-first form theme — Slip Boy Entry is filled on a phone in the field,
+   so touch targets are large (44px+), everything is single-column, and the
+   primary action (Save/Submit) stays reachable at the bottom of the screen.
+   Scoped by .wbs-mobile-form, set on the page wrapper in slip_boy_entry.js.
+   Builds on the shared card look (card_theme.js / .wbs-card-header) already
+   used by Farmer Bill, Tractor Contractor Bill, Diesel Issue Entry.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.wbs-mobile-form .layout-main-section {
+	background: #e9eef6;
+	min-height: 100vh;
+	padding-bottom: 70px; /* room for the sticky action bar */
+}
+
+/* always one column, even on a landscape phone or small tablet where Frappe's own
+   breakpoint wouldn't otherwise stack things */
+.wbs-mobile-form .form-column {
+	width: 100% !important;
+	max-width: 100% !important;
+	flex: 1 1 100% !important;
+	padding: 0 14px !important;
+}
+.wbs-mobile-form .form-section .row {
+	display: block !important;
+}
+
+.wbs-mobile-form .form-section {
+	background: #ffffff;
+	border-radius: 14px;
+	box-shadow: 0 2px 10px rgba(60, 80, 130, 0.07);
+	border: 1.5px solid #d0d9e8;
+	padding: 0 0 14px !important;
+	margin-bottom: 14px !important;
+}
+.wbs-mobile-form .form-section > .section-head {
+	display: none !important;
+}
+.wbs-mobile-form .form-section .section-body {
+	padding: 10px 14px 0 !important;
+}
+
+.wbs-mobile-form .form-group {
+	margin-bottom: 14px !important;
+}
+.wbs-mobile-form .control-label {
+	font-weight: 700 !important;
+	font-size: 13px !important;
+	color: #3a4560 !important;
+	margin-bottom: 5px !important;
+	display: block !important;
+}
+.wbs-mobile-form .help-box {
+	display: none !important;
+}
+
+/* large, thumb-friendly controls (16px stops iOS from zooming in on focus) */
+.wbs-mobile-form input.form-control,
+.wbs-mobile-form select.form-control,
+.wbs-mobile-form textarea.form-control,
+.wbs-mobile-form .like-disabled-input,
+.wbs-mobile-form .awesomplete input {
+	height: 48px !important;
+	font-size: 16px !important;
+	padding: 8px 14px !important;
+	border-radius: 9px !important;
+	border-color: #c7d1e3 !important;
+}
+.wbs-mobile-form textarea.form-control {
+	height: auto !important;
+	min-height: 84px !important;
+}
+.wbs-mobile-form .control-input-wrapper .link-btn {
+	top: 6px;
+	right: 6px;
+}
+
+/* Select / Link dropdown arrow and awesomplete list also sized for touch */
+.wbs-mobile-form ul.awesomplete-list li {
+	padding: 12px 14px !important;
+	font-size: 15px !important;
+}
+
+/* checkboxes large enough to tap without missing */
+.wbs-mobile-form input[type="checkbox"] {
+	width: 22px !important;
+	height: 22px !important;
+}
+
+/* Save / Submit stays reachable at the thumb, instead of back up at the top toolbar */
+.wbs-mobile-form .page-head {
+	background: #ffffff;
+	border-bottom: 1.5px solid #d0d9e8;
+}
+.wbs-mobile-form .btn-primary {
+	height: 48px;
+	font-size: 15px;
+	font-weight: 700;
+	border-radius: 10px;
+	background: linear-gradient(135deg, #3b5bdb 0%, #4c6ef5 100%) !important;
+	border: none !important;
+}
+
+/* bottom action bar injected by slip_boy_entry.js (add_mobile_action_bar) */
+.wbs-mobile-action-bar {
+	position: sticky;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	width: 100%;
+	z-index: 5;
+	background: #ffffff;
+	border-top: 1.5px solid #d0d9e8;
+	padding: 10px 14px calc(10px + env(safe-area-inset-bottom, 0px));
+	box-shadow: 0 -2px 10px rgba(60, 80, 130, 0.08);
+	box-sizing: border-box;
+}
+.wbs-mobile-action-bar .btn-block {
+	width: 100%;
+	height: 50px;
+	font-size: 16px;
+}
+
+/* only on narrow screens: stack the page-actions buttons full width so Save isn't a tiny target */
+@media (max-width: 575px) {
+	.wbs-mobile-form .page-actions .btn {
+		width: 100%;
+		height: 46px;
+		font-size: 15px;
+		margin-bottom: 6px;
+	}
+}

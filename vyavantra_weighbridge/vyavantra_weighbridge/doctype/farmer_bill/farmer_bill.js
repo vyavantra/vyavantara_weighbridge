@@ -11,6 +11,12 @@ frappe.ui.form.on("Farmer Bill", {
 		vyavantra.weighbridge.bill_payment.company(frm);
 	},
 	refresh(frm) {
+		vyavantra.weighbridge.apply_card_theme(frm, {
+			dates_section: "📅",
+			sb_payment: "💳",
+			sb_weighment_slips: "🧾",
+			sb_amounts: "🧮",
+		});
 		if (frm.doc.docstatus === 0) {
 			frm.add_custom_button(__("Fetch Weighment Slips"), () => {
 				frm.call("fetch_slips").then(() => frm.refresh_fields());

@@ -8,17 +8,19 @@
  "field_order": [
   "section_break_mjvs",
   "issue_date",
-  "disel_pavati_no",
-  "disel_receiver_name",
   "disel_qty",
   "amended_from",
   "note",
   "column_break_wtim",
-  "petrol_pump_name",
+  "disel_pavati_no",
   "tractor_number",
+  "naming_series",
+  "column_break_tlzb",
+  "disel_receiver_name",
   "weighment_slip",
-  "tractor_bill",
-  "naming_series"
+  "column_break_wpyo",
+  "petrol_pump_name",
+  "tractor_bill"
  ],
  "fields": [
   {
@@ -28,9 +30,9 @@
   {
    "fieldname": "disel_pavati_no",
    "fieldtype": "Data",
-   "label": "Diesel Pavati No",
    "in_list_view": 1,
-   "in_standard_filter": 1
+   "in_standard_filter": 1,
+   "label": "Diesel Pavati No"
   },
   {
    "default": "Today",
@@ -43,10 +45,10 @@
   {
    "fieldname": "disel_receiver_name",
    "fieldtype": "Link",
-   "label": "Transport Contractor",
-   "options": "Contractor Master",
    "in_list_view": 1,
    "in_standard_filter": 1,
+   "label": "Transport Contractor",
+   "options": "Contractor Master",
    "reqd": 1
   },
   {
@@ -90,20 +92,20 @@
   {
    "fieldname": "weighment_slip",
    "fieldtype": "Link",
+   "in_standard_filter": 1,
    "label": "Weighment Slip",
-   "options": "Weighment Slip",
-   "read_only": 1,
    "no_copy": 1,
-   "in_standard_filter": 1
+   "options": "Weighment Slip",
+   "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "tractor_bill",
    "fieldtype": "Link",
    "label": "Tractor Contractor Bill",
-   "options": "Tractor Contractor Bill",
-   "read_only": 1,
    "no_copy": 1,
-   "allow_on_submit": 1
+   "options": "Tractor Contractor Bill",
+   "read_only": 1
   },
   {
    "fieldname": "naming_series",
@@ -111,13 +113,21 @@
    "hidden": 1,
    "label": "Naming Series",
    "options": "DIE-.YYYY.-.#####"
+  },
+  {
+   "fieldname": "column_break_tlzb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_wpyo",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-11-17 14:30:00.000000",
+ "modified": "2026-11-19 20:23:01.182458",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Diesel Issue Entry",

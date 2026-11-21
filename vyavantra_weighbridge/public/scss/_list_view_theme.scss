@@ -1,0 +1,60 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   List View theme — same visual language as the forms (card_theme.js, _weighment_slip.scss):
+   white rounded rows with a soft shadow instead of Frappe's stock hairline-separated table
+   rows, a bit more breathing room, blue accents. Unscoped (list_view.js has no per-doctype
+   hook worth the complexity) — this is exactly what makes every list in the desk read as one
+   consistent, modern app rather than a patchwork of themed forms over a stock list view.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.list-row-container {
+	background: #ffffff;
+	border: 1.5px solid #e1e6ef;
+	border-radius: 10px;
+	margin-bottom: 6px;
+	padding: 2px 6px;
+	transition: all 0.12s ease;
+}
+.list-row-container:hover {
+	border-color: #aebbe0;
+	box-shadow: 0 2px 8px rgba(59, 91, 219, 0.12);
+	background: #fafbff;
+}
+/* the hairline divider Frappe draws below each row is redundant once rows are cards */
+.list-row-container .list-row-border {
+	display: none;
+}
+.list-row-container .list-row {
+	padding: 7px 4px;
+}
+
+/* column header row: bold, lightly tinted, set apart from the cards below it */
+.list-row-head {
+	background: #eef1fa !important;
+	border: none !important;
+	border-radius: 8px;
+	font-weight: 700;
+	color: #3a4560;
+	margin-bottom: 8px;
+	padding: 8px 4px;
+}
+
+/* the title/subject column reads as the card's headline */
+.list-row-container .list-subject a {
+	font-weight: 600;
+	color: #1a1a2e;
+}
+.list-row-container .list-subject a:hover {
+	color: #3b5bdb;
+}
+
+/* status / workflow pills: a touch bolder so they read at a glance */
+.list-row-container .indicator-pill {
+	font-weight: 600;
+	border-radius: 20px;
+}
+
+/* the whole list area sits on the same soft blue-grey background as the rest of the app;
+   .frappe-list is the list view's own container, so this cannot bleed into form pages */
+.frappe-list {
+	background: #eef1f7;
+}

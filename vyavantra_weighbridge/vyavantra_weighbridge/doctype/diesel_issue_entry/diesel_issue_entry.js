@@ -8,6 +8,7 @@ frappe.ui.form.on("Diesel Issue Entry", {
 		frm.set_query("disel_receiver_name", () => ({ filters: { contractor_type: ["in", ["Tractor Contractor", "Tractor / Cutting Contractor"]], disabled: 0 } }));
 	},
 	refresh(frm) {
+		vyavantra.weighbridge.apply_card_theme(frm);
 		if (!frm.is_new() && frm.doc.docstatus < 2) {
 			frm.add_custom_button(__("Print Diesel Pavti"), () => {
 				frm.meta.default_print_format = DIESEL_PAVTI_FORMAT;

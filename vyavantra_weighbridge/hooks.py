@@ -199,9 +199,13 @@ boot_session = "vyavantra_weighbridge.utils.boot_logo_size"
 # Overriding Methods
 # ------------------------------
 #
-# override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "vyavantra_weighbridge.event.get_events"
-# }
+# Link field search (every "Link" field's dropdown on every form goes through this one endpoint):
+# our master data (Village Master, Cane Supplier, Contractor Master, ...) is stored in Marathi, so
+# when the plain search finds nothing, we retry with the Marathi phonetic transliteration of what
+# was typed (see api.marathi_search_link) — typing "sahaji" in English also finds "शहाजी".
+override_whitelisted_methods = {
+	"frappe.desk.search.search_link": "vyavantra_weighbridge.api.marathi_search_link",
+}
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,

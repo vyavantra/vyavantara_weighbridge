@@ -5,32 +5,37 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "farmer_name",
+  "phone",
   "cane_supplier_no",
   "old_farmer_code",
-  "farmer_name",
-  "taluka",
   "cb_3",
-  "phone",
-  "disabled",
-  "supplier",
   "village",
   "district",
+  "column_break_lptp",
+  "taluka",
   "state",
+  "column_break_tfmq",
+  "disabled",
+  "supplier",
   "sb_address_bank",
+  "bank_passbook_image",
+  "bank_account_no",
   "address",
   "cb_4",
   "bank",
+  "ifsc_code",
+  "column_break_ekjo",
   "aadhaar_number",
-  "bank_passbook_image",
-  "aadhaar_card_image",
-  "bank_account_no",
-  "ifsc_code"
+  "column_break_ztnh",
+  "aadhaar_card_image"
  ],
  "fields": [
   {
    "description": "Generated automatically",
    "fieldname": "cane_supplier_no",
    "fieldtype": "Data",
+   "hidden": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Cane Supplier No.",
@@ -38,39 +43,39 @@
    "read_only": 1
   },
   {
+   "description": "Reference from the previous system; does not change the Cane Supplier number",
    "fieldname": "old_farmer_code",
    "fieldtype": "Data",
-   "label": "Old Farmer Code",
    "in_list_view": 1,
-   "description": "Reference from the previous system; does not change the Cane Supplier number"
+   "label": "Old Farmer Code"
   },
   {
+   "allow_in_quick_entry": 1,
    "fieldname": "farmer_name",
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Cane Supplier Name",
-   "reqd": 1,
-   "allow_in_quick_entry": 1
+   "reqd": 1
   },
   {
+   "allow_in_quick_entry": 1,
    "fieldname": "village",
    "fieldtype": "Link",
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Village",
-   "options": "Village Master",
-   "allow_in_quick_entry": 1
+   "options": "Village Master"
   },
   {
    "fieldname": "cb_3",
    "fieldtype": "Column Break"
   },
   {
+   "allow_in_quick_entry": 1,
    "fieldname": "phone",
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Phone",
-   "allow_in_quick_entry": 1,
    "options": "Phone"
   },
   {
@@ -85,10 +90,10 @@
    "label": "Address & Bank"
   },
   {
+   "allow_in_quick_entry": 1,
    "fieldname": "address",
    "fieldtype": "Small Text",
-   "label": "Address",
-   "allow_in_quick_entry": 1
+   "label": "Address"
   },
   {
    "fieldname": "cb_4",
@@ -106,18 +111,18 @@
    "label": "Bank Account No."
   },
   {
+   "description": "11 characters, e.g. SBIN0001234",
    "fieldname": "ifsc_code",
    "fieldtype": "Data",
    "label": "IFSC Code",
-   "length": 11,
-   "description": "11 characters, e.g. SBIN0001234"
+   "length": 11
   },
   {
+   "description": "12 digits; optional",
    "fieldname": "aadhaar_number",
    "fieldtype": "Data",
    "label": "Aadhaar Number",
-   "length": 12,
-   "description": "12 digits; optional"
+   "length": 12
   },
   {
    "fieldname": "bank_passbook_image",
@@ -132,41 +137,56 @@
    "options": "Private"
   },
   {
+   "allow_in_quick_entry": 1,
    "fieldname": "taluka",
    "fieldtype": "Link",
    "label": "Taluka",
-   "options": "Taluka Master",
-   "allow_in_quick_entry": 1,
-   "description": "Filled from the village"
+   "options": "Taluka Master"
   },
   {
+   "allow_in_quick_entry": 1,
    "fieldname": "district",
    "fieldtype": "Link",
    "label": "District",
-   "options": "District Master",
-   "allow_in_quick_entry": 1,
-   "description": "Filled from the village"
+   "options": "District Master"
   },
   {
+   "default": "Maharashtra",
    "fieldname": "state",
    "fieldtype": "Link",
+   "in_standard_filter": 1,
    "label": "State",
-   "options": "State Master",
-   "default": "Maharashtra",
-   "in_standard_filter": 1
+   "options": "State Master"
   },
   {
+   "description": "Party used in the Payment Entry of this farmer's bills. Created automatically at the first payment when left empty.",
    "fieldname": "supplier",
    "fieldtype": "Link",
    "label": "Supplier (Accounts)",
-   "options": "Supplier",
    "no_copy": 1,
-   "description": "Party used in the Payment Entry of this farmer's bills. Created automatically at the first payment when left empty."
+   "options": "Supplier",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_lptp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_tfmq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_ekjo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_ztnh",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-11-16 12:00:00.000000",
+ "modified": "2026-11-19 20:16:07.589607",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Cane Supplier",
@@ -227,12 +247,12 @@
    "write": 1
   }
  ],
+ "quick_entry": 1,
  "row_format": "Dynamic",
  "search_fields": "farmer_name,phone,village",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
  "title_field": "farmer_name",
- "track_changes": 1,
- "quick_entry": 1
+ "track_changes": 1
 }

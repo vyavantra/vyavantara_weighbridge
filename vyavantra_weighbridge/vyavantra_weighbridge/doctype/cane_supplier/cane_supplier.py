@@ -30,6 +30,7 @@ class CaneSupplier(Document):
 
 		self.taluka = place.taluka
 		self.district = place.district
+		self.state = frappe.db.get_value("District Master", place.district, "state") if place.district else None
 
 	def validate_aadhaar(self):
 		"""Aadhaar is optional, but a supplied value must be exactly twelve digits."""

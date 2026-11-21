@@ -176,6 +176,23 @@ def get_tractor_contractor(tractor):
 	return owners[0][0] if len(owners) == 1 else None
 
 
+@frappe.whitelist()
+def get_contractor_tractors(contractor):
+	"""Tractor numbers owned by a contractor.
+
+	Not frappe.db.get_list: a child doctype like Contractor Tractor has no permissions of its
+	own, and get_list silently returns nothing for one unless parent_doctype is also passed.
+	"""
+	if not contractor:
+		return []
+	frappe.has_permission("Contractor Master", "read", throw=True)
+	return frappe.get_all(
+		"Contractor Tractor",
+		filters={"parent": contractor, "parenttype": "Contractor Master"},
+		pluck="tractor_number",
+	)
+
+
 def get_village_route_rows(village):
 	"""{route name: Village Route row} for a village."""
 	if not village:

@@ -4,15 +4,12 @@
 import frappe
 from frappe import _
 from frappe.model.document import Document
-from frappe.model.naming import make_autoname
 
 
 class ContractorMaster(Document):
-	def autoname(self):
-		self.name = make_autoname("Contractor-.###")
-		self.contractor_no = self.name
-
 	def validate(self):
+		# the name is the running number the database hands out (autoincrement)
+		self.contractor_no = self.name
 		self.check_duplicate_tractors()
 		self.build_address()
 
@@ -25,5 +22,7 @@ class ContractorMaster(Document):
 
 	def build_address(self):
 		"""One readable address line out of the places chosen above it, for bills and cheques."""
+		# str(): village is a Link to Village Master, whose name is a bigint (autoincrement),
+		# so frappe hands it back as an int rather than str
 		parts = [self.village, self.taluka and _("Tal. {0}").format(self.taluka), self.district, self.state]
-		self.address = ", ".join(p for p in parts if p)
+		self.address = ", ".join(str(p) for p in parts if p)

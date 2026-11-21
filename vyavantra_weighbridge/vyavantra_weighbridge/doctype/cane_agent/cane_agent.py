@@ -2,10 +2,9 @@
 # For license information, please see license.txt
 
 from frappe.model.document import Document
-from frappe.model.naming import make_autoname
 
 
 class CaneAgent(Document):
-	def autoname(self):
-		self.name = make_autoname("Agent-.###")
+	def validate(self):
+		# the name is the running number the database hands out (autoincrement)
 		self.agent_no = self.name

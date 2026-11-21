@@ -15,6 +15,12 @@ frappe.ui.form.on("Tractor Contractor Bill", {
 		vyavantra.weighbridge.bill_payment.company(frm);
 	},
 	refresh(frm) {
+		vyavantra.weighbridge.apply_card_theme(frm, {
+			sb_payment: "💳",
+			sb_weighment_slips: "🧾",
+			sb_deductions: "➖",
+			sb_payment_summary: "🧮",
+		});
 		if (frm.doc.docstatus === 0) {
 			frm.add_custom_button(__("Fetch Weighment Slips"), () => {
 				frm.call("fetch_slips").then(() => frm.refresh_fields());

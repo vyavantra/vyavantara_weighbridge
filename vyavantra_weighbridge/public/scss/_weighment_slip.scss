@@ -38,7 +38,8 @@
 	border-radius: 14px;
 	box-shadow: 0 2px 10px rgba(60, 80, 130, 0.07);
 	border: 1.5px solid #d0d9e8;
-	overflow: hidden;
+	/* no overflow:hidden here — it would clip Link-field (awesomplete) dropdowns;
+	   .wbs-card-header rounds its own top corners instead (see below) */
 	padding: 0 0 10px;
 }
 
@@ -56,6 +57,9 @@
 	gap: 8px;
 	letter-spacing: 0.3px;
 	margin-bottom: 2px;
+	/* rounds its own top corners to match the card now that the card no longer
+	   relies on overflow:hidden (which used to clip Link-field dropdowns) */
+	border-radius: 12.5px 12.5px 0 0;
 }
 .wbs-card-header .wbs-icon {
 	font-size: 17px;

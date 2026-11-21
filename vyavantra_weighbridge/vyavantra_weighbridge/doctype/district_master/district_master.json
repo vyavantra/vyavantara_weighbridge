@@ -4,7 +4,8 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "district_name"
+  "district_name",
+  "state"
  ],
  "fields": [
   {
@@ -13,6 +14,14 @@
    "label": "District Name",
    "reqd": 1,
    "unique": 1,
+   "in_list_view": 1,
+   "allow_in_quick_entry": 1
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Link",
+   "label": "State",
+   "options": "State Master",
    "in_list_view": 1,
    "allow_in_quick_entry": 1
   }
