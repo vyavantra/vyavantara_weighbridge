@@ -212,3 +212,45 @@ def fix_autoincrement_sequences():
 		result[doctype] = int(max_id)
 	frappe.db.commit()
 	return result
+
+
+@frappe.whitelist()
+def add_village_routes(payload):
+	"""Create Route Master records and attach them to Village Master's routes child table.
+
+	import_master_data's embedded "routes" rows point at Route Master by name but never created
+	the Route Master records themselves, so those links are currently dangling on the live site.
+	This both backfills missing Route Master records and adds new village<->route associations,
+	skipping any pair a village already has (by exact route name) so it's safe to re-run.
+
+	payload: {"route_masters": ["route name", ...], "village_routes": [{"village": "13", "route": "..."}]}
+	"""
+	frappe.only_for("System Manager")
+	if isinstance(payload, str):
+		payload = frappe.parse_json(payload)
+
+	report = {"routes_created": [], "routes_skipped": [], "added": [], "skipped": [], "errors": []}
+
+	for route_name in payload.get("route_masters", []):
+		if frappe.db.exists("Route Master", route_name):
+			report["routes_skipped"].append(route_name)
+			continue
+		frappe.get_doc({"doctype": "Route Master", "route_name": route_name}).insert(ignore_permissions=True)
+		report["routes_created"].append(route_name)
+
+	for vr in payload.get("village_routes", []):
+		village = str(vr["village"])
+		route = vr["route"]
+		try:
+			doc = frappe.get_doc("Village Master", village)
+			if any(row.route == route for row in doc.routes):
+				report["skipped"].append([village, route])
+				continue
+			doc.append("routes", {"route": route, "distance_km": vr.get("distance_km") or 0, "transport_rate": vr.get("transport_rate") or 0})
+			doc.save(ignore_permissions=True)
+			report["added"].append([village, route])
+		except Exception as e:
+			report["errors"].append([village, route, str(e)])
+
+	frappe.db.commit()
+	return report
