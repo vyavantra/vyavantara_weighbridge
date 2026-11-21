@@ -170,6 +170,33 @@ def import_master_data(payload):
 
 
 @frappe.whitelist()
+def fix_tractor_number_series():
+	"""Re-sync Tractor Number's naming series after import_master_data forces explicit ids.
+
+	Tractor Number is named by series (TRNO-.YYYY.-.#####), not autoincrement, but the same
+	problem applies: a forced `insert(set_name=...)` never touches the counter the series reads
+	from (the separate `tabSeries` table), so the next real "+ New" can collide with an id the
+	import already used. Only doctype this import forced an explicit *series* name on, so it's
+	the only one besides the 4 autoincrement ones that needs this.
+	"""
+	frappe.only_for("System Manager")
+	from frappe.model.naming import NamingSeries
+
+	meta = frappe.get_meta("Tractor Number")
+	series_pattern = meta.autoname.split("naming_series:", 1)[-1]
+	ns = NamingSeries(series_pattern)
+	prefix = ns.get_prefix()
+	max_suffix = frappe.db.sql(
+		"""select max(cast(substring(name, %s) as unsigned))
+		from `tabTractor Number` where name like %s""",
+		(len(prefix) + 1, prefix + "%"),
+	)[0][0] or 0
+	ns.update_counter(int(max_suffix))
+	frappe.db.commit()
+	return {"prefix": prefix, "set_to": int(max_suffix)}
+
+
+@frappe.whitelist()
 def fix_autoincrement_sequences():
 	"""Re-sync the autoincrement sequence after import_master_data forces explicit IDs.
 
