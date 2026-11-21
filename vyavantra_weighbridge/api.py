@@ -167,3 +167,21 @@ def import_master_data(payload):
 
 	frappe.db.commit()
 	return report
+
+
+@frappe.whitelist()
+def fix_autoincrement_sequences():
+	"""Re-sync the autoincrement sequence after import_master_data forces explicit IDs.
+
+	Autoincrement naming uses a separate MariaDB SEQUENCE object, not the table's own data — an
+	explicit `insert(set_name=...)` never advances it. Left alone, the next real "+ New" in the
+	UI collides with an id import_master_data already used. Run this once, right after an import.
+	"""
+	frappe.only_for("System Manager")
+	result = {}
+	for doctype in ("Cane Supplier", "Contractor Master", "Village Master", "Cane Agent"):
+		max_id = frappe.db.sql(f"select max(name) from `tab{doctype}`")[0][0] or 0
+		frappe.db.set_next_sequence_val(doctype, int(max_id), is_val_used=True)
+		result[doctype] = int(max_id)
+	frappe.db.commit()
+	return result
