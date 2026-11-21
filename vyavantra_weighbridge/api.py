@@ -203,11 +203,16 @@ def fix_autoincrement_sequences():
 	Autoincrement naming uses a separate MariaDB SEQUENCE object, not the table's own data — an
 	explicit `insert(set_name=...)` never advances it. Left alone, the next real "+ New" in the
 	UI collides with an id import_master_data already used. Run this once, right after an import.
+
+	On a site where every row for a doctype was ever created via a forced `set_name` insert (no
+	normal "+ New" has happened yet), the sequence object itself may never have been created -
+	`create_sequence(check_not_exists=True)` mirrors what DocType sync does, so it's safe either way.
 	"""
 	frappe.only_for("System Manager")
 	result = {}
 	for doctype in ("Cane Supplier", "Contractor Master", "Village Master", "Cane Agent"):
 		max_id = frappe.db.sql(f"select max(name) from `tab{doctype}`")[0][0] or 0
+		frappe.db.create_sequence(doctype, check_not_exists=True)
 		frappe.db.set_next_sequence_val(doctype, int(max_id), is_val_used=True)
 		result[doctype] = int(max_id)
 	frappe.db.commit()
