@@ -1,0 +1,114 @@
+<div class="vwb">
+
+  <div class="vwb-top">
+    <div class="vwb-top-left">
+      <h1>Vyavantra Weighbridge</h1>
+      <p class="vwb-date" data-role="date">&nbsp;</p>
+    </div>
+    <button class="vwb-new" data-kind="new" data-target="Weighment Slip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+      <span>New Weighment Slip</span>
+    </button>
+  </div>
+
+  <div class="vwb-stats" data-role="stats">
+    <div class="vwb-stat vwb-s-green" data-kind="list" data-target="Weighment Slip">
+      <span class="vwb-stat-k">Today</span>
+      <span class="vwb-stat-v" data-role="today_slips">&mdash;</span>
+      <span class="vwb-stat-s" data-role="today_kg">&nbsp;</span>
+      <svg class="vwb-spark" data-role="spark" viewBox="0 0 120 28" preserveAspectRatio="none" aria-hidden="true"></svg>
+    </div>
+
+    <div class="vwb-stat vwb-s-blue" data-kind="list" data-target="Weighment Slip">
+      <span class="vwb-stat-k">This month</span>
+      <span class="vwb-stat-v" data-role="month_kg">&mdash;</span>
+      <span class="vwb-stat-s" data-role="month_slips">&nbsp;</span>
+    </div>
+
+    <div class="vwb-stat vwb-s-orange" data-kind="drafts" data-target="Weighment Slip">
+      <span class="vwb-stat-k">Open drafts</span>
+      <span class="vwb-stat-v" data-role="open_drafts">&mdash;</span>
+      <span class="vwb-stat-s">slips not submitted</span>
+    </div>
+
+    <div class="vwb-stat vwb-s-purple" data-kind="drafts" data-target="Farmer Bill" data-needs="Farmer Bill|Tractor Contractor Bill|Todani Contractor Bill|Agent Bill">
+      <span class="vwb-stat-k">Pending bills</span>
+      <span class="vwb-stat-v" data-role="pending_bills">&mdash;</span>
+      <span class="vwb-stat-s">awaiting submit</span>
+    </div>
+  </div>
+
+  <div class="vwb-grid">
+
+    <div class="vwb-card vwb-green">
+      <div class="vwb-head">
+        <span class="vwb-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 7h12M4 12h16M3 17h18" stroke-linecap="round"/></svg>
+        </span>
+        <span class="vwb-title">Weighment</span>
+      </div>
+      <button class="vwb-link" data-kind="list" data-target="Weighment Slip"><span>Weighment Slip</span><i></i></button>
+      <button class="vwb-link" data-kind="list" data-target="Other Weight"><span>Other Weight</span><i></i></button>
+    </div>
+
+    <div class="vwb-card vwb-green">
+      <div class="vwb-head">
+        <span class="vwb-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2s5 6 5 10a5 5 0 0 1-10 0c0-4 5-10 5-10z"/></svg>
+        </span>
+        <span class="vwb-title">Diesel</span>
+      </div>
+      <button class="vwb-link" data-kind="new" data-target="Diesel Issue Entry"><span>Create Diesel Issue Entry</span><i></i></button>
+    </div>
+
+    <div class="vwb-card vwb-blue">
+      <div class="vwb-head">
+        <span class="vwb-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg>
+        </span>
+        <span class="vwb-title">Billing</span>
+      </div>
+      <button class="vwb-link" data-kind="list" data-target="Farmer Bill"><span>Farmer Bill</span><i></i></button>
+      <button class="vwb-link" data-kind="list" data-target="Tractor Contractor Bill"><span>Tractor Contractor Bill</span><i></i></button>
+      <button class="vwb-link" data-kind="list" data-target="Todani Contractor Bill"><span>Todani Contractor Bill</span><i></i></button>
+      <button class="vwb-link" data-kind="list" data-target="Agent Bill"><span>Agent Bill</span><i></i></button>
+    </div>
+
+    <div class="vwb-card vwb-purple">
+      <div class="vwb-head">
+        <span class="vwb-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.66 3.58 3 8 3s8-1.34 8-3V6"/><path d="M4 12v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"/></svg>
+        </span>
+        <span class="vwb-title">Weightbridge Masters</span>
+      </div>
+      <button class="vwb-link" data-kind="list" data-target="Cane Supplier"><span>Cane Supplier</span><i></i></button>
+      <button class="vwb-link" data-kind="list" data-target="Contractor Master"><span>Contractor Master</span><i></i></button>
+      <button class="vwb-link" data-kind="list" data-target="Village Master"><span>Village Master</span><i></i></button>
+      <button class="vwb-link" data-kind="list" data-target="Cane Agent"><span>Cane Agent</span><i></i></button>
+    </div>
+
+    <div class="vwb-card vwb-orange">
+      <div class="vwb-head">
+        <span class="vwb-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="vwb-title">Weighment Reports</span>
+      </div>
+      <button class="vwb-link" data-kind="report" data-target="Shift Wise Report" data-needs="Weighment Slip"><span>Shift Wise Report</span><i></i></button>
+      <button class="vwb-link" data-kind="report" data-target="Datewise Report" data-ref-doctype="Weighment Slip" data-needs="Weighment Slip"><span>Datewise Report</span><i></i></button>
+      <button class="vwb-link" data-kind="report" data-target="Datewise Crushing Report" data-ref-doctype="Weighment Slip" data-needs="Weighment Slip"><span>Datewise Crushing Report</span><i></i></button>
+    </div>
+
+    <div class="vwb-card vwb-teal">
+      <div class="vwb-head">
+        <span class="vwb-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3h7l4 4v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v4h4M9 13h6M9 17h6"/></svg>
+        </span>
+        <span class="vwb-title">Other Weightment Report</span>
+      </div>
+      <button class="vwb-link" data-kind="report" data-target="Datewise Productwise Weighment Report" data-ref-doctype="Other Weight" data-needs="Other Weight"><span>Datewise Productwise Weightment Report</span><i></i></button>
+      <button class="vwb-link" data-kind="report" data-target="Productwise Datewise Weighment Report" data-ref-doctype="Other Weight" data-needs="Other Weight"><span>Productwise Datewise Weightment Report</span><i></i></button>
+    </div>
+
+  </div>
+</div>

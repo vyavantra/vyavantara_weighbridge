@@ -39,6 +39,7 @@ def after_migrate_setup():
 	seed_delivery_types()
 	set_default_print_formats()
 	ensure_bill_workflows()
+	ensure_workspace_dashboard()
 	frappe.db.commit()
 
 
@@ -226,3 +227,56 @@ def ensure_bill_workflows():
 			+ transitions("Paid", "Cancel", "Cancelled", MANAGERS)
 		))
 		workflow.save(ignore_permissions=True)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Workspace dashboard
+#
+# The workspace shows one Custom HTML Block instead of the stock link cards. The block's
+# source lives in workspace_dashboard/ so it ships with the app and reaches every site on
+# migrate; the Custom HTML Block record itself is just a copy of those three files.
+# ─────────────────────────────────────────────────────────────────────────────
+
+DASHBOARD_BLOCK = "Weighbridge Premium Dashboard"
+DASHBOARD_WORKSPACE = "Vyavantra Weighbridge"
+
+
+def ensure_workspace_dashboard():
+	import json
+	import os
+
+	folder = os.path.join(os.path.dirname(__file__), "workspace_dashboard")
+	try:
+		parts = {}
+		for key, filename in (("html", "dashboard.html"), ("style", "dashboard.css"), ("script", "dashboard.js")):
+			with open(os.path.join(folder, filename), encoding="utf-8") as f:
+				parts[key] = f.read()
+	except OSError:
+		return
+
+	if frappe.db.exists("Custom HTML Block", DASHBOARD_BLOCK):
+		block = frappe.get_doc("Custom HTML Block", DASHBOARD_BLOCK)
+		if (block.html, block.style, block.script) == (parts["html"], parts["style"], parts["script"]):
+			return
+		block.update(parts)
+		block.save(ignore_permissions=True)
+	else:
+		block = frappe.get_doc({"doctype": "Custom HTML Block", "private": 0, **parts})
+		block.insert(ignore_permissions=True, set_name=DASHBOARD_BLOCK)
+
+	if not frappe.db.exists("Workspace", DASHBOARD_WORKSPACE):
+		return
+
+	# point the workspace at the block. The Workspace Link rows are left alone: they still
+	# drive the sidebar and global search, the dashboard just renders in their place.
+	content = json.dumps([{
+		"id": "vwb_premium_dash", "type": "custom_block",
+		"data": {"custom_block_name": DASHBOARD_BLOCK, "col": 12},
+	}])
+	frappe.db.set_value("Workspace", DASHBOARD_WORKSPACE, "content", content, update_modified=False)
+	frappe.db.delete("Workspace Custom Block", {"parent": DASHBOARD_WORKSPACE})
+	frappe.get_doc({
+		"doctype": "Workspace Custom Block", "parent": DASHBOARD_WORKSPACE,
+		"parenttype": "Workspace", "parentfield": "custom_blocks",
+		"custom_block_name": DASHBOARD_BLOCK, "label": DASHBOARD_BLOCK, "idx": 1,
+	}).insert(ignore_permissions=True)
