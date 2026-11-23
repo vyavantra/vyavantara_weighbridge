@@ -259,3 +259,68 @@ def add_village_routes(payload):
 
 	frappe.db.commit()
 	return report
+
+
+BILL_DOCTYPES = ("Farmer Bill", "Tractor Contractor Bill", "Todani Contractor Bill", "Agent Bill")
+
+# every doctype the workspace dashboard links to, so the page can hide what this user may not open
+WORKSPACE_DOCTYPES = (
+	"Weighment Slip", "Other Weight", "Diesel Issue Entry",
+	"Farmer Bill", "Tractor Contractor Bill", "Todani Contractor Bill", "Agent Bill",
+	"Cane Supplier", "Contractor Master", "Village Master", "Cane Agent",
+)
+
+
+@frappe.whitelist()
+def workspace_stats():
+	"""Figures for the tiles on the Vyavantra Weighbridge workspace.
+
+	Read-only. Each doctype is skipped when the user cannot read it, so a Slip Boy sees the
+	slip numbers and simply no bill count, rather than a permission error on the whole page.
+	"""
+	from frappe.utils import add_days, get_first_day, getdate, today
+
+	day = today()
+	# the page hides every card and link this user cannot read, so a weighbridge operator
+	# simply does not see Billing instead of being sent to a permission error
+	can_read = {dt: bool(frappe.has_permission(dt, "read")) for dt in WORKSPACE_DOCTYPES}
+	stats = {"date": day, "can_read": can_read, "can_read_slips": can_read["Weighment Slip"]}
+
+	if stats["can_read_slips"]:
+		row = frappe.db.sql(
+			"""select count(name) n, coalesce(sum(net_cane_weight), 0) kg
+			from `tabWeighment Slip` where docstatus = 1 and slip_date = %s""", (day,))[0]
+		stats["today_slips"], stats["today_kg"] = int(row[0]), float(row[1])
+
+		row = frappe.db.sql(
+			"""select count(name) n, coalesce(sum(net_cane_weight), 0) kg
+			from `tabWeighment Slip` where docstatus = 1 and slip_date between %s and %s""",
+			(get_first_day(day), day))[0]
+		stats["month_slips"], stats["month_kg"] = int(row[0]), float(row[1])
+
+		stats["open_drafts"] = frappe.db.count("Weighment Slip", {"docstatus": 0})
+
+		# last 7 days including today, oldest first, for the sparkline.
+		# both sides are keyed on the plain yyyy-mm-dd string: the query returns date objects
+		# while add_days returns datetimes, and those two never compare equal.
+		start = getdate(add_days(day, -6))
+		by_day = {str(getdate(d)): float(kg or 0) for d, kg in frappe.db.sql(
+			"""select slip_date, coalesce(sum(net_cane_weight), 0)
+			from `tabWeighment Slip` where docstatus = 1 and slip_date between %s and %s
+			group by slip_date""", (start, day))}
+		trend = []
+		for i in range(7):
+			key = str(getdate(add_days(start, i)))
+			trend.append({"date": key, "kg": by_day.get(key, 0.0)})
+		stats["trend"] = trend
+
+	pending = 0
+	counted = []
+	for dt in BILL_DOCTYPES:
+		if can_read[dt]:
+			pending += frappe.db.count(dt, {"docstatus": 0})
+			counted.append(dt)
+	stats["pending_bills"] = pending
+	stats["bill_doctypes"] = counted
+
+	return stats
