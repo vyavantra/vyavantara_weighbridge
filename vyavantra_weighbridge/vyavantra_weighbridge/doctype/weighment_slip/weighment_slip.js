@@ -13,6 +13,10 @@ frappe.ui.form.on("Weighment Slip", {
 		// each contractor field lists only the contractors of its own type
 		frm.set_query("transport_contractor", () => ({ filters: { contractor_type: ["in", ["Tractor Contractor", "Tractor / Cutting Contractor"]], disabled: 0 } }));
 		frm.set_query("cutting_contractor", () => ({ filters: { contractor_type: ["in", ["Cutting Contractor", "Tractor / Cutting Contractor"]], disabled: 0 } }));
+		// "Create a new Contractor" from either field starts with that field's own type already chosen.
+		// Without this the Select just shows its first option, so both fields produced a Tractor Contractor.
+		frm.set_df_property("transport_contractor", "get_route_options_for_new_doc", () => ({ contractor_type: "Tractor Contractor" }));
+		frm.set_df_property("cutting_contractor", "get_route_options_for_new_doc", () => ({ contractor_type: "Cutting Contractor" }));
 		frm.set_query("farmer", () => ({ filters: { disabled: 0 } }));
 		frm.set_query("agent", () => ({ filters: { disabled: 0 } }));
 		frm.set_query("delivery_type", () => ({ filters: { disabled: 0 } }));

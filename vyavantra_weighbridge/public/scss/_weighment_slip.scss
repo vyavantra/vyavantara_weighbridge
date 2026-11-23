@@ -258,15 +258,31 @@ $weight-tab: '.wbs-slip [id$="-tab_weights"]';
 	margin: 8px 0 !important;
 	border: 1.5px solid #6bcf8e !important;
 }
+/* "Net Weight (Final) (Kg)" is the longest label in the panel. The shared rules above
+   pin the label cell to 58% and force nowrap, which pushed this one past the green box,
+   so here the cell takes the space that is left and the text may use a second line. */
+#{$weight-tab} .frappe-control[data-fieldname="net_cane_weight"] .clearfix,
+#{$weight-tab} .frappe-control[data-fieldname="net_weight"] .clearfix {
+	flex: 1 1 auto;
+}
 #{$weight-tab} .frappe-control[data-fieldname="net_cane_weight"] .control-label,
 #{$weight-tab} .frappe-control[data-fieldname="net_weight"] .control-label {
 	font-size: 12px !important;
 	font-weight: 700 !important;
 	color: #0d7a3e !important;
+	white-space: normal !important;
+	line-height: 1.25;
+	overflow-wrap: break-word;
+}
+/* the value keeps a fixed cell wide enough for seven digits, so it never clips */
+#{$weight-tab} .frappe-control[data-fieldname="net_cane_weight"] .control-input-wrapper,
+#{$weight-tab} .frappe-control[data-fieldname="net_weight"] .control-input-wrapper {
+	flex: 0 0 auto;
+	min-width: 124px;
 }
 #{$weight-tab} .frappe-control[data-fieldname="net_cane_weight"] .like-disabled-input,
 #{$weight-tab} .frappe-control[data-fieldname="net_weight"] .like-disabled-input {
-	font-size: 20px !important;
+	font-size: 19px !important;
 	font-weight: 800 !important;
 	color: #0d7a3e !important;
 	background: #b6f2cf !important;
@@ -275,6 +291,7 @@ $weight-tab: '.wbs-slip [id$="-tab_weights"]';
 	height: 38px !important;
 	line-height: 38px !important;
 	padding: 0 12px !important;
+	overflow: visible;
 }
 
 /* ┌──────────────────────────────────────────────────────────────────────────┐

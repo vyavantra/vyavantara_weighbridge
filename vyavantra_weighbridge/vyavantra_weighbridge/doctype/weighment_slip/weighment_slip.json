@@ -206,6 +206,7 @@
    "options": "Cane Variety"
   },
   {
+   "default": "कार्यक्षेत्रातील",
    "fieldname": "delivery_type",
    "fieldtype": "Link",
    "in_standard_filter": 1,
