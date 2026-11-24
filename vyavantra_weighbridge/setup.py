@@ -256,10 +256,9 @@ def ensure_workspace_dashboard():
 
 	if frappe.db.exists("Custom HTML Block", DASHBOARD_BLOCK):
 		block = frappe.get_doc("Custom HTML Block", DASHBOARD_BLOCK)
-		if (block.html, block.style, block.script) == (parts["html"], parts["style"], parts["script"]):
-			return
-		block.update(parts)
-		block.save(ignore_permissions=True)
+		if (block.html, block.style, block.script) != (parts["html"], parts["style"], parts["script"]):
+			block.update(parts)
+			block.save(ignore_permissions=True)
 	else:
 		block = frappe.get_doc({"doctype": "Custom HTML Block", "private": 0, **parts})
 		block.insert(ignore_permissions=True, set_name=DASHBOARD_BLOCK)
@@ -267,12 +266,21 @@ def ensure_workspace_dashboard():
 	if not frappe.db.exists("Workspace", DASHBOARD_WORKSPACE):
 		return
 
-	# point the workspace at the block. The Workspace Link rows are left alone: they still
-	# drive the sidebar and global search, the dashboard just renders in their place.
+	# Point the workspace at the block. This part runs even when the block itself was already
+	# up to date: re-importing the workspace JSON (which migrate does whenever its `modified`
+	# moves) resets `content` back to the stock cards, and without this the dashboard would
+	# quietly disappear. The Workspace Link rows are left alone - they still drive the sidebar
+	# and global search, the dashboard just renders in their place.
 	content = json.dumps([{
 		"id": "vwb_premium_dash", "type": "custom_block",
 		"data": {"custom_block_name": DASHBOARD_BLOCK, "col": 12},
 	}])
+	wired = frappe.db.get_value("Workspace", DASHBOARD_WORKSPACE, "content") == content
+	has_row = frappe.db.exists("Workspace Custom Block",
+							   {"parent": DASHBOARD_WORKSPACE, "custom_block_name": DASHBOARD_BLOCK})
+	if wired and has_row:
+		return
+
 	frappe.db.set_value("Workspace", DASHBOARD_WORKSPACE, "content", content, update_modified=False)
 	frappe.db.delete("Workspace Custom Block", {"parent": DASHBOARD_WORKSPACE})
 	frappe.get_doc({

@@ -12,13 +12,10 @@
 			} else if (kind === "drafts") {
 				frappe.set_route("list", target, { docstatus: 0 });
 			} else if (kind === "report") {
-				const ref = el.getAttribute("data-ref-doctype");
-				if (ref) {
-					// matches frappe's own routing for is_query_report = 0 reports
-					frappe.set_route(frappe.router.slug(ref), "view", "report", target);
-				} else {
-					frappe.set_route("query-report", target);
-				}
+				// every report here is a Script Report, and those only ever open at
+				// /app/query-report/<name>. The doctype/view/report route is for
+				// Report Builder reports and renders nothing for these.
+				frappe.set_route("query-report", target);
 			} else {
 				frappe.set_route("list", target);
 			}

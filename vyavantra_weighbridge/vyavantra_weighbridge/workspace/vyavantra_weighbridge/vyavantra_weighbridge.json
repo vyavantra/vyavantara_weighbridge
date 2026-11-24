@@ -180,7 +180,7 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "Datewise Report",
    "link_count": 0,
    "link_to": "Datewise Report",
@@ -191,7 +191,7 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "Datewise Crushing Report",
    "link_count": 0,
    "link_to": "Datewise Crushing Report",
@@ -202,7 +202,7 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "Productwise Datewise Weighment Report",
    "link_count": 0,
    "link_to": "Productwise Datewise Weighment Report",
@@ -212,7 +212,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-11-21 07:52:55.568710",
+ "modified": "2026-11-24 23:10:06.663802",
  "modified_by": "Administrator",
  "module": "Vyavantra Weighbridge",
  "name": "Vyavantra Weighbridge",
